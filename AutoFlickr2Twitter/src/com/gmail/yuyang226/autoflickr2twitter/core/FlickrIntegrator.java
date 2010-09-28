@@ -46,15 +46,15 @@ public class FlickrIntegrator {
       throws ParserConfigurationException, IOException {
     	REST transport = new REST();
         f = new Flickr(
-        		MyConfiguration.getInstance().getFlickrApiKey(),
-        		MyConfiguration.getInstance().getFlickrSecret(),
+        		GlobalConfiguration.getInstance().getFlickrApiKey(),
+        		GlobalConfiguration.getInstance().getFlickrSecret(),
         		transport
         );
         
         requestContext = RequestContext.getRequestContext();
         Auth auth = new Auth();
         auth.setPermission(Permission.READ);
-        auth.setToken(MyConfiguration.getInstance().getFlickrToken());
+        auth.setToken(GlobalConfiguration.getInstance().getFlickrToken());
         requestContext.setAuth(auth);
         Flickr.debugRequest = false;
         Flickr.debugStream = false;
@@ -109,8 +109,8 @@ public class FlickrIntegrator {
     public static void main(String[] args) {
         try {
             FlickrIntegrator t = new FlickrIntegrator();
-            List<Photo> photos = t.showRecentPhotos(MyConfiguration.getInstance().getFlickrUserId(), 
-            		MyConfiguration.getInstance().getInterval());
+            List<Photo> photos = t.showRecentPhotos(GlobalConfiguration.getInstance().getFlickrUserId(), 
+            		GlobalConfiguration.getInstance().getInterval());
             if (photos.size() == 0) {
             	log.info("No new uploaded images/videos found");
             }
