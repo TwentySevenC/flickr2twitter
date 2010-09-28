@@ -66,11 +66,11 @@ public class TwitterPoster {
 	public static void updateTwitterStatus(String message) throws TwitterException {
 		log.info("Posting message -> " + message);
 		// The factory instance is re-useable and thread safe.
-		AccessToken accessToken = MyConfiguration.getInstance().getTwitterAccessTokenInstance(); 
+		AccessToken accessToken = GlobalConfiguration.getInstance().getTwitterAccessTokenInstance(); 
 		PropertyConfiguration conf = new PropertyConfiguration(new Properties());
 		
-		Authorization auth = new OAuthAuthorization(conf, MyConfiguration.getInstance().getTwitterConsumerId(), 
-				MyConfiguration.getInstance().getTwitterConsumerSecret(), accessToken);
+		Authorization auth = new OAuthAuthorization(conf, GlobalConfiguration.getInstance().getTwitterConsumerId(), 
+				GlobalConfiguration.getInstance().getTwitterConsumerSecret(), accessToken);
 	    Twitter twitter = new TwitterFactory().getInstance(auth);
 	    Status status = twitter.updateStatus(message);
 	    log.info("Successfully updated the status to [" + status.getText() + "].");

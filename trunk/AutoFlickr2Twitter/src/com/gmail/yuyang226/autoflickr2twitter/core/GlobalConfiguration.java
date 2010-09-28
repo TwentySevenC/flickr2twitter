@@ -15,7 +15,7 @@ import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.util.IOUtilitie
  * @author yayu
  *
  */
-public final class MyConfiguration {
+public final class GlobalConfiguration {
 	public static String KEY_FLICRK_USERID = "userId";
 	public static String KEY_FLICKR_APIKEY = "apiKey";
 	public static String KEY_FLICKR_SECRET = "secret";
@@ -43,19 +43,19 @@ public final class MyConfiguration {
 	
 	private Properties properties = null;
 	
-	private static final MyConfiguration INSTANCE;
+	private static final GlobalConfiguration INSTANCE;
 	static {
-		INSTANCE = new MyConfiguration();
+		INSTANCE = new GlobalConfiguration();
 	}
 	
-	public static MyConfiguration getInstance() {
+	public static GlobalConfiguration getInstance() {
 		return INSTANCE;
 	}
 	
 	/**
 	 * 
 	 */
-	private MyConfiguration() {
+	private GlobalConfiguration() {
 		super();
 		try {
 			init();

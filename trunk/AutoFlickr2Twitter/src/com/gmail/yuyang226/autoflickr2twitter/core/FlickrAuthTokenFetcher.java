@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -30,66 +31,56 @@ import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.util.IOUtilitie
  * @version $Id: AuthExample.java,v 1.5 2008/07/05 22:19:48 x-mago Exp $
  */
 public class FlickrAuthTokenFetcher {
-    Flickr f;
-    RequestContext requestContext;
-    String frob = "";
-    String token = "";
-    Properties properties = null;
+	Flickr f;
+	RequestContext requestContext;
+	String frob = "";
+	String token = "";
+	private static final Logger log = Logger.getLogger(FlickrAuthTokenFetcher.class.getName());
 
-    public FlickrAuthTokenFetcher() throws ParserConfigurationException, IOException, SAXException {
-        InputStream in = null;
-        try {
-            in = getClass().getResourceAsStream("setup.properties");
-            properties = new Properties();
-            properties.load(in);
-        } finally {
-            IOUtilities.close(in);
-        }
-        f = new Flickr(
-            properties.getProperty("apiKey"),
-            properties.getProperty("secret"),
-            new REST()
-        );
-        Flickr.debugStream = true;
-        requestContext = RequestContext.getRequestContext();
-        AuthInterface authInterface = f.getAuthInterface();
-        try {
-        	if (properties.containsKey("frob"))
-        		frob = properties.getProperty("frob");
-        	else 
-        		frob = authInterface.getFrob();
-        } catch (FlickrException e) {
-            e.printStackTrace();
-        }
-        System.out.println("frob: " + frob);
-        URL url = authInterface.buildAuthenticationUrl(Permission.READ, frob);
-        System.out.println("Press return after you granted access at this URL:");
-        System.out.println(url.toExternalForm());
-        BufferedReader infile =
-          new BufferedReader ( new InputStreamReader (System.in) );
-        String line = infile.readLine();
-        
-        try {
-            Auth auth = authInterface.getToken(frob);
-            System.out.println("Authentication success");
-            // This token can be used until the user revokes it.
-            System.out.println("Token: " + auth.getToken());
-            System.out.println("nsid: " + auth.getUser().getId());
-            System.out.println("Realname: " + auth.getUser().getRealName());
-            System.out.println("Username: " + auth.getUser().getUsername());
-            System.out.println("Permission: " + auth.getPermission().getType());
-        } catch (FlickrException e) {
-            System.out.println("Authentication failed");
-            e.printStackTrace();
-        }
-    }
+	public FlickrAuthTokenFetcher() {
+		super();
+	}
 
-    public static void main(String[] args) {
-        try {
-            FlickrAuthTokenFetcher t = new FlickrAuthTokenFetcher();
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-        System.exit(0);
-    }
+	public static String authrorize() throws ParserConfigurationException, IOException, SAXException, FlickrException {
+		Flickr f = new Flickr(
+				GlobalConfiguration.getInstance().getFlickrApiKey(),
+				GlobalConfiguration.getInstance().getFlickrSecret(),
+				new REST()
+		);
+		
+		AuthInterface authInterface = f.getAuthInterface();
+
+		String frob = authInterface.getFrob();
+		System.out.println("frob: " + frob);
+		URL url = authInterface.buildAuthenticationUrl(Permission.READ, frob);
+		System.out.println("Press return after you granted access at this URL:");
+		System.out.println(url.toExternalForm());
+		return frob;
+	}
+	
+	public static void test(String frob) throws ParserConfigurationException, IOException, SAXException, FlickrException {
+		Flickr f = new Flickr(
+				GlobalConfiguration.getInstance().getFlickrApiKey(),
+				GlobalConfiguration.getInstance().getFlickrSecret(),
+				new REST()
+		);
+		AuthInterface authInterface = f.getAuthInterface();
+		Auth auth = authInterface.getToken(frob);
+		log.info("Authentication success");
+		// This token can be used until the user revokes it.
+		log.info("Token: " + auth.getToken());
+		log.info("nsid: " + auth.getUser().getId());
+		log.info("Realname: " + auth.getUser().getRealName());
+		log.info("Username: " + auth.getUser().getUsername());
+		log.info("Permission: " + auth.getPermission().getType());
+	}
+
+	public static void main(String[] args) {
+		try {
+			FlickrAuthTokenFetcher t = new FlickrAuthTokenFetcher();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+		System.exit(0);
+	}
 }
