@@ -1,0 +1,13 @@
+#labels installation,guide
+This page introduces how to setup this program on your GAE server.
+
+= Introduction =
+This program requires you to setup OAuth token with your Flickr and Twitter account in order to make it work. You would also need to setup a Google App Engine account in order to host this application for running the scheduled task.
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
