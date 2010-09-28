@@ -24,7 +24,9 @@ public final class MyConfiguration {
 	public static String KEY_TWITTER_CONSUMERID = "consumerId";
 	public static String KEY_TWITTER_CONSUMERSECRET = "consumerSecret";
 	public static String KEY_TWITTER_ACCESSTOKEN = "accessToken"; 
-	public static String KEY_TWITTER_TOKENSECRET = "tokenSecret"; 
+	public static String KEY_TWITTER_TOKENSECRET = "tokenSecret";
+	
+	public static String KEY_UPDATE_INTERVAL = "interval";
 	
 	private String flickrUserId;
 	private String flickrApiKey;
@@ -35,6 +37,8 @@ public final class MyConfiguration {
 	private String twitterConsumerSecret;
 	private String twitterAccessToken;
 	private String twitterTokenSecret;
+	
+	private long interval = 300000L; //5 mins
 	
 	
 	private Properties properties = null;
@@ -79,6 +83,12 @@ public final class MyConfiguration {
         this.twitterConsumerSecret = properties.getProperty(KEY_TWITTER_CONSUMERSECRET, null);
         this.twitterAccessToken = properties.getProperty(KEY_TWITTER_ACCESSTOKEN, null);
         this.twitterTokenSecret = properties.getProperty(KEY_TWITTER_TOKENSECRET, null);
+        
+        try {
+        	this.interval = Long.parseLong(properties.getProperty(KEY_UPDATE_INTERVAL));
+        } catch (Exception e) {
+        	//ignore
+        }
 	}
 
 	public String getFlickrUserId() {
@@ -119,6 +129,10 @@ public final class MyConfiguration {
 	
 	public AccessToken getTwitterAccessTokenInstance() {
 		return new AccessToken(this.twitterAccessToken, this.twitterTokenSecret);
+	}
+
+	public long getInterval() {
+		return interval;
 	}
 
 }
