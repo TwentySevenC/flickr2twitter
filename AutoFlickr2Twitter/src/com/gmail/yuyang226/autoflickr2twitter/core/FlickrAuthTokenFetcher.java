@@ -1,11 +1,7 @@
 package com.gmail.yuyang226.autoflickr2twitter.core;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.Properties;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -19,7 +15,6 @@ import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.RequestContext;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.auth.Auth;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.auth.AuthInterface;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.auth.Permission;
-import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.util.IOUtilities;
 
 /**
  * Demonstrates the authentication-process.<p>
@@ -58,7 +53,7 @@ public class FlickrAuthTokenFetcher {
 		return frob;
 	}
 	
-	public static void test(String frob) throws ParserConfigurationException, IOException, SAXException, FlickrException {
+	public static String test(String frob) throws ParserConfigurationException, IOException, SAXException, FlickrException {
 		Flickr f = new Flickr(
 				GlobalConfiguration.getInstance().getFlickrApiKey(),
 				GlobalConfiguration.getInstance().getFlickrSecret(),
@@ -66,13 +61,19 @@ public class FlickrAuthTokenFetcher {
 		);
 		AuthInterface authInterface = f.getAuthInterface();
 		Auth auth = authInterface.getToken(frob);
-		log.info("Authentication success");
+		StringBuffer buf = new StringBuffer();
+		buf.append("Authentication success\n");
 		// This token can be used until the user revokes it.
-		log.info("Token: " + auth.getToken());
-		log.info("nsid: " + auth.getUser().getId());
-		log.info("Realname: " + auth.getUser().getRealName());
-		log.info("Username: " + auth.getUser().getUsername());
-		log.info("Permission: " + auth.getPermission().getType());
+		buf.append("Token: " + auth.getToken());
+		buf.append("\n");
+		buf.append("nsid: " + auth.getUser().getId());
+		buf.append("\n");
+		buf.append("Realname: " + auth.getUser().getRealName());
+		buf.append("\n");
+		buf.append("Username: " + auth.getUser().getUsername());
+		buf.append("\n");
+		buf.append("Permission: " + auth.getPermission().getType());
+		return buf.toString();
 	}
 
 	public static void main(String[] args) {

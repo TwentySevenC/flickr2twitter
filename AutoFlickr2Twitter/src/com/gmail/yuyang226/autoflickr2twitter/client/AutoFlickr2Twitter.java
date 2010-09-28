@@ -1,15 +1,11 @@
 package com.gmail.yuyang226.autoflickr2twitter.client;
 
-import java.util.logging.Logger;
-
-import com.gmail.yuyang226.autoflickr2twitter.core.FlickrAuthTokenFetcher;
+//import com.gmail.yuyang226.autoflickr2twitter.core.FlickrAuthTokenFetcher;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTML;
@@ -30,13 +26,15 @@ public class AutoFlickr2Twitter implements EntryPoint {
 			+ "attempting to contact the server. Please check your network "
 			+ "connection and try again.";
 	
-	private static final Logger log = Logger.getLogger(AutoFlickr2Twitter.class.getName());
 
 	/**
 	 * Create a remote service proxy to talk to the server-side Greeting service.
 	 */
 	private final GreetingServiceAsync greetingService = GWT
 			.create(GreetingService.class);
+	
+	private final AutoFlickr2TwitterServiceAsync flickrService = GWT
+	.create(AutoFlickr2TwitterService.class);
 	
 	private String currentFlickrFrob;
 
@@ -45,17 +43,20 @@ public class AutoFlickr2Twitter implements EntryPoint {
 	 */
 	public void onModuleLoad() {
 		final Button sendButton = new Button("Authroize With Your Flickr Account");
+		final Button readyButton = new Button("Ready");
 		final TextBox nameField = new TextBox();
 		nameField.setText("GWT User");
 		final Label errorLabel = new Label();
 
 		// We can add style names to widgets
 		sendButton.addStyleName("sendButton");
+		readyButton.addStyleName("readyButton");
 
 		// Add the nameField and sendButton to the RootPanel
 		// Use RootPanel.get() to get the entire body element
 		RootPanel.get("nameFieldContainer").add(nameField);
 		RootPanel.get("sendButtonContainer").add(sendButton);
+		RootPanel.get("readyButtonContainer").add(readyButton);
 		RootPanel.get("errorLabelContainer").add(errorLabel);
 
 		// Focus the cursor on the name field when the app loads
@@ -87,12 +88,12 @@ public class AutoFlickr2Twitter implements EntryPoint {
 				dialogBox.hide();
 				sendButton.setEnabled(true);
 				sendButton.setFocus(true);
-				sendButton.setText("Ready");
+				
 			}
 		});
 
 		// Create a handler for the sendButton and nameField
-		class MyHandler implements ClickHandler, KeyUpHandler {
+		class MyHandler implements ClickHandler {
 			/**
 			 * Fired when the user clicks on the sendButton.
 			 */
@@ -101,57 +102,50 @@ public class AutoFlickr2Twitter implements EntryPoint {
 				errorLabel.setText("");
 				
 				try {
-					if(AutoFlickr2Twitter.this.currentFlickrFrob != null 
-							&& sendButton.getText().equalsIgnoreCase("Ready") == false) {
-						FlickrAuthTokenFetcher.test(AutoFlickr2Twitter.this.currentFlickrFrob = null);
-					} else {
-						AutoFlickr2Twitter.this.currentFlickrFrob = null;
-						FlickrAuthTokenFetcher.authrorize();
-					}
+					AutoFlickr2Twitter.this.currentFlickrFrob = null;
+					flickrService.authorize(new AsyncCallback<String>() {
+						public void onFailure(Throwable caught) {
+							// Show the RPC error message to the user
+							dialogBox
+							.setText("Remote Procedure Call - Failure");
+							serverResponseLabel
+							.addStyleName("serverResponseLabelError");
+							serverResponseLabel.setHTML(SERVER_ERROR);
+							dialogBox.center();
+							closeButton.setFocus(true);
+						}
+
+						public void onSuccess(String result) {
+							AutoFlickr2Twitter.this.currentFlickrFrob = result;
+							dialogBox.setText("Remote Procedure Call");
+							serverResponseLabel
+							.removeStyleName("serverResponseLabelError");
+							serverResponseLabel.setHTML(result);
+							dialogBox.center();
+							closeButton.setFocus(true);
+						}
+					});
 				} catch (Exception e) {
 					e.printStackTrace();
-					log.warning(e.toString());
 				}
 				
 			}
+		}
 
+		// Add a handler to send the name to the server
+		MyHandler handler = new MyHandler();
+		sendButton.addClickHandler(handler);
+		
+		class ReadyHandler implements ClickHandler {
 			/**
-			 * Fired when the user types in the nameField.
+			 * Fired when the user clicks on the sendButton.
 			 */
-			public void onKeyUp(KeyUpEvent event) {
-				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
-					sendNameToServer();
-				}
-			}
-
-			/**
-			 * Send the name from the nameField to the server and wait for a response.
-			 */
-			private void sendNameToServer() {
-				// First, we validate the input.
+			public void onClick(ClickEvent event) {
 				errorLabel.setText("");
-				try {
-					FlickrAuthTokenFetcher t = new FlickrAuthTokenFetcher();
-					
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					log.warning(e.toString());
-					errorLabel.setText(e.toString());
-				}
 				
-				/*String textToServer = nameField.getText();
-				if (!FieldVerifier.isValidName(textToServer)) {
-					errorLabel.setText("Please enter at least four characters");
-					return;
-				}
-
-				// Then, we send the input to the server.
-				sendButton.setEnabled(false);
-				textToServerLabel.setText(textToServer);
-				serverResponseLabel.setText("");
-				greetingService.greetServer(textToServer,
-						new AsyncCallback<String>() {
+				try {
+					if(AutoFlickr2Twitter.this.currentFlickrFrob != null) {
+						flickrService.testToken(AutoFlickr2Twitter.this.currentFlickrFrob, new AsyncCallback<String>() {
 							public void onFailure(Throwable caught) {
 								// Show the RPC error message to the user
 								dialogBox
@@ -164,6 +158,7 @@ public class AutoFlickr2Twitter implements EntryPoint {
 							}
 
 							public void onSuccess(String result) {
+								sendButton.setText("Ready");
 								dialogBox.setText("Remote Procedure Call");
 								serverResponseLabel
 										.removeStyleName("serverResponseLabelError");
@@ -171,13 +166,15 @@ public class AutoFlickr2Twitter implements EntryPoint {
 								dialogBox.center();
 								closeButton.setFocus(true);
 							}
-						});*/
+						});
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
 			}
 		}
-
-		// Add a handler to send the name to the server
-		MyHandler handler = new MyHandler();
-		sendButton.addClickHandler(handler);
+		readyButton.addClickHandler(new ReadyHandler());
 		//nameField.addKeyUpHandler(handler);
 	}
 }

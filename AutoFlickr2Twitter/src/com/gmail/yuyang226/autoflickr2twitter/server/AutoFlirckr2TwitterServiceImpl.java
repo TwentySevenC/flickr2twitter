@@ -8,8 +8,13 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
 
 import com.gmail.yuyang226.autoflickr2twitter.client.AutoFlickr2TwitterService;
+import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.FlickrException;
+import com.gmail.yuyang226.autoflickr2twitter.core.FlickrAuthTokenFetcher;
 import com.gmail.yuyang226.autoflickr2twitter.core.FlickrIntegrator;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -49,6 +54,17 @@ public class AutoFlirckr2TwitterServiceImpl extends RemoteServiceServlet
 	@Override
 	public void recheck() {
 		FlickrIntegrator.main(null);
+	}
+
+	@Override
+	public String authorize() throws Exception {
+		// TODO Auto-generated method stub
+		return FlickrAuthTokenFetcher.authrorize();
+	}
+
+	@Override
+	public String testToken(String frob) throws Exception {
+		return FlickrAuthTokenFetcher.test(frob);
 	}
 
 }
