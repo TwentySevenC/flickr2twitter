@@ -16,6 +16,16 @@
     <url-pattern>/autoflickr2twitter/greet</url-pattern>
   </servlet-mapping>
   
+  <servlet>
+    <servlet-name>recheckServlet</servlet-name>
+    <servlet-class>com.gmail.yuyang226.autoflickr2twitter.server.AutoFlirckr2TwitterServiceImpl</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>recheckServlet</servlet-name>
+    <url-pattern>/autoflickr2twitter/recheck</url-pattern>
+  </servlet-mapping>
+  
   <!-- Default page to serve -->
   <welcome-file-list>
     <welcome-file>AutoFlickr2Twitter.html</welcome-file>
