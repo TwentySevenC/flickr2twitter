@@ -13,5 +13,9 @@ public interface AutoFlickr2TwitterServiceAsync {
 
 	void recheck(AsyncCallback<Void> callback);
 
+	void authorize(AsyncCallback<String> callback) throws Exception;
+
+	void testToken(String frob, AsyncCallback<String> callback);
+
 	
 }
