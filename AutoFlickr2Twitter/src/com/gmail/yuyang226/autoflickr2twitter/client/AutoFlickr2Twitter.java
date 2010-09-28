@@ -1,6 +1,8 @@
 package com.gmail.yuyang226.autoflickr2twitter.client;
 
-import com.gmail.yuyang226.autoflickr2twitter.shared.FieldVerifier;
+import java.util.logging.Logger;
+
+import com.gmail.yuyang226.autoflickr2twitter.core.FlickrAuthTokenFetcher;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -8,7 +10,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTML;
@@ -28,18 +29,22 @@ public class AutoFlickr2Twitter implements EntryPoint {
 	private static final String SERVER_ERROR = "An error occurred while "
 			+ "attempting to contact the server. Please check your network "
 			+ "connection and try again.";
+	
+	private static final Logger log = Logger.getLogger(AutoFlickr2Twitter.class.getName());
 
 	/**
 	 * Create a remote service proxy to talk to the server-side Greeting service.
 	 */
 	private final GreetingServiceAsync greetingService = GWT
 			.create(GreetingService.class);
+	
+	private String currentFlickrFrob;
 
 	/**
 	 * This is the entry point method.
 	 */
 	public void onModuleLoad() {
-		final Button sendButton = new Button("Send");
+		final Button sendButton = new Button("Authroize With Your Flickr Account");
 		final TextBox nameField = new TextBox();
 		nameField.setText("GWT User");
 		final Label errorLabel = new Label();
@@ -82,6 +87,7 @@ public class AutoFlickr2Twitter implements EntryPoint {
 				dialogBox.hide();
 				sendButton.setEnabled(true);
 				sendButton.setFocus(true);
+				sendButton.setText("Ready");
 			}
 		});
 
@@ -91,7 +97,22 @@ public class AutoFlickr2Twitter implements EntryPoint {
 			 * Fired when the user clicks on the sendButton.
 			 */
 			public void onClick(ClickEvent event) {
-				sendNameToServer();
+				//sendNameToServer();
+				errorLabel.setText("");
+				
+				try {
+					if(AutoFlickr2Twitter.this.currentFlickrFrob != null 
+							&& sendButton.getText().equalsIgnoreCase("Ready") == false) {
+						FlickrAuthTokenFetcher.test(AutoFlickr2Twitter.this.currentFlickrFrob = null);
+					} else {
+						AutoFlickr2Twitter.this.currentFlickrFrob = null;
+						FlickrAuthTokenFetcher.authrorize();
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					log.warning(e.toString());
+				}
+				
 			}
 
 			/**
@@ -109,7 +130,17 @@ public class AutoFlickr2Twitter implements EntryPoint {
 			private void sendNameToServer() {
 				// First, we validate the input.
 				errorLabel.setText("");
-				String textToServer = nameField.getText();
+				try {
+					FlickrAuthTokenFetcher t = new FlickrAuthTokenFetcher();
+					
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					log.warning(e.toString());
+					errorLabel.setText(e.toString());
+				}
+				
+				/*String textToServer = nameField.getText();
 				if (!FieldVerifier.isValidName(textToServer)) {
 					errorLabel.setText("Please enter at least four characters");
 					return;
@@ -140,13 +171,13 @@ public class AutoFlickr2Twitter implements EntryPoint {
 								dialogBox.center();
 								closeButton.setFocus(true);
 							}
-						});
+						});*/
 			}
 		}
 
 		// Add a handler to send the name to the server
 		MyHandler handler = new MyHandler();
 		sendButton.addClickHandler(handler);
-		nameField.addKeyUpHandler(handler);
+		//nameField.addKeyUpHandler(handler);
 	}
 }
