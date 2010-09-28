@@ -3,6 +3,12 @@
  */
 package com.gmail.yuyang226.autoflickr2twitter.server;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.gmail.yuyang226.autoflickr2twitter.client.AutoFlickr2TwitterService;
 import com.gmail.yuyang226.autoflickr2twitter.core.FlickrIntegrator;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -18,6 +24,16 @@ public class AutoFlirckr2TwitterServiceImpl extends RemoteServiceServlet
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	
+
+	@Override
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		
+		//super.doGet(req, resp);
+		recheck();
+	}
 
 	/**
 	 * 
@@ -32,7 +48,6 @@ public class AutoFlirckr2TwitterServiceImpl extends RemoteServiceServlet
 	@Override
 	public void recheck() {
 		FlickrIntegrator.main(null);
-
 	}
 
 }
