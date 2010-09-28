@@ -33,6 +33,7 @@ public class AutoFlirckr2TwitterServiceImpl extends RemoteServiceServlet
 		
 		//super.doGet(req, resp);
 		recheck();
+		resp.setStatus(HttpServletResponse.SC_OK);
 	}
 
 	/**
