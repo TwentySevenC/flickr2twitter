@@ -44,11 +44,13 @@ public class FlickrIntegrator {
 
     public FlickrIntegrator()
       throws ParserConfigurationException, IOException {
+    	REST transport = new REST();
         f = new Flickr(
         		MyConfiguration.getInstance().getFlickrApiKey(),
         		MyConfiguration.getInstance().getFlickrSecret(),
-            new REST()
+        		transport
         );
+        
         requestContext = RequestContext.getRequestContext();
         Auth auth = new Auth();
         auth.setPermission(Permission.READ);
@@ -74,9 +76,7 @@ public class FlickrIntegrator {
     	return url;
     }
     
-    private static long ONE_HOUR_IN_MILLIS = 60L * 60L * 1000L;
-    
-    public List<Photo> showRecentPhotos(String userId, int hours) throws IOException, SAXException, FlickrException {
+    public List<Photo> showRecentPhotos(String userId, long interval) throws IOException, SAXException, FlickrException {
     	List<Photo> photos = new ArrayList<Photo>();
     	PeopleInterface pface =  f.getPeopleInterface();
     	Set<String> extras = new HashSet<String>(2);
@@ -88,7 +88,7 @@ public class FlickrIntegrator {
     	Date now = Calendar.getInstance(TimeZone.getTimeZone("CST"), Locale.UK).getTime();
     	log.info("Current time: " + now);
     	Calendar past = Calendar.getInstance(TimeZone.getTimeZone("CST"), Locale.UK);
-    	long newTime = now.getTime() - (ONE_HOUR_IN_MILLIS * (long)hours);
+    	long newTime = now.getTime() - interval;
     	past.setTimeInMillis(newTime);
 		
 		log.info("Trying to find photos uploaded after " + past.getTime().toString());
@@ -109,7 +109,8 @@ public class FlickrIntegrator {
     public static void main(String[] args) {
         try {
             FlickrIntegrator t = new FlickrIntegrator();
-            List<Photo> photos = t.showRecentPhotos(MyConfiguration.getInstance().getFlickrUserId(), 1);
+            List<Photo> photos = t.showRecentPhotos(MyConfiguration.getInstance().getFlickrUserId(), 
+            		MyConfiguration.getInstance().getInterval());
             if (photos.size() == 0) {
             	log.info("No new uploaded images/videos found");
             }
