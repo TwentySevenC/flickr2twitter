@@ -6,8 +6,11 @@ This program requires you to setup OAuth token with your Flickr and Twitter acco
 
 
 = Details =
+== Setup Google App Engine ==
+* Create a GAE account
+* Create a GAE app
+* Modify the file war\WEB-INF\appengine-web.xml with the app ID you created like <application>autoflickr2twitter</application>.
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+== Authorize App to Access Your Flickr Account ==
+
+== Authorize App to Access Your Twitter Account ==
