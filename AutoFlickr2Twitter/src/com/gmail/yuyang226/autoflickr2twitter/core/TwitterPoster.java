@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+import twitter4j.GeoLocation;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -36,8 +37,8 @@ public class TwitterPoster {
 	public static void requestNewToken() throws TwitterException, IOException {
 		 // The factory instance is re-useable and thread safe.
 	    Twitter twitter = new TwitterFactory().getInstance();
-	    twitter.setOAuthConsumer(GlobalConfiguration.getInstance().getTwitterConsumerId(), 
-	    		GlobalConfiguration.getInstance().getTwitterConsumerSecret());
+//	    twitter.setOAuthConsumer(GlobalConfiguration.getInstance().getTwitterConsumerId(), 
+//	    		GlobalConfiguration.getInstance().getTwitterConsumerSecret());
 	    RequestToken requestToken = twitter.getOAuthRequestToken();
 	    AccessToken accessToken = null;
 	    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -64,7 +65,7 @@ public class TwitterPoster {
 	    storeAccessToken(twitter.verifyCredentials().getId() , accessToken);
 	}
 	
-	public static void updateTwitterStatus(String message) throws TwitterException {
+	public static void updateTwitterStatus(String message, GeoLocation geoLoc) throws TwitterException {
 		log.info("Posting message -> " + message);
 		// The factory instance is re-useable and thread safe.
 		AccessToken accessToken = GlobalConfiguration.getInstance().getTwitterAccessTokenInstance(); 
@@ -73,8 +74,8 @@ public class TwitterPoster {
 		Authorization auth = new OAuthAuthorization(conf, GlobalConfiguration.getInstance().getTwitterConsumerId(), 
 				GlobalConfiguration.getInstance().getTwitterConsumerSecret(), accessToken);
 	    Twitter twitter = new TwitterFactory().getInstance(auth);
-	    Status status = twitter.updateStatus(message);
-	    log.info("Successfully updated the status to twitter [" + status.getText() + "].");
+	    Status status = geoLoc == null ? twitter.updateStatus(message) : twitter.updateStatus(message, geoLoc);
+	    log.info("Successfully updated the status to [" + status.getText() + "].");
 	}
 
 	private static void storeAccessToken(int useId, AccessToken accessToken){
