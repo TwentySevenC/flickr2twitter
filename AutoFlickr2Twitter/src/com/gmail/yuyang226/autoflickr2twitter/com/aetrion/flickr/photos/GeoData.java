@@ -1,10 +1,7 @@
 package com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.photos;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.regex.Matcher;
+import com.gmail.yuyang226.autoflickr2twitter.model.ItemGeoData;
 
-import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.util.StringUtilities;
 
 /**
  * A geographic position.
@@ -12,10 +9,8 @@ import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.util.StringUtil
  * @author mago
  * @version $Id: GeoData.java,v 1.4 2009/07/23 20:41:03 x-mago Exp $
  */
-public class GeoData {
+public class GeoData extends ItemGeoData{
     private static final long serialVersionUID = 12L;
-    private float longitude;
-    private float latitude;
     private int accuracy;
 
     public GeoData() {
@@ -23,8 +18,7 @@ public class GeoData {
     }
 
     public GeoData(String longitudeStr, String latitudeStr, String accuracyStr) {
-        longitude = Float.parseFloat(longitudeStr);
-        latitude = Float.parseFloat(latitudeStr);
+        super(longitudeStr, latitudeStr);
         accuracy = Integer.parseInt(accuracyStr);
     }
 
@@ -48,75 +42,31 @@ public class GeoData {
         this.accuracy = accuracy;
     }
 
-    public float getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(float latitude) {
-        this.latitude = latitude;
-    }
-
-    public float getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(float longitude) {
-        this.longitude = longitude;
-    }
-
     public String toString() {
-        return "GeoData[longitude=" + longitude +
-        " latitude=" + latitude + " accuracy=" + accuracy + "]";
+        return super.toString() + " accuracy=" + accuracy + "]";
     }
 
 	@Override
-	public boolean equals(Object obj) {
-        if ((obj == null) || (obj.getClass() != this.getClass())) {
-            return false;
-        }
-		// object must be GeoData at this point
-        GeoData test = (GeoData) obj;
-        Class<?> cl = this.getClass();
-        Method[] method = cl.getMethods();
-        for (int i = 0; i < method.length; i++) {
-            Matcher m = StringUtilities.getterPattern.matcher(method[i].getName());
-            if (m.find() && !method[i].getName().equals("getClass")) {
-                try {
-                    Object res = method[i].invoke(this, (Object[])null);
-                    Object resTest = method[i].invoke(test, (Object[])null);
-                    String retType = method[i].getReturnType().toString();
-                    if (retType.indexOf("class") == 0) {
-                        if (res != null && resTest != null) {
-                            if (!res.equals(resTest)) return false;
-                        } else {
-                            //return false;
-                        }
-                    } else if (retType.equals("int")) {
-                        if (!((Integer) res).equals(((Integer)resTest))) return false;
-                    } else if (retType.equals("float")) {
-                        if (!((Float) res).equals(((Float)resTest))) return false;
-                    } else {
-                        System.out.println(method[i].getName() + "|" +
-                            method[i].getReturnType().toString());
-                    }
-                } catch (IllegalAccessException ex) {
-                    System.out.println("GeoData equals " + method[i].getName() + " " + ex);
-                } catch (InvocationTargetException ex) {
-                    //System.out.println("equals " + method[i].getName() + " " + ex);
-                } catch (Exception ex) {
-                    System.out.println("GeoData equals " + method[i].getName() + " " + ex);
-                }
-            }
-        }
-        return true;
-    }
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + accuracy;
+		return result;
+	}
 
-    @Override
-    public int hashCode() {
-        int hash = 1;
-        hash += new Float(longitude).hashCode();
-        hash += new Float(latitude).hashCode();
-        hash += new Integer(accuracy).hashCode();
-        return hash;
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (!(obj instanceof GeoData))
+			return false;
+		GeoData other = (GeoData) obj;
+		if (accuracy != other.accuracy)
+			return false;
+		return true;
+	}
+
+	
 }

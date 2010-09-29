@@ -25,7 +25,7 @@ import twitter4j.http.RequestToken;
  *
  */
 public class TwitterPoster {
-	private static final Logger log = Logger.getLogger(FlickrIntegrator.class.getName());
+	private static final Logger log = Logger.getLogger(TwitterPoster.class.getName());
 
 	/**
 	 * 
