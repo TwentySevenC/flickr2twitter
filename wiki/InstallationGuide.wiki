@@ -9,7 +9,7 @@ This program requires you to setup OAuth token with your Flickr and Twitter acco
 == Setup Google App Engine ==
 * Create a GAE account
 * Create a GAE app
-* Modify the file war\WEB-INF\appengine-web.xml with the app ID you created like {{{<application>autoflickr2twitter</application>}}}.
+* Modify the file war\WEB-INF\appengine-web.xml with the app ID you created.
 
 == Authorize App to Access Your Flickr Account ==
 
