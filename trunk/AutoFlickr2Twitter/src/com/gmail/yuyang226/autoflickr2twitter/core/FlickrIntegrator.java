@@ -126,7 +126,7 @@ public class FlickrIntegrator {
 					TwitterPoster.updateTwitterStatus(photo.getTitle() + " " + t.getShortUrl(photo), 
 							geoLoc);
 				} catch (Exception e) {
-					log.severe(e.toString());
+					log.warning(e.toString());
 				}
             }
         } catch (Exception e) {
