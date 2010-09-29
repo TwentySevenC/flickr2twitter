@@ -74,7 +74,7 @@ public class TwitterPoster {
 				GlobalConfiguration.getInstance().getTwitterConsumerSecret(), accessToken);
 	    Twitter twitter = new TwitterFactory().getInstance(auth);
 	    Status status = twitter.updateStatus(message);
-	    log.info("Successfully updated the status to [" + status.getText() + "].");
+	    log.info("Successfully updated the status to twitter [" + status.getText() + "].");
 	}
 
 	private static void storeAccessToken(int useId, AccessToken accessToken){
