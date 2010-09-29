@@ -36,7 +36,8 @@ public class TwitterPoster {
 	public static void requestNewToken() throws TwitterException, IOException {
 		 // The factory instance is re-useable and thread safe.
 	    Twitter twitter = new TwitterFactory().getInstance();
-	    twitter.setOAuthConsumer("[consumer key]", "[consumer secret]");
+	    twitter.setOAuthConsumer(GlobalConfiguration.getInstance().getTwitterConsumerId(), 
+	    		GlobalConfiguration.getInstance().getTwitterConsumerSecret());
 	    RequestToken requestToken = twitter.getOAuthRequestToken();
 	    AccessToken accessToken = null;
 	    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -83,6 +84,13 @@ public class TwitterPoster {
 		System.out.println(accessToken.getTokenSecret());
 	}
 
-	
+	public static void main(String[] args) {
+		try {
+			TwitterPoster.requestNewToken();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 }
