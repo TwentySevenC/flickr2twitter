@@ -15,6 +15,8 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
 
+import twitter4j.GeoLocation;
+
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.Flickr;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.FlickrException;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.REST;
@@ -116,7 +118,13 @@ public class FlickrIntegrator {
             }
             for (Photo photo: photos) {
             	try {
-					TwitterPoster.updateTwitterStatus(photo.getTitle() + " " + t.getShortUrl(photo));
+            		GeoLocation geoLoc = null;
+            		if (photo.getGeoData() != null) {
+            			geoLoc = new GeoLocation(photo.getGeoData().getLatitude(), 
+            					photo.getGeoData().getLongitude());
+            		}
+					TwitterPoster.updateTwitterStatus(photo.getTitle() + " " + t.getShortUrl(photo), 
+							geoLoc);
 				} catch (Exception e) {
 					log.severe(e.toString());
 				}
