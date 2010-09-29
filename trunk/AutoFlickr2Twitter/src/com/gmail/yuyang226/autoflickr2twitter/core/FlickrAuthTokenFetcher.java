@@ -78,10 +78,10 @@ public class FlickrAuthTokenFetcher {
 
 	public static void main(String[] args) {
 		try {
-			FlickrAuthTokenFetcher t = new FlickrAuthTokenFetcher();
+			System.out.println(FlickrAuthTokenFetcher.test("72157624934447957-807ab136f926595c-1041539"));
+			//System.out.println(FlickrAuthTokenFetcher.authrorize());
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		System.exit(0);
 	}
 }

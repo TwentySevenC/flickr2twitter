@@ -14,6 +14,12 @@ import java.util.regex.Matcher;
 
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.people.User;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.util.StringUtilities;
+import com.gmail.yuyang226.autoflickr2twitter.core.FlickrBaseEncoder;
+import com.gmail.yuyang226.autoflickr2twitter.model.IGeoItem;
+import com.gmail.yuyang226.autoflickr2twitter.model.IPhoto;
+import com.gmail.yuyang226.autoflickr2twitter.model.IShortUrl;
+import com.gmail.yuyang226.autoflickr2twitter.model.Item;
+import com.gmail.yuyang226.autoflickr2twitter.model.ItemGeoData;
 
 /**
  * Class representing metadata about a Flickr photo. Instances do not actually
@@ -24,7 +30,7 @@ import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.util.StringUtil
  * @author Anthony Eden
  * @version $Id: Photo.java,v 1.28 2009/07/23 21:49:35 x-mago Exp $
  */
-public class Photo {
+public class Photo extends Item implements IPhoto, IGeoItem, IShortUrl{
     private static final long serialVersionUID = 12L;
 
     private static final ThreadLocal<SimpleDateFormat> DATE_FORMATS = new ThreadLocal<SimpleDateFormat>() {
@@ -33,41 +39,14 @@ public class Photo {
         }
     };
 
-    private String id;
-    private String title;
-    private String description;
     private Date dateAdded;
     private Date datePosted;
     private Date dateTaken;
     private Date lastUpdate;
     private String url;
-    private GeoData geoData;
+    private ItemGeoData geoData;
 
     public Photo() {
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public Date getDateAdded() {
@@ -144,11 +123,11 @@ public class Photo {
         this.url = url;
     }
 
-    public GeoData getGeoData() {
+    public ItemGeoData getGeoData() {
         return geoData;
     }
 
-    public void setGeoData(GeoData geoData) {
+    public void setGeoData(ItemGeoData geoData) {
         this.geoData = geoData;
     }
 
@@ -277,5 +256,13 @@ public class Photo {
         }
         return hash;
     }
+
+	/* (non-Javadoc)
+	 * @see com.gmail.yuyang226.autoflickr2twitter.model.IShortUrl#getShortUrl()
+	 */
+	@Override
+	public String getShortUrl() {
+		return FlickrBaseEncoder.getShortUrl(this);
+	}
 
 }
