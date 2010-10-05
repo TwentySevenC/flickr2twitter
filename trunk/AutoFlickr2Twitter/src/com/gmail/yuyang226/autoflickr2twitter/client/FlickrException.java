@@ -1,14 +1,16 @@
 /*
  * Copyright (c) 2005 Aetrion LLC.
  */
-package com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr;
+package com.gmail.yuyang226.autoflickr2twitter.client;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Exception which wraps a Flickr error.
  *
  * @author Anthony Eden
  */
-public class FlickrException extends Exception {
+public class FlickrException extends Exception implements IsSerializable {
 
 	private static final long serialVersionUID = 7958091410349084831L;
 	private String errorCode;
