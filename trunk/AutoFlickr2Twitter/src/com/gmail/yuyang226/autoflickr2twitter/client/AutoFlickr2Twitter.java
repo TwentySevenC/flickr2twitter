@@ -152,6 +152,7 @@ public class AutoFlickr2Twitter implements EntryPoint {
 				
 				try {
 					if(AutoFlickr2Twitter.this.currentFlickrFrob != null) {
+						textArea.setText("");
 						flickrService.testToken(AutoFlickr2Twitter.this.currentFlickrFrob, new AsyncCallback<String>() {
 							public void onFailure(Throwable caught) {
 								// Show the RPC error message to the user
