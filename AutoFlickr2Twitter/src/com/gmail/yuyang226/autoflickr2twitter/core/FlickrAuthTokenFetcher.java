@@ -2,8 +2,11 @@ package com.gmail.yuyang226.autoflickr2twitter.core;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.logging.Logger;
 
+import javax.jdo.PersistenceManager;
+import javax.jdo.PersistenceManagerFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
@@ -15,6 +18,8 @@ import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.RequestContext;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.auth.Auth;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.auth.AuthInterface;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.auth.Permission;
+import com.gmail.yuyang226.autoflickr2twitter.datastore.MyPersistenceManagerFactory;
+import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserConfiguration;
 
 /**
  * Demonstrates the authentication-process.<p>
@@ -46,11 +51,10 @@ public class FlickrAuthTokenFetcher {
 		AuthInterface authInterface = f.getAuthInterface();
 
 		String frob = authInterface.getFrob();
-		System.out.println("frob: " + frob);
+		
 		URL url = authInterface.buildAuthenticationUrl(Permission.READ, frob);
-		System.out.println("Press return after you granted access at this URL:");
-		System.out.println(url.toExternalForm());
-		return frob;
+		log.info("frob: " + frob + ", Token URL: " + url.toExternalForm());
+		return frob + ":" + url.toExternalForm();
 	}
 	
 	public static String test(String frob) throws ParserConfigurationException, IOException, SAXException, FlickrException {
@@ -73,12 +77,41 @@ public class FlickrAuthTokenFetcher {
 		buf.append("Username: " + auth.getUser().getUsername());
 		buf.append("\n");
 		buf.append("Permission: " + auth.getPermission().getType());
+		PersistenceManagerFactory pmf = MyPersistenceManagerFactory.getInstance();
+		PersistenceManager pm = pmf.getPersistenceManager();
+
+		try {
+			String userId = auth.getUser().getId();
+			List<UserConfiguration> users = MyPersistenceManagerFactory.getAllUsers();
+			if (users.isEmpty() == false){
+				UserConfiguration userConfig = null;
+				for (UserConfiguration user : users) {
+					if (user.getFlickrUserId().equals(userId)) {
+						userConfig = user;
+						break;
+					}
+				}
+				if (userConfig != null) {
+					//the user already exist, just update it
+					userConfig.setFlickrToken(auth.getToken());
+					userConfig.setFlickrUserName(auth.getUser().getUsername());
+				} else {
+					throw new RuntimeException("Sorry this service has been registered and the current maximum user limite is only one.");
+				}
+			} else {
+				//new user configuration
+				UserConfiguration user = new UserConfiguration(auth.getUser().getId(), auth.getUser().getUsername(), auth.getToken());
+				pm.makePersistent(user);
+			}
+		} finally {
+			pm.close();
+		}
 		return buf.toString();
 	}
 
 	public static void main(String[] args) {
 		try {
-			System.out.println(FlickrAuthTokenFetcher.test("72157624934447957-807ab136f926595c-1041539"));
+			System.out.println(FlickrAuthTokenFetcher.test("72157625091311678-926a0552054564ea-1041539"));
 			//System.out.println(FlickrAuthTokenFetcher.authrorize());
 		} catch(Exception e) {
 			e.printStackTrace();

@@ -10,6 +10,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.auth.Auth;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.auth.AuthInterface;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.people.PeopleInterface;
+import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.photos.PhotosInterface;
 
 /**
  * Main entry point for the Flickrj API.
@@ -53,6 +54,7 @@ public class Flickr {
     private Auth auth;
 
     private AuthInterface authInterface;
+    private PhotosInterface photosInterface;
     private PeopleInterface peopleInterface;
 
     /**
@@ -296,6 +298,13 @@ public class Flickr {
             peopleInterface = new PeopleInterface(apiKey, sharedSecret, transport);
         }
         return peopleInterface;
+    }
+    
+    public PhotosInterface getPhotosInterface() {
+        if (photosInterface == null) {
+            photosInterface = new PhotosInterface(apiKey, sharedSecret, transport);
+        }
+        return photosInterface;
     }
 
 }
