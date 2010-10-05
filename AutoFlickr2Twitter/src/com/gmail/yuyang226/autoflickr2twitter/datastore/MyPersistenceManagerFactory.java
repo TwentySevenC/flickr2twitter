@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.jdo.JDOHelper;
+import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
 
@@ -40,9 +41,14 @@ public final class MyPersistenceManagerFactory {
 	public static List<UserConfiguration> getAllUsers() {
 		List<UserConfiguration> users = new ArrayList<UserConfiguration>();
 		PersistenceManagerFactory pmf = MyPersistenceManagerFactory.getInstance();
-		Query query = pmf.getPersistenceManager().newQuery(UserConfiguration.class);
-		List<UserConfiguration> results = (List<UserConfiguration>)query.execute();
-		users.addAll(results);
+		PersistenceManager pm = pmf.getPersistenceManager();
+		try {
+			Query query = pm.newQuery(UserConfiguration.class);
+			List<UserConfiguration> results = (List<UserConfiguration>)query.execute();
+			users.addAll(results);
+		} finally {
+			pm.close();
+		}
 		return users;
 	}
 

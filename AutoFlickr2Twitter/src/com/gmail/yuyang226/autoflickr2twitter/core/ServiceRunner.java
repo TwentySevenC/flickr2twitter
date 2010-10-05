@@ -63,7 +63,11 @@ public class ServiceRunner {
             			}
             		}
             		if (msg != null) {
-            			TwitterPoster.updateTwitterStatus(msg, 
+            			if (user.getTwitterUserId() == null || user.getTwitterUserId().equals("")) {
+            				log.warning("Twitter account not specified yet, skip the execution.");
+            				return;
+            			}
+            			TwitterPoster.updateTwitterStatus(user, msg, 
             					geoLoc);
             		}
             	} catch (Exception e) {

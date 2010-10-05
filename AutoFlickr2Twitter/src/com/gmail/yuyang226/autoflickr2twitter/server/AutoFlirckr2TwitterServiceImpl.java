@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.gmail.yuyang226.autoflickr2twitter.client.AutoFlickr2TwitterService;
 import com.gmail.yuyang226.autoflickr2twitter.core.FlickrAuthTokenFetcher;
 import com.gmail.yuyang226.autoflickr2twitter.core.ServiceRunner;
+import com.gmail.yuyang226.autoflickr2twitter.core.TwitterPoster;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
@@ -20,6 +21,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  */
 public class AutoFlirckr2TwitterServiceImpl extends RemoteServiceServlet
 		implements AutoFlickr2TwitterService {
+	private TwitterPoster twitterPoster = new TwitterPoster();
 
 	/**
 	 * 
@@ -60,6 +62,22 @@ public class AutoFlirckr2TwitterServiceImpl extends RemoteServiceServlet
 	@Override
 	public String testToken(String frob) throws Exception {
 		return FlickrAuthTokenFetcher.test(frob);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.gmail.yuyang226.autoflickr2twitter.client.AutoFlickr2TwitterService#authorizeTwitter()
+	 */
+	@Override
+	public String authorizeTwitter() throws Exception {
+		return this.twitterPoster.requestNewToken();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.gmail.yuyang226.autoflickr2twitter.client.AutoFlickr2TwitterService#readyTwitterToken()
+	 */
+	@Override
+	public String readyTwitterToken() throws Exception {
+		return this.twitterPoster.readyTwitterAuthorization();
 	}
 
 }

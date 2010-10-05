@@ -26,12 +26,6 @@ public class AutoFlickr2Twitter implements EntryPoint {
 			+ "attempting to contact the server. Please check your network "
 			+ "connection and try again.";
 	
-
-	/**
-	 * Create a remote service proxy to talk to the server-side Greeting service.
-	 */
-	private final GreetingServiceAsync greetingService = GWT
-			.create(GreetingService.class);
 	
 	private final AutoFlickr2TwitterServiceAsync flickrService = GWT
 	.create(AutoFlickr2TwitterService.class);
@@ -45,6 +39,8 @@ public class AutoFlickr2Twitter implements EntryPoint {
 	public void onModuleLoad() {
 		final Button sendButton = new Button("Authroize With Your Flickr Account");
 		final Button readyButton = new Button("Ready");
+		final Button sendTwitterButton = new Button("Authroize With Your Twitter Account");
+		final Button readyTwitterButton = new Button("Twitter Authorization Ready");
 		final Button testButton = new Button("Test");
 		
 		final Label errorLabel = new Label();
@@ -52,11 +48,15 @@ public class AutoFlickr2Twitter implements EntryPoint {
 		// We can add style names to widgets
 		sendButton.addStyleName("sendButton");
 		readyButton.addStyleName("readyButton");
+		sendTwitterButton.addStyleName("sendButton");
+		readyTwitterButton.addStyleName("readyButton");
 
 		// Add the nameField and sendButton to the RootPanel
 		// Use RootPanel.get() to get the entire body element
 		RootPanel.get("sendButtonContainer").add(sendButton);
 		RootPanel.get("readyButtonContainer").add(readyButton);
+		RootPanel.get("sendTwitterButtonContainer").add(sendTwitterButton);
+		RootPanel.get("readyTwitterButtonContainer").add(readyTwitterButton);
 		RootPanel.get("testButtonContainer").add(testButton);
 		RootPanel.get("errorLabelContainer").add(errorLabel);
 
@@ -182,6 +182,89 @@ public class AutoFlickr2Twitter implements EntryPoint {
 			}
 		}
 		readyButton.addClickHandler(new ReadyHandler());
+		
+		// Create a handler for the sendButton and nameField
+		class TwitterHandler implements ClickHandler {
+			/**
+			 * Fired when the user clicks on the sendButton.
+			 */
+			public void onClick(ClickEvent event) {
+				//sendNameToServer();
+				errorLabel.setText("");
+				
+				try {
+					flickrService.authorizeTwitter(new AsyncCallback<String>() {
+						public void onFailure(Throwable caught) {
+							// Show the RPC error message to the user
+							dialogBox
+							.setText("Remote Procedure Call - Failure");
+							serverResponseLabel
+							.addStyleName("serverResponseLabelError");
+							serverResponseLabel.setHTML(SERVER_ERROR);
+							dialogBox.center();
+							closeButton.setFocus(true);
+						}
+
+						public void onSuccess(String result) {
+							int index = result.indexOf(":");
+							String frob = result.substring(0, index);
+							String tokenUrl = result.substring(index + 1);
+							AutoFlickr2Twitter.this.currentFlickrFrob = frob;
+							String html = "Please copy the following url to your Web browser and authorize this Twitter applicatioin to access your Twitter account. " +
+							"When finish please click on the 'Twitter Authorization Ready' button.    " + tokenUrl;
+							//serverResponseLabel.setHTML(html);
+							textArea.setText(html);
+							//dialogBox.center();
+							closeButton.setFocus(true);
+						}
+					});
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+			}
+		}
+
+		// Add a handler to send the name to the server
+		sendTwitterButton.addClickHandler(new TwitterHandler());
+		
+		class ReadyTwitterHandler implements ClickHandler {
+			/**
+			 * Fired when the user clicks on the sendButton.
+			 */
+			public void onClick(ClickEvent event) {
+				errorLabel.setText("");
+				
+				try {
+					textArea.setText("");
+					flickrService.readyTwitterToken(new AsyncCallback<String>() {
+						public void onFailure(Throwable caught) {
+							// Show the RPC error message to the user
+							dialogBox
+							.setText("Remote Procedure Call - Failure");
+							serverResponseLabel
+							.addStyleName("serverResponseLabelError");
+							serverResponseLabel.setHTML(SERVER_ERROR);
+							dialogBox.center();
+							closeButton.setFocus(true);
+						}
+
+						public void onSuccess(String result) {
+							dialogBox.setText("Remote Procedure Call");
+							serverResponseLabel
+							.removeStyleName("serverResponseLabelError");
+							serverResponseLabel.setHTML(result);
+							dialogBox.center();
+							closeButton.setFocus(true);
+						}
+					});
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+			}
+		}
+		readyTwitterButton.addClickHandler(new ReadyTwitterHandler());
 		
 		class TestHandler implements ClickHandler {
 			/**
