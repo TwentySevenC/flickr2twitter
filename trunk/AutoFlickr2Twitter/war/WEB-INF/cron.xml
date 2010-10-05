@@ -2,7 +2,7 @@
 <cronentries>
   <cron>
     <url>/autoflickr2twitter/recheck</url>
-    <description>Recheck the latest Flickr upload every 5 minutes</description>
+    <description>Recheck the latest Flickr upload every 10 minutes</description>
     <schedule>every 10 minutes</schedule>
   </cron>
 </cronentries>
