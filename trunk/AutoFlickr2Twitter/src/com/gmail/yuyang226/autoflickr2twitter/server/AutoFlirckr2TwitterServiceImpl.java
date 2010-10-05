@@ -54,7 +54,6 @@ public class AutoFlirckr2TwitterServiceImpl extends RemoteServiceServlet
 
 	@Override
 	public String authorize() throws Exception {
-		// TODO Auto-generated method stub
 		return FlickrAuthTokenFetcher.authrorize();
 	}
 

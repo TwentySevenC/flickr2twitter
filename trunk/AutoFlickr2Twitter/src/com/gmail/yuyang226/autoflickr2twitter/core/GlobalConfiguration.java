@@ -16,10 +16,10 @@ import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.util.IOUtilitie
  *
  */
 public final class GlobalConfiguration {
-	public static String KEY_FLICRK_USERID = "userId";
+	//public static String KEY_FLICRK_USERID = "userId";
 	public static String KEY_FLICKR_APIKEY = "apiKey";
 	public static String KEY_FLICKR_SECRET = "secret";
-	public static String KEY_FLICKR_TOKEN = "token";
+	//public static String KEY_FLICKR_TOKEN = "token";
 	
 	public static String KEY_TWITTER_CONSUMERID = "consumerId";
 	public static String KEY_TWITTER_CONSUMERSECRET = "consumerSecret";
@@ -28,10 +28,10 @@ public final class GlobalConfiguration {
 	
 	public static String KEY_UPDATE_INTERVAL = "interval";
 	
-	private String flickrUserId;
+	//private String flickrUserId;
 	private String flickrApiKey;
 	private String flickrSecret;
-	private String flickrToken;
+	//private String flickrToken;
 	
 	private String twitterConsumerId;
 	private String twitterConsumerSecret;
@@ -74,10 +74,10 @@ public final class GlobalConfiguration {
         } finally {
             IOUtilities.close(in);
         }
-        this.flickrUserId = properties.getProperty(KEY_FLICRK_USERID, null);
+        //this.flickrUserId = properties.getProperty(KEY_FLICRK_USERID, null);
         this.flickrApiKey = properties.getProperty(KEY_FLICKR_APIKEY, null);
         this.flickrSecret = properties.getProperty(KEY_FLICKR_SECRET, null);
-        this.flickrToken = properties.getProperty(KEY_FLICKR_TOKEN, null);
+        //this.flickrToken = properties.getProperty(KEY_FLICKR_TOKEN, null);
         
         this.twitterConsumerId = properties.getProperty(KEY_TWITTER_CONSUMERID, null);
         this.twitterConsumerSecret = properties.getProperty(KEY_TWITTER_CONSUMERSECRET, null);
@@ -91,9 +91,9 @@ public final class GlobalConfiguration {
         }
 	}
 
-	public String getFlickrUserId() {
+	/*public String getFlickrUserId() {
 		return flickrUserId;
-	}
+	}*/
 
 	public String getFlickrApiKey() {
 		return flickrApiKey;
@@ -103,9 +103,9 @@ public final class GlobalConfiguration {
 		return flickrSecret;
 	}
 
-	public String getFlickrToken() {
+	/*public String getFlickrToken() {
 		return flickrToken;
-	}
+	}*/
 
 	public String getTwitterConsumerId() {
 		return twitterConsumerId;

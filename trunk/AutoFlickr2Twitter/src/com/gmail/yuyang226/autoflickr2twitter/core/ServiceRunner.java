@@ -8,6 +8,8 @@ import java.util.logging.Logger;
 
 import twitter4j.GeoLocation;
 
+import com.gmail.yuyang226.autoflickr2twitter.datastore.MyPersistenceManagerFactory;
+import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserConfiguration;
 import com.gmail.yuyang226.autoflickr2twitter.model.IGeoItem;
 import com.gmail.yuyang226.autoflickr2twitter.model.IItem;
 import com.gmail.yuyang226.autoflickr2twitter.model.IPhoto;
@@ -28,8 +30,14 @@ public class ServiceRunner {
 	}
 
 	public static void execute() {
+		if (MyPersistenceManagerFactory.getAllUsers().isEmpty()) {
+			log.info("No user configured, skip the execution");
+			return;
+		}
+		//TODO currently only support one user
+		UserConfiguration user = MyPersistenceManagerFactory.getAllUsers().get(0);
         try {
-            List<IItem> items = ServiceFactory.getSourceServiceProvider().getLatestItems();
+            List<IItem> items = ServiceFactory.getSourceServiceProvider(user.getSourceServiceProviderId()).getLatestItems();
             if (items.size() == 0) {
             	log.info("No new uploaded items found");
             }

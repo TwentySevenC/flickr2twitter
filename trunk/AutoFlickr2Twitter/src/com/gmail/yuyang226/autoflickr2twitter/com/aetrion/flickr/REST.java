@@ -42,6 +42,7 @@ public class REST extends Transport {
     private String proxyPassword = "";
     private DocumentBuilder builder;
     private static Object mutex = new Object();
+    private boolean allowCache = false;
 
     /**
      * Construct a new REST transport instance.
@@ -81,7 +82,15 @@ public class REST extends Transport {
         setPort(port);
     }
 
-    /**
+    public boolean isAllowCache() {
+		return allowCache;
+	}
+
+	public void setAllowCache(boolean allowCache) {
+		this.allowCache = allowCache;
+	}
+
+	/**
      * Set a proxy for REST-requests.
      *
      * @param proxyHost
@@ -125,6 +134,10 @@ public class REST extends Transport {
         if (Flickr.debugRequest) System.out.println("GET: " + url);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
+        if (this.allowCache == false) {
+        	conn.addRequestProperty("Cache-Control", "no-cache,max-age=0");
+        	conn.addRequestProperty("Pragma", "no-cache");
+        }
         if (proxyAuth) {
             conn.setRequestProperty(
                 "Proxy-Authorization",

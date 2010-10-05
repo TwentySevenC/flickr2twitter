@@ -11,7 +11,7 @@ import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**
@@ -37,6 +37,7 @@ public class AutoFlickr2Twitter implements EntryPoint {
 	.create(AutoFlickr2TwitterService.class);
 	
 	private String currentFlickrFrob;
+	private TextArea textArea;
 
 	/**
 	 * This is the entry point method.
@@ -44,8 +45,8 @@ public class AutoFlickr2Twitter implements EntryPoint {
 	public void onModuleLoad() {
 		final Button sendButton = new Button("Authroize With Your Flickr Account");
 		final Button readyButton = new Button("Ready");
-		final TextBox nameField = new TextBox();
-		nameField.setText("GWT User");
+		final Button testButton = new Button("Test");
+		
 		final Label errorLabel = new Label();
 
 		// We can add style names to widgets
@@ -54,15 +55,15 @@ public class AutoFlickr2Twitter implements EntryPoint {
 
 		// Add the nameField and sendButton to the RootPanel
 		// Use RootPanel.get() to get the entire body element
-		RootPanel.get("nameFieldContainer").add(nameField);
 		RootPanel.get("sendButtonContainer").add(sendButton);
 		RootPanel.get("readyButtonContainer").add(readyButton);
+		RootPanel.get("testButtonContainer").add(testButton);
 		RootPanel.get("errorLabelContainer").add(errorLabel);
 
-		// Focus the cursor on the name field when the app loads
-		nameField.setFocus(true);
-		nameField.selectAll();
 
+		textArea = new TextArea();
+		RootPanel.get("resultArea").add(textArea);
+		
 		// Create the popup dialog box
 		final DialogBox dialogBox = new DialogBox();
 		dialogBox.setText("Remote Procedure Call");
@@ -116,12 +117,18 @@ public class AutoFlickr2Twitter implements EntryPoint {
 						}
 
 						public void onSuccess(String result) {
-							AutoFlickr2Twitter.this.currentFlickrFrob = result;
-							dialogBox.setText("Remote Procedure Call");
+							int index = result.indexOf(":");
+							String frob = result.substring(0, index);
+							String tokenUrl = result.substring(index + 1);
+							AutoFlickr2Twitter.this.currentFlickrFrob = frob;
+							/*dialogBox.setText("Remote Procedure Call");
 							serverResponseLabel
-							.removeStyleName("serverResponseLabelError");
-							serverResponseLabel.setHTML(result);
-							dialogBox.center();
+							.removeStyleName("serverResponseLabelError");*/
+							String html = "Please copy the following url to your Web browser and authorize this Flickr applicatioin to access your Flickr account. " +
+							"When finish please click on the ready button.    " + tokenUrl;
+							//serverResponseLabel.setHTML(html);
+							textArea.setText(html);
+							//dialogBox.center();
 							closeButton.setFocus(true);
 						}
 					});
@@ -158,7 +165,6 @@ public class AutoFlickr2Twitter implements EntryPoint {
 							}
 
 							public void onSuccess(String result) {
-								sendButton.setText("Ready");
 								dialogBox.setText("Remote Procedure Call");
 								serverResponseLabel
 										.removeStyleName("serverResponseLabelError");
@@ -175,6 +181,43 @@ public class AutoFlickr2Twitter implements EntryPoint {
 			}
 		}
 		readyButton.addClickHandler(new ReadyHandler());
-		//nameField.addKeyUpHandler(handler);
+		
+		class TestHandler implements ClickHandler {
+			/**
+			 * Fired when the user clicks on the sendButton.
+			 */
+			public void onClick(ClickEvent event) {
+				errorLabel.setText("");
+				
+				try {
+					flickrService.recheck(new AsyncCallback<Void>() {
+						public void onFailure(Throwable caught) {
+							// Show the RPC error message to the user
+							dialogBox
+							.setText("Remote Procedure Call - Failure");
+							serverResponseLabel
+							.addStyleName("serverResponseLabelError");
+							serverResponseLabel.setHTML(SERVER_ERROR);
+							dialogBox.center();
+							closeButton.setFocus(true);
+						}
+
+						@Override
+						public void onSuccess(Void result) {
+							dialogBox.setText("Remote Procedure Call");
+							serverResponseLabel
+							.removeStyleName("serverResponseLabelError");
+							serverResponseLabel.setHTML("Succeeded");
+							dialogBox.center();
+							closeButton.setFocus(true);
+						}
+					});
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+			}
+		}
+		testButton.addClickHandler(new TestHandler());
 	}
 }
