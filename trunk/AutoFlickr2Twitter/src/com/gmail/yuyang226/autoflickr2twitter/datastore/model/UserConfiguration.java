@@ -28,6 +28,19 @@ public class UserConfiguration {
 	
 	@Persistent
 	private String sourceServiceProviderId = SourceServiceProviderFlickr.ID;
+	
+	@Persistent
+	private String twitterUserId;
+	
+	@Persistent
+	private String twitterUserName;
+	
+	@Persistent
+	private String twitterAccessToken;
+	
+	@Persistent
+	private String twitterTokenSecret;
+	
 
 	/**
 	 * 
@@ -76,12 +89,47 @@ public class UserConfiguration {
 		return sourceServiceProviderId;
 	}
 
+	public String getTwitterUserId() {
+		return twitterUserId;
+	}
+
+	public void setTwitterUserId(String twitterUserId) {
+		this.twitterUserId = twitterUserId;
+	}
+
+	public String getTwitterUserName() {
+		return twitterUserName;
+	}
+
+	public void setTwitterUserName(String twitterUserName) {
+		this.twitterUserName = twitterUserName;
+	}
+
+	public String getTwitterAccessToken() {
+		return twitterAccessToken;
+	}
+
+	public void setTwitterAccessToken(String twitterAccessToken) {
+		this.twitterAccessToken = twitterAccessToken;
+	}
+
+	public String getTwitterTokenSecret() {
+		return twitterTokenSecret;
+	}
+
+	public void setTwitterTokenSecret(String twitterTokenSecret) {
+		this.twitterTokenSecret = twitterTokenSecret;
+	}
+
 	@Override
 	public String toString() {
 		return "UserConfiguration [flickrToken=" + flickrToken
 				+ ", flickrUserId=" + flickrUserId + ", flickrUserName="
 				+ flickrUserName + ", sourceServiceProviderId="
-				+ sourceServiceProviderId + "]";
+				+ sourceServiceProviderId + ", twitterAccessToken="
+				+ twitterAccessToken + ", twitterTokenSecret="
+				+ twitterTokenSecret + ", twitterUserId=" + twitterUserId
+				+ ", twitterUserName=" + twitterUserName + "]";
 	}
 
 }

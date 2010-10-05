@@ -3,11 +3,12 @@
  */
 package com.gmail.yuyang226.autoflickr2twitter.core;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
+
+import javax.jdo.PersistenceManager;
+import javax.jdo.PersistenceManagerFactory;
 
 import twitter4j.GeoLocation;
 import twitter4j.Status;
@@ -20,78 +21,87 @@ import twitter4j.http.Authorization;
 import twitter4j.http.OAuthAuthorization;
 import twitter4j.http.RequestToken;
 
+import com.gmail.yuyang226.autoflickr2twitter.datastore.MyPersistenceManagerFactory;
+import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserConfiguration;
+
 /**
  * @author yayu
  *
  */
 public class TwitterPoster {
 	private static final Logger log = Logger.getLogger(TwitterPoster.class.getName());
+	private Twitter twitter = null;
 
 	/**
 	 * 
 	 */
-	private TwitterPoster() {
+	public TwitterPoster() {
 		super();
 	}
 	
-	public static void requestNewToken() throws TwitterException, IOException {
-		 // The factory instance is re-useable and thread safe.
-	    Twitter twitter = new TwitterFactory().getInstance();
-	    twitter.setOAuthConsumer(GlobalConfiguration.getInstance().getTwitterConsumerId(), 
-	    		GlobalConfiguration.getInstance().getTwitterConsumerSecret());
-	    RequestToken requestToken = twitter.getOAuthRequestToken();
-	    AccessToken accessToken = null;
-	    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-	    while (null == accessToken) {
-	    	log.info("Open the following URL and grant access to your account:");
-	    	log.info(requestToken.getAuthorizationURL());
-	    	log.info("Enter the PIN(if aviailable) or just hit enter.[PIN]:");
-	      String pin = br.readLine();
-	      try{
-	         if(pin.length() > 0){
-	           accessToken = twitter.getOAuthAccessToken(requestToken, pin);
-	         }else{
-	           accessToken = twitter.getOAuthAccessToken();
-	         }
-	      } catch (TwitterException te) {
-	        if(401 == te.getStatusCode()){
-	        	log.info("Unable to get the access token.");
-	        }else{
-	          te.printStackTrace();
-	        }
-	      }
-	    }
+	public String requestNewToken() throws TwitterException {
+		try {
+			twitter = new TwitterFactory().getInstance();
+			twitter.setOAuthConsumer(GlobalConfiguration.getInstance().getTwitterConsumerId(), 
+					GlobalConfiguration.getInstance().getTwitterConsumerSecret());
+			RequestToken requestToken = twitter.getOAuthRequestToken();
+			log.info("Open the following URL and grant access to your account:");
+			log.info(requestToken.getAuthorizationURL());
+			return requestToken.getAuthorizationURL();
+		} catch (TwitterException e) {
+			twitter = null;
+			throw e;
+		}
 	    //persist to the accessToken for future reference.
-	    storeAccessToken(twitter.verifyCredentials().getId() , accessToken);
+	   //return new TwitterUser(twitter.verifyCredentials().getId() , accessToken);
 	}
 	
-	public static void updateTwitterStatus(String message, GeoLocation geoLoc) throws TwitterException {
-		log.info("Posting message -> " + message);
+	public String readyTwitterAuthorization() throws TwitterException {
+		StringBuffer buf = new StringBuffer();
+		if (twitter != null) {
+			AccessToken accessToken = twitter.getOAuthAccessToken();
+			buf.append(" User Id: " + accessToken.getUserId());
+			buf.append(" User Screen Name: " + accessToken.getScreenName());
+			buf.append(" Access Token: " + accessToken.getToken());
+			buf.append(" Token Secret: " + accessToken.getTokenSecret());
+			PersistenceManagerFactory pmf = MyPersistenceManagerFactory.getInstance();
+			PersistenceManager pm = pmf.getPersistenceManager();
+
+			try {
+				List<UserConfiguration> users = MyPersistenceManagerFactory.getAllUsers();
+				if (users.isEmpty() == false) {
+					UserConfiguration user = users.get(0);
+					user = pm.getObjectById(UserConfiguration.class, user.getFlickrUserId());
+					user.setTwitterUserId(String.valueOf(twitter.verifyCredentials().getId()));
+					user.setTwitterUserName(accessToken.getScreenName());
+					user.setTwitterAccessToken(accessToken.getToken());
+					user.setTwitterTokenSecret(accessToken.getTokenSecret());
+				}
+			} finally {
+				pm.close();
+			}
+		}
+		return buf.toString();
+	}
+	
+	public static void updateTwitterStatus(UserConfiguration user, String message, GeoLocation geoLoc) throws TwitterException {
+		log.info("Posting message -> " + message + " for " + user);
 		// The factory instance is re-useable and thread safe.
-		AccessToken accessToken = GlobalConfiguration.getInstance().getTwitterAccessTokenInstance(); 
+		AccessToken accessToken = new AccessToken(user.getTwitterAccessToken(), user.getTwitterTokenSecret()); 
 		PropertyConfiguration conf = new PropertyConfiguration(new Properties());
 		
 		Authorization auth = new OAuthAuthorization(conf, GlobalConfiguration.getInstance().getTwitterConsumerId(), 
 				GlobalConfiguration.getInstance().getTwitterConsumerSecret(), accessToken);
 	    Twitter twitter = new TwitterFactory().getInstance(auth);
 	    Status status = geoLoc == null ? twitter.updateStatus(message) : twitter.updateStatus(message, geoLoc);
-	    log.info("Successfully updated the status to [" + status.getText() + "].");
+	    log.info("Successfully updated the status [" + status.getText() + "] to user @" + user.getTwitterUserId());
 	}
 
-	private static void storeAccessToken(int useId, AccessToken accessToken){
+	/*private static void storeAccessToken(int useId, AccessToken accessToken){
 		//store accessToken.getToken()
 		//store accessToken.getTokenSecret()
 		System.out.println(accessToken.getToken());
 		System.out.println(accessToken.getTokenSecret());
-	}
-
-	public static void main(String[] args) {
-		try {
-			TwitterPoster.requestNewToken();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+	}*/
 
 }
