@@ -52,8 +52,6 @@ public class TwitterPoster {
 			twitter = null;
 			throw e;
 		}
-	    //persist to the accessToken for future reference.
-	   //return new TwitterUser(twitter.verifyCredentials().getId() , accessToken);
 	}
 	
 	public String readyTwitterAuthorization() throws TwitterException {
@@ -94,14 +92,7 @@ public class TwitterPoster {
 				GlobalConfiguration.getInstance().getTwitterConsumerSecret(), accessToken);
 	    Twitter twitter = new TwitterFactory().getInstance(auth);
 	    Status status = geoLoc == null ? twitter.updateStatus(message) : twitter.updateStatus(message, geoLoc);
-	    log.info("Successfully updated the status [" + status.getText() + "] to user @" + user.getTwitterUserId());
+	    log.info("Successfully updated the status [" + status.getText() + "] to user @" + user.getTwitterUserName());
 	}
-
-	/*private static void storeAccessToken(int useId, AccessToken accessToken){
-		//store accessToken.getToken()
-		//store accessToken.getTokenSecret()
-		System.out.println(accessToken.getToken());
-		System.out.println(accessToken.getTokenSecret());
-	}*/
 
 }
