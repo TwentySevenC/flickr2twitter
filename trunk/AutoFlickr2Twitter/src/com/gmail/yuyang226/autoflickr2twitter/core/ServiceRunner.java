@@ -69,6 +69,9 @@ public class ServiceRunner {
             			}
             			TwitterPoster.updateTwitterStatus(user, msg, 
             					geoLoc);
+            			
+            			//currently, 'user' is not used in this method.
+            			SinaPoster.postMessage(user, msg, geoLoc);
             		}
             	} catch (Exception e) {
             		log.warning(e.toString());
