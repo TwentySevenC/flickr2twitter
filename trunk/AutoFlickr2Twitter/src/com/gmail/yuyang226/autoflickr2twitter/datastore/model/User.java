@@ -3,6 +3,10 @@
  */
 package com.gmail.yuyang226.autoflickr2twitter.datastore.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -10,6 +14,7 @@ import javax.jdo.annotations.PrimaryKey;
 
 import com.gmail.yuyang226.autoflickr2twitter.datastore.MyPersistenceManagerFactory.Permission;
 import com.google.appengine.api.datastore.Email;
+import com.google.appengine.api.datastore.Key;
 
 /**
  * @author Toby Yu(yuyang226@gmail.com)
@@ -17,11 +22,14 @@ import com.google.appengine.api.datastore.Email;
  */
 @PersistenceCapable
 public class User {
+	@PrimaryKey
+	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+	private Key key;
+	
 	/**
 	 * this should be the email address
 	 */
-	@PrimaryKey
-    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+	@Persistent
 	private Email userId;
 	
 	@Persistent
@@ -35,6 +43,12 @@ public class User {
 	 */
 	@Persistent
 	private String screenName;
+	
+	@Persistent
+	private List<UserSourceService> sourceServices;
+	
+	@Persistent
+	private List<UserTargetService> targetServices;
 
 	/**
 	 * 
@@ -65,6 +79,10 @@ public class User {
 		this.userId = new Email(userId);
 		this.password = password;
 		this.screenName = screenName;
+	}
+
+	public Key getKey() {
+		return key;
 	}
 
 	/**
@@ -121,6 +139,50 @@ public class User {
 	 */
 	public void setPermission(String permission) {
 		this.permission = permission;
+	}
+
+	public boolean addSourceService(UserSourceService e) {
+		if (sourceServices == null)
+			sourceServices = new ArrayList<UserSourceService>();
+		return sourceServices.add(e);
+	}
+
+	public boolean addSourceServices(Collection<? extends UserSourceService> c) {
+		if (sourceServices == null)
+			sourceServices = new ArrayList<UserSourceService>();
+		return sourceServices.addAll(c);
+	}
+
+	public List<UserSourceService> getSourceServices() {
+		if (sourceServices == null)
+			sourceServices = new ArrayList<UserSourceService>();
+		return sourceServices;
+	}
+
+	public void setSourceServices(List<UserSourceService> sourceServices) {
+		this.sourceServices = sourceServices;
+	}
+
+	public List<UserTargetService> getTargetServices() {
+		if (targetServices == null)
+			targetServices = new ArrayList<UserTargetService>();
+		return targetServices;
+	}
+
+	public void setTargetServices(List<UserTargetService> targetServices) {
+		this.targetServices = targetServices;
+	}
+
+	public boolean addTargetService(UserTargetService e) {
+		if (targetServices == null)
+			targetServices = new ArrayList<UserTargetService>();
+		return targetServices.add(e);
+	}
+	
+	public boolean addTargetServices(Collection<? extends UserTargetService> c) {
+		if (targetServices == null)
+			targetServices = new ArrayList<UserTargetService>();
+		return targetServices.addAll(c);
 	}
 
 	/* (non-Javadoc)

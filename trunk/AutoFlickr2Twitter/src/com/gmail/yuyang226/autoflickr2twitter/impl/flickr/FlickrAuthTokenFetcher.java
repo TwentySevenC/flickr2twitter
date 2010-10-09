@@ -1,8 +1,7 @@
-package com.gmail.yuyang226.autoflickr2twitter.core;
+package com.gmail.yuyang226.autoflickr2twitter.impl.flickr;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
@@ -18,8 +17,8 @@ import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.RequestContext;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.auth.Auth;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.auth.AuthInterface;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.auth.Permission;
+import com.gmail.yuyang226.autoflickr2twitter.core.GlobalConfiguration;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.MyPersistenceManagerFactory;
-import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserConfiguration;
 
 /**
  * Demonstrates the authentication-process.<p>

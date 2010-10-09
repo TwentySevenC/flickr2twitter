@@ -22,4 +22,6 @@ public interface AutoFlickr2TwitterService extends RemoteService {
 	public String authorizeTwitter() throws Exception;
 	
 	public String readyTwitterToken() throws Exception;
+	
+	public void generateTestData() throws Exception;
 }

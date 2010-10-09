@@ -3,26 +3,18 @@
  */
 package com.gmail.yuyang226.autoflickr2twitter.core;
 
-import java.util.List;
-import java.util.Properties;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 
-import twitter4j.GeoLocation;
-import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
-import twitter4j.conf.PropertyConfiguration;
 import twitter4j.http.AccessToken;
-import twitter4j.http.Authorization;
-import twitter4j.http.OAuthAuthorization;
 import twitter4j.http.RequestToken;
 
 import com.gmail.yuyang226.autoflickr2twitter.datastore.MyPersistenceManagerFactory;
-import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserConfiguration;
 
 /**
  * @author yayu
@@ -82,7 +74,7 @@ public class TwitterPoster {
 		return buf.toString();
 	}
 	
-	public static void updateTwitterStatus(UserConfiguration user, String message, GeoLocation geoLoc) throws TwitterException {
+	/*public static void updateTwitterStatus(UserConfiguration user, String message, GeoLocation geoLoc) throws TwitterException {
 		log.info("Posting message -> " + message + " for " + user);
 		// The factory instance is re-useable and thread safe.
 		AccessToken accessToken = new AccessToken(user.getTwitterAccessToken(), user.getTwitterTokenSecret()); 
@@ -93,6 +85,6 @@ public class TwitterPoster {
 	    Twitter twitter = new TwitterFactory().getInstance(auth);
 	    Status status = geoLoc == null ? twitter.updateStatus(message) : twitter.updateStatus(message, geoLoc);
 	    log.info("Successfully updated the status [" + status.getText() + "] to user @" + user.getTwitterUserName());
-	}
+	}*/
 
 }

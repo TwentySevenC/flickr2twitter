@@ -5,14 +5,23 @@ package com.gmail.yuyang226.autoflickr2twitter.server;
 
 import java.io.IOException;
 
+import javax.jdo.PersistenceManager;
+import javax.jdo.PersistenceManagerFactory;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.gmail.yuyang226.autoflickr2twitter.client.AutoFlickr2TwitterService;
-import com.gmail.yuyang226.autoflickr2twitter.core.FlickrAuthTokenFetcher;
 import com.gmail.yuyang226.autoflickr2twitter.core.ServiceRunner;
 import com.gmail.yuyang226.autoflickr2twitter.core.TwitterPoster;
+import com.gmail.yuyang226.autoflickr2twitter.datastore.MyPersistenceManagerFactory;
+import com.gmail.yuyang226.autoflickr2twitter.datastore.model.User;
+import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserSourceService;
+import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserTargetService;
+import com.gmail.yuyang226.autoflickr2twitter.impl.flickr.FlickrAuthTokenFetcher;
+import com.gmail.yuyang226.autoflickr2twitter.impl.flickr.SourceServiceProviderFlickr;
+import com.gmail.yuyang226.autoflickr2twitter.impl.twitter.TargetServiceProviderTwitter;
+import com.google.appengine.api.datastore.Email;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
@@ -78,6 +87,39 @@ public class AutoFlirckr2TwitterServiceImpl extends RemoteServiceServlet
 	@Override
 	public String readyTwitterToken() throws Exception {
 		return this.twitterPoster.readyTwitterAuthorization();
+	}
+
+	@Override
+	public void generateTestData() throws Exception {
+		PersistenceManagerFactory pmf = MyPersistenceManagerFactory.getInstance();
+		PersistenceManager pm = pmf.getPersistenceManager();
+		try {
+			User user = new User();
+			user.setPassword("hello world");
+			user.setScreenName("Yayu");
+			user.setUserId(new Email("yuyang226@gmail.com"));
+			
+			UserSourceService source = new UserSourceService();
+			source.setServiceAccessToken("72157624934440413-81a5395969daa49e");
+			source.setServiceUserId("54374999@N05");
+			source.setServiceUserName("Toby Yu");
+			source.setSourceServiceProviderId(SourceServiceProviderFlickr.ID);
+			source.setUserEmail(user.getUserId().getEmail());
+			user.addSourceService(source);
+			
+			UserTargetService target = new UserTargetService();
+			target.setServiceAccessToken("196514413-rGZLFXG0fdOCVxfyBgpfLsBAUFfchO8OBIAsUBqA");
+			target.setServiceTokenSecret("lZNlvIOHdqBwIYbGCYVk6lugFz0I7XsR6t3VwXy4prk");
+			target.setServiceUserId("yuyang226");
+			target.setServiceUserName("Yuy");
+			target.setTargetServiceProviderId(TargetServiceProviderTwitter.ID);
+			target.setUserEmail(user.getUserId().getEmail());
+			user.addTargetService(target);
+			pm.makePersistent(user);
+		} finally {
+			pm.close();
+		}
+		
 	}
 
 }

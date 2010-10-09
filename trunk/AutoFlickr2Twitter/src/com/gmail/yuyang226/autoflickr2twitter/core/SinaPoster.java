@@ -2,7 +2,6 @@ package com.gmail.yuyang226.autoflickr2twitter.core;
 
 import twitter4j.GeoLocation;
 
-import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserConfiguration;
 import com.gmail.yuyang226.autoflickr2twitter.sina.weibo4j.Weibo;
 
 /**
@@ -11,7 +10,7 @@ import com.gmail.yuyang226.autoflickr2twitter.sina.weibo4j.Weibo;
  */
 public final class SinaPoster {
 
-	public static void postMessage(UserConfiguration user, String msg,
+	public static void postMessage(String msg,
 			GeoLocation loc) throws Exception {
 
 		//api key and secret
