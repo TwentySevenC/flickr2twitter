@@ -42,6 +42,7 @@ public class AutoFlickr2Twitter implements EntryPoint {
 		final Button sendTwitterButton = new Button("Authroize With Your Twitter Account");
 		final Button readyTwitterButton = new Button("Twitter Authorization Ready");
 		final Button testButton = new Button("Test");
+		final Button genButton = new Button("Generate Test Data");
 		
 		final Label errorLabel = new Label();
 
@@ -58,6 +59,7 @@ public class AutoFlickr2Twitter implements EntryPoint {
 		RootPanel.get("sendTwitterButtonContainer").add(sendTwitterButton);
 		RootPanel.get("readyTwitterButtonContainer").add(readyTwitterButton);
 		RootPanel.get("testButtonContainer").add(testButton);
+		RootPanel.get("generateButtonContainer").add(genButton);
 		RootPanel.get("errorLabelContainer").add(errorLabel);
 
 
@@ -303,5 +305,45 @@ public class AutoFlickr2Twitter implements EntryPoint {
 			}
 		}
 		testButton.addClickHandler(new TestHandler());
+		
+		
+		
+		class GenHandler implements ClickHandler {
+			/**
+			 * Fired when the user clicks on the sendButton.
+			 */
+			public void onClick(ClickEvent event) {
+				errorLabel.setText("");
+				
+				try {
+					flickrService.generateTestData(new AsyncCallback<Void>() {
+						public void onFailure(Throwable caught) {
+							// Show the RPC error message to the user
+							dialogBox
+							.setText("Remote Procedure Call - Failure");
+							serverResponseLabel
+							.addStyleName("serverResponseLabelError");
+							serverResponseLabel.setHTML(SERVER_ERROR);
+							dialogBox.center();
+							closeButton.setFocus(true);
+						}
+
+						@Override
+						public void onSuccess(Void result) {
+							dialogBox.setText("Remote Procedure Call");
+							serverResponseLabel
+							.removeStyleName("serverResponseLabelError");
+							serverResponseLabel.setHTML("Succeeded");
+							dialogBox.center();
+							closeButton.setFocus(true);
+						}
+					});
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+			}
+		}
+		genButton.addClickHandler(new GenHandler());
 	}
 }

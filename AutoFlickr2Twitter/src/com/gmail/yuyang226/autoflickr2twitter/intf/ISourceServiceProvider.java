@@ -6,7 +6,7 @@ package com.gmail.yuyang226.autoflickr2twitter.intf;
 import java.util.List;
 
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.GlobalServiceConfiguration;
-import com.gmail.yuyang226.autoflickr2twitter.datastore.model.User;
+import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserSourceService;
 
 /**
  * @author Toby Yu(yuyang226@gmail.com)
@@ -34,6 +34,6 @@ public interface ISourceServiceProvider<T> {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<T> getLatestItems(GlobalServiceConfiguration globalConfig, User user) throws Exception;
+	public List<T> getLatestItems(GlobalServiceConfiguration globalConfig, UserSourceService sourceService) throws Exception;
 
 }

@@ -49,8 +49,37 @@ public final class MyPersistenceManagerFactory {
 		PersistenceManager pm = pmf.getPersistenceManager();
 		try {
 			Query query = pm.newQuery(User.class);
-			List<User> results = (List<User>)query.execute();
-			users.addAll(results);
+			List<?> results = (List<?>)query.execute();
+			for (Object obj : results) {
+				User user = (User)obj;
+				users.add(user);
+				//calling the method would also retrieve the children data
+				user.getSourceServices();
+				user.getTargetServices();
+				/*query = pm.newQuery(UserSourceService.class);
+			    query.setFilter("userEmail == userEmailAddress");
+			    query.declareParameters("String userEmailAddress");
+			    List<?> data = (List<?>)query.execute(user.getUserId().getEmail());
+			    if (data != null) {
+			    	for (Object o : data) {
+			    		if(user.getSourceServices().contains(o) == false) {
+			    			user.addSourceService((UserSourceService)o);
+			    		}
+			    	}
+			    }
+			    
+			    query = pm.newQuery(UserTargetService.class);
+			    query.setFilter("userEmail == userEmailAddress");
+			    query.declareParameters("String userEmailAddress");
+			    data = (List<?>)query.execute(user.getUserId().getEmail());
+			    if (data != null) {
+			    	for (Object o : data) {
+			    		if(user.getTargetServices().contains(o) == false) {
+			    			user.addTargetService((UserTargetService)o);
+			    		}
+			    	}
+			    }*/
+			}
 		} finally {
 			pm.close();
 		}

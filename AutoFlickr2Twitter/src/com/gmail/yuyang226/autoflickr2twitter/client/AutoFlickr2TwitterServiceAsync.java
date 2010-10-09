@@ -21,5 +21,8 @@ public interface AutoFlickr2TwitterServiceAsync {
 
 	void readyTwitterToken(AsyncCallback<String> callback);
 
+	void generateTestData(AsyncCallback<Void> callback);
+
+
 	
 }

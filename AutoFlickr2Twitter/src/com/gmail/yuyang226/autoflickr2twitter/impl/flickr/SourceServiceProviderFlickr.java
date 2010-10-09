@@ -6,7 +6,6 @@ package com.gmail.yuyang226.autoflickr2twitter.impl.flickr;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -29,10 +28,8 @@ import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.photos.Extras;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.photos.Photo;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.photos.PhotoList;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.photos.PhotosInterface;
-import com.gmail.yuyang226.autoflickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.GlobalServiceConfiguration;
-import com.gmail.yuyang226.autoflickr2twitter.datastore.model.User;
-import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserConfiguration;
+import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserSourceService;
 import com.gmail.yuyang226.autoflickr2twitter.intf.IDataStoreService;
 import com.gmail.yuyang226.autoflickr2twitter.intf.ISourceServiceProvider;
 import com.gmail.yuyang226.autoflickr2twitter.model.IItem;
@@ -117,11 +114,9 @@ public class SourceServiceProviderFlickr implements ISourceServiceProvider<IItem
 	 * @see com.gmail.yuyang226.autoflickr2twitter.intf.ISourceServiceProvider#getLatestItems()
 	 */
 	@Override
-	public List<IItem> getLatestItems(GlobalServiceConfiguration globalConfig, User user) throws Exception {
-
-		/*return showRecentPhotos(user.getFlickrUserId(), user.getFlickrToken()
-				, minUpdate);*/
-		return Collections.emptyList();
+	public List<IItem> getLatestItems(GlobalServiceConfiguration globalConfig, UserSourceService sourceService) throws Exception {
+		return showRecentPhotos(sourceService.getServiceUserId(), sourceService.getServiceAccessToken()
+				, globalConfig.getMinUploadTime());
 	}
 
 	/* (non-Javadoc)

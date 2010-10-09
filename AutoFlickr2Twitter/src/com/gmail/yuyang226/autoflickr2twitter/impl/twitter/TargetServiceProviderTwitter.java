@@ -26,7 +26,7 @@ import com.gmail.yuyang226.autoflickr2twitter.core.TwitterPoster;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.GlobalServiceConfiguration;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.User;
-import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserConfiguration;
+import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserTargetService;
 import com.gmail.yuyang226.autoflickr2twitter.intf.IDataStoreService;
 import com.gmail.yuyang226.autoflickr2twitter.intf.ITargetServiceProvider;
 import com.gmail.yuyang226.autoflickr2twitter.model.IGeoItem;
@@ -100,19 +100,6 @@ public class TargetServiceProviderTwitter implements ITargetServiceProvider {
 		}
 		return buf.toString();
 	}
-	
-	public static void updateTwitterStatus(UserConfiguration user, String message, GeoLocation geoLoc) throws TwitterException {
-		log.info("Posting message -> " + message + " for " + user);
-		// The factory instance is re-useable and thread safe.
-		AccessToken accessToken = new AccessToken(user.getTwitterAccessToken(), user.getTwitterTokenSecret()); 
-		PropertyConfiguration conf = new PropertyConfiguration(new Properties());
-		
-		Authorization auth = new OAuthAuthorization(conf, GlobalConfiguration.getInstance().getTwitterConsumerId(), 
-				GlobalConfiguration.getInstance().getTwitterConsumerSecret(), accessToken);
-	    Twitter twitter = new TwitterFactory().getInstance(auth);
-	    Status status = geoLoc == null ? twitter.updateStatus(message) : twitter.updateStatus(message, geoLoc);
-	    log.info("Successfully updated the status [" + status.getText() + "] to user @" + user.getTwitterUserName());
-	}
 
 	/* (non-Javadoc)
 	 * @see com.gmail.yuyang226.autoflickr2twitter.intf.ITargetServiceProvider#storeToken(com.gmail.yuyang226.autoflickr2twitter.intf.IDataStoreService)
@@ -127,10 +114,12 @@ public class TargetServiceProviderTwitter implements ITargetServiceProvider {
 	 * @see com.gmail.yuyang226.autoflickr2twitter.intf.ITargetServiceProvider#postUpdate(com.gmail.yuyang226.autoflickr2twitter.model.IItem)
 	 */
 	@Override
-	public void postUpdate(GlobalServiceConfiguration globalConfig, UserConfiguration user, IItem item) throws Exception {
-		log.info("Posting message -> " + item + " for " + user);
+	public void postUpdate(GlobalServiceConfiguration globalConfig, 
+			UserTargetService targetConfig, IItem item) throws Exception {
+		log.info("Posting message -> " + item + " for " + targetConfig.getServiceUserName());
 		// The factory instance is re-useable and thread safe.
-		AccessToken accessToken = new AccessToken(user.getTwitterAccessToken(), user.getTwitterTokenSecret()); 
+		AccessToken accessToken = new AccessToken(targetConfig.getServiceAccessToken(), 
+				targetConfig.getServiceTokenSecret()); 
 		PropertyConfiguration conf = new PropertyConfiguration(new Properties());
 		
 		Authorization auth = new OAuthAuthorization(conf, globalConfig.getTargetAppConsumerId(), 
@@ -157,7 +146,7 @@ public class TargetServiceProviderTwitter implements ITargetServiceProvider {
 		}
 	    if (message != null) {
 	    	Status status = geoLoc == null ? twitter.updateStatus(message) : twitter.updateStatus(message, geoLoc);
-	    	log.info("Successfully updated the status [" + status.getText() + "] to user @" + user.getTwitterUserName());
+	    	log.info("Successfully updated the status [" + status.getText() + "] to user @" + targetConfig.getServiceUserName());
 	    }
 
 	}
