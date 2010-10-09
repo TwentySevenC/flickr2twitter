@@ -14,7 +14,7 @@ import java.util.regex.Matcher;
 
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.people.User;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.util.StringUtilities;
-import com.gmail.yuyang226.autoflickr2twitter.core.FlickrBaseEncoder;
+import com.gmail.yuyang226.autoflickr2twitter.impl.flickr.FlickrBaseEncoder;
 import com.gmail.yuyang226.autoflickr2twitter.model.IGeoItem;
 import com.gmail.yuyang226.autoflickr2twitter.model.IPhoto;
 import com.gmail.yuyang226.autoflickr2twitter.model.IShortUrl;
