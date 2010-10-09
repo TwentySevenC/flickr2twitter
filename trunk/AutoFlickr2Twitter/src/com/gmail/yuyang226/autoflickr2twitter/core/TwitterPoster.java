@@ -66,7 +66,7 @@ public class TwitterPoster {
 			PersistenceManager pm = pmf.getPersistenceManager();
 
 			try {
-				List<UserConfiguration> users = MyPersistenceManagerFactory.getAllUsers();
+				/*List<UserConfiguration> users = MyPersistenceManagerFactory.getAllUsers();
 				if (users.isEmpty() == false) {
 					UserConfiguration user = users.get(0);
 					user = pm.getObjectById(UserConfiguration.class, user.getFlickrUserId());
@@ -74,7 +74,7 @@ public class TwitterPoster {
 					user.setTwitterUserName(accessToken.getScreenName());
 					user.setTwitterAccessToken(accessToken.getToken());
 					user.setTwitterTokenSecret(accessToken.getTokenSecret());
-				}
+				}*/
 			} finally {
 				pm.close();
 			}

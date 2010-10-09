@@ -12,7 +12,7 @@ import com.gmail.yuyang226.autoflickr2twitter.impl.flickr.SourceServiceProviderF
 
 /**
  * @author Toby Yu(yuyang226@gmail.com)
- *
+ * @deprecated Please use User instead
  */
 @PersistenceCapable
 public class UserConfiguration {

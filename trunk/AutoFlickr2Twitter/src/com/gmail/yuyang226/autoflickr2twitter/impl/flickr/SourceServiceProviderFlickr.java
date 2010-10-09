@@ -29,8 +29,9 @@ import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.photos.Extras;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.photos.Photo;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.photos.PhotoList;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.photos.PhotosInterface;
-import com.gmail.yuyang226.autoflickr2twitter.core.GlobalConfiguration;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.MyPersistenceManagerFactory;
+import com.gmail.yuyang226.autoflickr2twitter.datastore.model.GlobalServiceConfiguration;
+import com.gmail.yuyang226.autoflickr2twitter.datastore.model.User;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserConfiguration;
 import com.gmail.yuyang226.autoflickr2twitter.intf.IDataStoreService;
 import com.gmail.yuyang226.autoflickr2twitter.intf.ISourceServiceProvider;
@@ -48,12 +49,16 @@ public class SourceServiceProviderFlickr implements ISourceServiceProvider<IItem
 	/**
 	 * 
 	 */
-	public SourceServiceProviderFlickr() throws ParserConfigurationException, IOException {
+	public SourceServiceProviderFlickr(GlobalServiceConfiguration globalConfig) throws ParserConfigurationException, IOException {
 		super();
+		if (globalConfig == null 
+				|| ID.equalsIgnoreCase(globalConfig.getSourceProviderId()) == false) {
+			throw new IllegalArgumentException("Invalid source service provider: " + globalConfig);
+		}
 		REST transport = new REST();
         f = new Flickr(
-        		GlobalConfiguration.getInstance().getFlickrApiKey(),
-        		GlobalConfiguration.getInstance().getFlickrSecret(),
+        		globalConfig.getSourceAppApiKey(),
+        		globalConfig.getSourceAppSecret(),
         		transport
         );
         transport.setAllowCache(false);
@@ -112,14 +117,10 @@ public class SourceServiceProviderFlickr implements ISourceServiceProvider<IItem
 	 * @see com.gmail.yuyang226.autoflickr2twitter.intf.ISourceServiceProvider#getLatestItems()
 	 */
 	@Override
-	public List<IItem> getLatestItems() throws Exception {
-		List<UserConfiguration> results = MyPersistenceManagerFactory.getAllUsers();
-		if (results.isEmpty() == false) {
-			//we assume that there is only one registered user
-			UserConfiguration user = results.get(0);
-			return showRecentPhotos(user.getFlickrUserId(), user.getFlickrToken()
-					, GlobalConfiguration.getInstance().getInterval());
-		}
+	public List<IItem> getLatestItems(GlobalServiceConfiguration globalConfig, User user) throws Exception {
+
+		/*return showRecentPhotos(user.getFlickrUserId(), user.getFlickrToken()
+				, minUpdate);*/
 		return Collections.emptyList();
 	}
 

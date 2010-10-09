@@ -3,20 +3,19 @@
  */
 package com.gmail.yuyang226.autoflickr2twitter.intf;
 
-import java.util.List;
-
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.GlobalServiceConfiguration;
-import com.gmail.yuyang226.autoflickr2twitter.datastore.model.User;
+import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserConfiguration;
+import com.gmail.yuyang226.autoflickr2twitter.model.IItem;
 
 /**
  * @author Toby Yu(yuyang226@gmail.com)
  *
  */
-public interface ISourceServiceProvider<T> {
-	
+public interface ITargetServiceProvider {
+
 	/**
 	 * A lower case representation of the source service provider.
-	 * @return a string to represent the underlying source service provider.
+	 * @return a string to represent the underlying target service provider.
 	 */
 	public String getId();
 	
@@ -30,10 +29,9 @@ public interface ISourceServiceProvider<T> {
 	public boolean storeToken(IDataStoreService datastore) throws Exception;
 	
 	/**
-	 * Get the list of latest items
-	 * @return
+	 * Post an update for a new item
+	 * @param item
 	 * @throws Exception
 	 */
-	public List<T> getLatestItems(GlobalServiceConfiguration globalConfig, User user) throws Exception;
-
+	public void postUpdate(GlobalServiceConfiguration globalConfig, UserConfiguration user, IItem item) throws Exception;
 }

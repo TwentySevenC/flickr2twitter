@@ -13,7 +13,7 @@ import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.util.IOUtilitie
 
 /**
  * @author yayu
- *
+ * @deprecated
  */
 public final class GlobalConfiguration {
 	public static String KEY_FLICKR_APIKEY = "apiKey";
