@@ -82,7 +82,7 @@ public class FlickrAuthTokenFetcher {
 
 		try {
 			String userId = auth.getUser().getId();
-			List<UserConfiguration> users = MyPersistenceManagerFactory.getAllUsers();
+			/*List<UserConfiguration> users = MyPersistenceManagerFactory.getAllUsers();
 			if (users.isEmpty() == false){
 				UserConfiguration userConfig = null;
 				for (UserConfiguration user : users) {
@@ -102,7 +102,7 @@ public class FlickrAuthTokenFetcher {
 				//new user configuration
 				UserConfiguration user = new UserConfiguration(auth.getUser().getId(), auth.getUser().getUsername(), auth.getToken());
 				pm.makePersistent(user);
-			}
+			}*/
 		} finally {
 			pm.close();
 		}

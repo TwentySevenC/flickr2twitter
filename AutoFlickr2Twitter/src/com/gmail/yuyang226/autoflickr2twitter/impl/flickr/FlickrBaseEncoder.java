@@ -1,4 +1,4 @@
-package com.gmail.yuyang226.autoflickr2twitter.core;
+package com.gmail.yuyang226.autoflickr2twitter.impl.flickr;
 
 import com.gmail.yuyang226.autoflickr2twitter.model.IPhoto;
 
