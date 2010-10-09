@@ -43,7 +43,7 @@
     <servlet-name>callback</servlet-name>
     <url-pattern>/callback</url-pattern>
   </servlet-mapping>
-  
+  <!-- 
   <servlet>
     <servlet-name>twitterPostStatus</servlet-name>
     <servlet-class>com.gmail.yuyang226.autoflickr2twitter.twitter.PostTweet</servlet-class>
@@ -52,7 +52,7 @@
     <servlet-name>twitterPostStatus</servlet-name>
     <url-pattern>/tweet</url-pattern>
   </servlet-mapping>
-  
+   -->
   <!-- Default page to serve -->
   <welcome-file-list>
     <welcome-file>AutoFlickr2Twitter.html</welcome-file>
