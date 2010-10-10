@@ -70,6 +70,16 @@ public final class PhotoUtils {
         } catch (IndexOutOfBoundsException e) {
             photo.setTitle(photoElement.getAttribute("title"));
         }
+        
+        try {
+            // here the flags are set, if the photo is read by getInfo().
+            Element visibilityElement = (Element) photoElement.getElementsByTagName("visibility").item(0);
+            photo.setPublicFlag("1".equals(visibilityElement.getAttribute("ispublic")));
+        } catch (IndexOutOfBoundsException e) {
+        } catch (NullPointerException e) {
+            // these flags are set here, if photos read from a list.
+            photo.setPublicFlag("1".equals(photoElement.getAttribute("ispublic")));
+        }
 
         try {
             photo.setDescription(XMLUtilities.getChildValue(photoElement, "description"));

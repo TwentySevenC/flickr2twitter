@@ -1,11 +1,13 @@
 /**
  * 
  */
-package com.gmail.yuyang226.autoflickr2twitter.core;
+package com.gmail.yuyang226.autoflickr2twitter.impl.twitter;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.logging.Logger;
+
+import com.gmail.yuyang226.autoflickr2twitter.core.GlobalDefaultConfiguration;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
