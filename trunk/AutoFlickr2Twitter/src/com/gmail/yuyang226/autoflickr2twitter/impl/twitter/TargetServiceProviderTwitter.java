@@ -3,7 +3,9 @@
  */
 package com.gmail.yuyang226.autoflickr2twitter.impl.twitter;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -21,12 +23,12 @@ import twitter4j.http.Authorization;
 import twitter4j.http.OAuthAuthorization;
 import twitter4j.http.RequestToken;
 
-import com.gmail.yuyang226.autoflickr2twitter.core.TwitterPoster;
+import com.gmail.yuyang226.autoflickr2twitter.core.GlobalDefaultConfiguration;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.GlobalTargetApplicationService;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.User;
+import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserSourceService;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserTargetService;
-import com.gmail.yuyang226.autoflickr2twitter.intf.IDataStoreService;
 import com.gmail.yuyang226.autoflickr2twitter.intf.ITargetServiceProvider;
 import com.gmail.yuyang226.autoflickr2twitter.model.IGeoItem;
 import com.gmail.yuyang226.autoflickr2twitter.model.IItem;
@@ -40,7 +42,7 @@ import com.gmail.yuyang226.autoflickr2twitter.model.IShortUrl;
 public class TargetServiceProviderTwitter implements ITargetServiceProvider {
 	public static final String ID = "twitter";
 	private static final Logger log = Logger.getLogger(TwitterPoster.class.getName());
-	private Twitter twitter = null;
+	//private Twitter twitter = null;
 
 	/**
 	 * 
@@ -55,58 +57,6 @@ public class TargetServiceProviderTwitter implements ITargetServiceProvider {
 	@Override
 	public String getId() {
 		return ID;
-	}
-	
-	public String requestNewToken(GlobalTargetApplicationService globalAppConfig) throws TwitterException {
-		try {
-			twitter = new TwitterFactory().getInstance();
-			twitter.setOAuthConsumer(globalAppConfig.getTargetAppConsumerId(), 
-					globalAppConfig.getTargetAppConsumerSecret());
-			RequestToken requestToken = twitter.getOAuthRequestToken();
-			log.info("Open the following URL and grant access to your account:");
-			log.info(requestToken.getAuthorizationURL());
-			return requestToken.getAuthorizationURL();
-		} catch (TwitterException e) {
-			twitter = null;
-			throw e;
-		}
-	}
-	
-	public String readyTwitterAuthorization() throws TwitterException {
-		StringBuffer buf = new StringBuffer();
-		if (twitter != null) {
-			AccessToken accessToken = twitter.getOAuthAccessToken();
-			buf.append(" User Id: " + accessToken.getUserId());
-			buf.append(" User Screen Name: " + accessToken.getScreenName());
-			buf.append(" Access Token: " + accessToken.getToken());
-			buf.append(" Token Secret: " + accessToken.getTokenSecret());
-			PersistenceManagerFactory pmf = MyPersistenceManagerFactory.getInstance();
-			PersistenceManager pm = pmf.getPersistenceManager();
-
-			try {
-				List<User> users = MyPersistenceManagerFactory.getAllUsers();
-				if (users.isEmpty() == false) {
-					User user = users.get(0);
-					/*user = pm.getObjectById(UserConfiguration.class, user.getFlickrUserId());
-					user.setTwitterUserId(String.valueOf(twitter.verifyCredentials().getId()));
-					user.setTwitterUserName(accessToken.getScreenName());
-					user.setTwitterAccessToken(accessToken.getToken());
-					user.setTwitterTokenSecret(accessToken.getTokenSecret());*/
-				}
-			} finally {
-				pm.close();
-			}
-		}
-		return buf.toString();
-	}
-
-	/* (non-Javadoc)
-	 * @see com.gmail.yuyang226.autoflickr2twitter.intf.ITargetServiceProvider#storeToken(com.gmail.yuyang226.autoflickr2twitter.intf.IDataStoreService)
-	 */
-	@Override
-	public boolean storeToken(IDataStoreService datastore) throws Exception {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	/* (non-Javadoc)
@@ -156,6 +106,71 @@ public class TargetServiceProviderTwitter implements ITargetServiceProvider {
 	    	}
 	    }
 
+	}
+
+	/* (non-Javadoc)
+	 * @see com.gmail.yuyang226.autoflickr2twitter.intf.IServiceAuthorizer#readyAuthorization(java.lang.String, java.util.Map)
+	 */
+	@Override
+	public String readyAuthorization(String userEmail, Map<String, Object> data)
+			throws Exception {
+		if (data == null || data.containsKey("token") == false) {
+			throw new IllegalArgumentException("Invalid data: " + data);
+		}
+		StringBuffer buf = new StringBuffer();
+		GlobalTargetApplicationService globalAppConfig = 
+			MyPersistenceManagerFactory.getGlobalTargetAppService(ID);
+		Twitter twitter = new TwitterFactory().getOAuthAuthorizedInstance(globalAppConfig.getTargetAppConsumerId(), 
+				globalAppConfig.getTargetAppConsumerSecret());
+
+		String token = String.valueOf(data.get("token"));
+		String secret = String.valueOf(data.get("secret"));
+		RequestToken requestToken = new RequestToken(token, secret);
+		AccessToken accessToken = twitter.getOAuthAccessToken(requestToken);
+		buf.append(" User Id: " + accessToken.getUserId());
+		buf.append(" User Screen Name: " + accessToken.getScreenName());
+		buf.append(" Access Token: " + accessToken.getToken());
+		buf.append(" Token Secret: " + accessToken.getTokenSecret());
+
+
+		for (UserTargetService service : MyPersistenceManagerFactory.getUserTargetServices(userEmail)) {
+			if (accessToken.getToken().equals(service.getServiceAccessToken())) { 
+				throw new IllegalArgumentException("Token already registered: " + accessToken.getToken());
+			}
+		}
+		UserTargetService service = new UserTargetService();
+		service.setTargetServiceProviderId(ID);
+		service.setServiceAccessToken(accessToken.getToken());
+		service.setServiceTokenSecret(accessToken.getTokenSecret());
+		service.setServiceUserId(String.valueOf(accessToken.getUserId()));
+		service.setUserEmail(userEmail);
+		service.setServiceUserName(accessToken.getScreenName());
+		MyPersistenceManagerFactory.addTargetServiceApp(userEmail, service);
+		return buf.toString();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.gmail.yuyang226.autoflickr2twitter.intf.IServiceAuthorizer#requestAuthorization()
+	 */
+	@Override
+	public Map<String, Object> requestAuthorization() throws Exception {
+		Map<String, Object> result = new HashMap<String, Object>();
+		try {
+			GlobalTargetApplicationService globalAppConfig = 
+				MyPersistenceManagerFactory.getGlobalTargetAppService(ID);
+			Twitter twitter = new TwitterFactory().getInstance();
+			twitter.setOAuthConsumer(globalAppConfig.getTargetAppConsumerId(), 
+					globalAppConfig.getTargetAppConsumerSecret());
+			RequestToken requestToken = twitter.getOAuthRequestToken();
+			log.info("Open the following URL and grant access to your account:");
+			log.info(requestToken.getAuthorizationURL());
+			result.put("url", requestToken.getAuthorizationURL());
+			result.put("token", requestToken.getToken());
+			result.put("secret", requestToken.getTokenSecret());
+		} catch (TwitterException e) {
+			throw e;
+		}
+		return result;
 	}
 
 }

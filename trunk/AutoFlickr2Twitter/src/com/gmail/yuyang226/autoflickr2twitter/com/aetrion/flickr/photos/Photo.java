@@ -39,6 +39,7 @@ public class Photo extends Item implements IPhoto, IGeoItem, IShortUrl{
         }
     };
 
+    private boolean publicFlag;
     private Date dateAdded;
     private Date datePosted;
     private Date dateTaken;
@@ -47,6 +48,14 @@ public class Photo extends Item implements IPhoto, IGeoItem, IShortUrl{
     private ItemGeoData geoData;
 
     public Photo() {
+    }
+    
+    public boolean isPublicFlag() {
+        return publicFlag;
+    }
+
+    public void setPublicFlag(boolean publicFlag) {
+        this.publicFlag = publicFlag;
     }
 
     public Date getDateAdded() {

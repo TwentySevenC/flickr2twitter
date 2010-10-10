@@ -3,6 +3,8 @@
  */
 package com.gmail.yuyang226.autoflickr2twitter.client;
 
+import java.util.Map;
+
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -15,13 +17,9 @@ public interface AutoFlickr2TwitterService extends RemoteService {
 
 	public void recheck();
 	
-	public String authorize() throws Exception;
+	public Map<String, Object> authorize(boolean sourceProvider, String providerId) throws Exception;
 	
-	public String testToken(String frob) throws Exception;
+	public String testToken(boolean sourceProvider, String providerId, String userEmail, Map<String, Object> data) throws Exception;
 	
-	public String authorizeTwitter() throws Exception;
-	
-	public String readyTwitterToken() throws Exception;
-	
-	public void generateTestData() throws Exception;
+	public void createUser(String userEmail) throws Exception;
 }
