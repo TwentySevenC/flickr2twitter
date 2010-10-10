@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.gmail.yuyang226.autoflickr2twitter.core.GlobalConfiguration;
+import com.gmail.yuyang226.autoflickr2twitter.core.GlobalDefaultConfiguration;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
@@ -35,9 +35,9 @@ public class TwitterSignInCallback extends HttpServlet {
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) {
 
-		final String consumerKey = GlobalConfiguration.getInstance()
+		final String consumerKey = GlobalDefaultConfiguration.getInstance()
 				.getTwitterConsumerId();
-		final String consumerSecret = GlobalConfiguration.getInstance()
+		final String consumerSecret = GlobalDefaultConfiguration.getInstance()
 				.getTwitterConsumerSecret();
 
 		ConfigurationBuilder builder = new ConfigurationBuilder();

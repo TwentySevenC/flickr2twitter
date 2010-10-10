@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import com.gmail.yuyang226.autoflickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.GlobalServiceConfiguration;
+import com.gmail.yuyang226.autoflickr2twitter.datastore.model.GlobalTargetApplicationService;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.User;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserSourceService;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserTargetService;
@@ -67,15 +68,15 @@ public class ServiceRunner {
 				for (UserTargetService target : user.getTargetServices()) {
 					ITargetServiceProvider targetProvider = 
 						ServiceFactory.getTargetServiceProvider(target.getTargetServiceProviderId());
-					if (targetProvider == null) {
+					GlobalTargetApplicationService globalAppConfig = 
+						MyPersistenceManagerFactory.getGlobalTargetAppService(target.getTargetServiceProviderId());
+					if (targetProvider == null || globalAppConfig == null) {
 						log.warning("Invalid target service provider configured: " + target.getTargetServiceProviderId());
 					} else {
-						for (IItem item : items) {
-							try {
-								targetProvider.postUpdate(globalConfig, target, item);
-							} catch (Exception e) {
-								log.throwing(ServiceRunner.class.getName(), "", e);
-							}
+						try {
+							targetProvider.postUpdate(globalAppConfig, target, items);
+						} catch (Exception e) {
+							log.throwing(ServiceRunner.class.getName(), "", e);
 						}
 					}
 				}

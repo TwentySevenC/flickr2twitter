@@ -28,7 +28,9 @@ import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.photos.Extras;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.photos.Photo;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.photos.PhotoList;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.photos.PhotosInterface;
+import com.gmail.yuyang226.autoflickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.GlobalServiceConfiguration;
+import com.gmail.yuyang226.autoflickr2twitter.datastore.model.GlobalSourceApplicationService;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserSourceService;
 import com.gmail.yuyang226.autoflickr2twitter.intf.IDataStoreService;
 import com.gmail.yuyang226.autoflickr2twitter.intf.ISourceServiceProvider;
@@ -40,31 +42,16 @@ import com.gmail.yuyang226.autoflickr2twitter.model.IItem;
  */
 public class SourceServiceProviderFlickr implements ISourceServiceProvider<IItem> {
 	public static final String ID = "flickr";
-    private Flickr f;
     private static final Logger log = Logger.getLogger(SourceServiceProviderFlickr.class.getName());
 
 	/**
 	 * 
 	 */
-	public SourceServiceProviderFlickr(GlobalServiceConfiguration globalConfig) throws ParserConfigurationException, IOException {
+	public SourceServiceProviderFlickr() throws ParserConfigurationException, IOException {
 		super();
-		if (globalConfig == null 
-				|| ID.equalsIgnoreCase(globalConfig.getSourceProviderId()) == false) {
-			throw new IllegalArgumentException("Invalid source service provider: " + globalConfig);
-		}
-		REST transport = new REST();
-        f = new Flickr(
-        		globalConfig.getSourceAppApiKey(),
-        		globalConfig.getSourceAppSecret(),
-        		transport
-        );
-        transport.setAllowCache(false);
-       
-        Flickr.debugRequest = false;
-        Flickr.debugStream = false;
 	}
     
-    private List<IItem> showRecentPhotos(String userId, String token, long interval) throws IOException, SAXException, FlickrException {
+    private List<IItem> showRecentPhotos(Flickr f, String userId, String token, long interval) throws IOException, SAXException, FlickrException {
     	 RequestContext requestContext = RequestContext.getRequestContext();
          Auth auth = new Auth();
          auth.setPermission(Permission.READ);
@@ -115,7 +102,23 @@ public class SourceServiceProviderFlickr implements ISourceServiceProvider<IItem
 	 */
 	@Override
 	public List<IItem> getLatestItems(GlobalServiceConfiguration globalConfig, UserSourceService sourceService) throws Exception {
-		return showRecentPhotos(sourceService.getServiceUserId(), sourceService.getServiceAccessToken()
+		GlobalSourceApplicationService globalAppConfig = MyPersistenceManagerFactory
+		.getGlobalSourceAppService(sourceService.getSourceServiceProviderId());
+		if (globalAppConfig == null 
+				|| ID.equalsIgnoreCase(globalAppConfig.getSourceProviderId()) == false) {
+			throw new IllegalArgumentException("Invalid source service provider: " + globalAppConfig);
+		}
+		REST transport = new REST();
+		Flickr  f = new Flickr(
+				globalAppConfig.getSourceAppApiKey(),
+				globalAppConfig.getSourceAppSecret(),
+				transport
+		);
+        transport.setAllowCache(false);
+       
+        Flickr.debugRequest = false;
+        Flickr.debugStream = false;
+		return showRecentPhotos(f, sourceService.getServiceUserId(), sourceService.getServiceAccessToken()
 				, globalConfig.getMinUploadTime());
 	}
 

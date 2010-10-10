@@ -3,7 +3,9 @@
  */
 package com.gmail.yuyang226.autoflickr2twitter.intf;
 
-import com.gmail.yuyang226.autoflickr2twitter.datastore.model.GlobalServiceConfiguration;
+import java.util.List;
+
+import com.gmail.yuyang226.autoflickr2twitter.datastore.model.GlobalTargetApplicationService;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserTargetService;
 import com.gmail.yuyang226.autoflickr2twitter.model.IItem;
 
@@ -33,6 +35,6 @@ public interface ITargetServiceProvider {
 	 * @param item
 	 * @throws Exception
 	 */
-	public void postUpdate(GlobalServiceConfiguration globalConfig, 
-			UserTargetService targetConfig, IItem item) throws Exception;
+	public void postUpdate(GlobalTargetApplicationService globalAppConfig, 
+			UserTargetService targetConfig, List<IItem> items) throws Exception;
 }

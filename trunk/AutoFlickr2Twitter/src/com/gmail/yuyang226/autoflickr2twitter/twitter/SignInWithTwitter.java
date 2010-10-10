@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.gmail.yuyang226.autoflickr2twitter.core.GlobalConfiguration;
+import com.gmail.yuyang226.autoflickr2twitter.core.GlobalDefaultConfiguration;
 
 import twitter4j.conf.ConfigurationBuilder;
 import twitter4j.http.OAuthAuthorization;
@@ -31,8 +31,8 @@ public class SignInWithTwitter extends HttpServlet {
 	private static final long serialVersionUID = 2121769166973786061L;
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) {
-		final String consumerKey = GlobalConfiguration.getInstance().getTwitterConsumerId();
-		final String consumerSecret = GlobalConfiguration.getInstance().getTwitterConsumerSecret();
+		final String consumerKey = GlobalDefaultConfiguration.getInstance().getTwitterConsumerId();
+		final String consumerSecret = GlobalDefaultConfiguration.getInstance().getTwitterConsumerSecret();
 		
 		ConfigurationBuilder builder = new ConfigurationBuilder();
 		OAuthAuthorization auth = new OAuthAuthorization(builder.build(),

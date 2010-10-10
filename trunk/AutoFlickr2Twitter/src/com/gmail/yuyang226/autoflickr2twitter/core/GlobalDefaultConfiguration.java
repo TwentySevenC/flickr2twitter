@@ -7,15 +7,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import twitter4j.http.AccessToken;
-
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.util.IOUtilities;
 
 /**
  * @author yayu
- * @deprecated
+ * 
  */
-public final class GlobalConfiguration {
+public final class GlobalDefaultConfiguration {
 	public static String KEY_FLICKR_APIKEY = "apiKey";
 	public static String KEY_FLICKR_SECRET = "secret";
 	
@@ -31,27 +29,25 @@ public final class GlobalConfiguration {
 	
 	private String twitterConsumerId;
 	private String twitterConsumerSecret;
-//	private String twitterAccessToken;
-//	private String twitterTokenSecret;
 	
 	private long interval = 600000L; //10 mins
 	
 	
 	private Properties properties = null;
 	
-	private static final GlobalConfiguration INSTANCE;
+	private static final GlobalDefaultConfiguration INSTANCE;
 	static {
-		INSTANCE = new GlobalConfiguration();
+		INSTANCE = new GlobalDefaultConfiguration();
 	}
 	
-	public static GlobalConfiguration getInstance() {
+	public static GlobalDefaultConfiguration getInstance() {
 		return INSTANCE;
 	}
 	
 	/**
 	 * 
 	 */
-	private GlobalConfiguration() {
+	private GlobalDefaultConfiguration() {
 		super();
 		try {
 			init();
@@ -75,8 +71,6 @@ public final class GlobalConfiguration {
         
         this.twitterConsumerId = properties.getProperty(KEY_TWITTER_CONSUMERID, null);
         this.twitterConsumerSecret = properties.getProperty(KEY_TWITTER_CONSUMERSECRET, null);
-        /*this.twitterAccessToken = properties.getProperty(KEY_TWITTER_ACCESSTOKEN, null);
-        this.twitterTokenSecret = properties.getProperty(KEY_TWITTER_TOKENSECRET, null);*/
         
         try {
         	this.interval = Long.parseLong(properties.getProperty(KEY_UPDATE_INTERVAL));
@@ -101,21 +95,9 @@ public final class GlobalConfiguration {
 		return twitterConsumerSecret;
 	}
 
-	/*public String getTwitterAccessToken() {
-		return twitterAccessToken;
-	}
-
-	public String getTwitterTokenSecret() {
-		return twitterTokenSecret;
-	}*/
-
 	public Properties getProperties() {
 		return properties;
 	}
-	
-	/*public AccessToken getTwitterAccessTokenInstance() {
-		return new AccessToken(this.twitterAccessToken, this.twitterTokenSecret);
-	}*/
 
 	public long getInterval() {
 		return interval;
