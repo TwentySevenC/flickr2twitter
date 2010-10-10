@@ -91,13 +91,9 @@ public class AutoFlirckr2TwitterServiceImpl extends RemoteServiceServlet
 
 	@Override
 	public void generateTestData() throws Exception {
-		PersistenceManagerFactory pmf = MyPersistenceManagerFactory.getInstance();
-		PersistenceManager pm = pmf.getPersistenceManager();
-		try {
-			User user = new User();
-			user.setPassword("hello world");
-			user.setScreenName("Yayu");
-			user.setUserId(new Email("yuyang226@gmail.com"));
+			
+			User user = MyPersistenceManagerFactory.createNewUser(
+					"yuyang226@gmail.com", "hello world", "Yayu");
 			
 			UserSourceService source = new UserSourceService();
 			source.setServiceAccessToken("72157624934440413-81a5395969daa49e");
@@ -105,20 +101,18 @@ public class AutoFlirckr2TwitterServiceImpl extends RemoteServiceServlet
 			source.setServiceUserName("Toby Yu");
 			source.setSourceServiceProviderId(SourceServiceProviderFlickr.ID);
 			source.setUserEmail(user.getUserId().getEmail());
-			user.addSourceService(source);
+			MyPersistenceManagerFactory.addSourceServiceApp(user, source);
+			
 			
 			UserTargetService target = new UserTargetService();
-			target.setServiceAccessToken("196514413-rGZLFXG0fdOCVxfyBgpfLsBAUFfchO8OBIAsUBqA");
-			target.setServiceTokenSecret("lZNlvIOHdqBwIYbGCYVk6lugFz0I7XsR6t3VwXy4prk");
-			target.setServiceUserId("yuyang226");
+			target.setServiceAccessToken("196514413-IlwVQ5fVMJKLsqCJXLxFXuzYCOYsEVjuMvVhHJcW");
+			target.setServiceTokenSecret("q2SnSzyUj0dZNsDuftpOZg3XMYgsF6szUe8zpRYBU");
+			target.setServiceUserId("yayu226");
 			target.setServiceUserName("Yuy");
 			target.setTargetServiceProviderId(TargetServiceProviderTwitter.ID);
 			target.setUserEmail(user.getUserId().getEmail());
-			user.addTargetService(target);
-			pm.makePersistent(user);
-		} finally {
-			pm.close();
-		}
+			MyPersistenceManagerFactory.addTargetServiceApp(user, target);
+		
 		
 	}
 

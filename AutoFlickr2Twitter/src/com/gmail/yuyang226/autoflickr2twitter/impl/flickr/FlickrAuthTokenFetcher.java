@@ -17,7 +17,7 @@ import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.RequestContext;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.auth.Auth;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.auth.AuthInterface;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.auth.Permission;
-import com.gmail.yuyang226.autoflickr2twitter.core.GlobalConfiguration;
+import com.gmail.yuyang226.autoflickr2twitter.core.GlobalDefaultConfiguration;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.MyPersistenceManagerFactory;
 
 /**
@@ -42,8 +42,8 @@ public class FlickrAuthTokenFetcher {
 
 	public static String authrorize() throws ParserConfigurationException, IOException, SAXException, FlickrException {
 		Flickr f = new Flickr(
-				GlobalConfiguration.getInstance().getFlickrApiKey(),
-				GlobalConfiguration.getInstance().getFlickrSecret(),
+				GlobalDefaultConfiguration.getInstance().getFlickrApiKey(),
+				GlobalDefaultConfiguration.getInstance().getFlickrSecret(),
 				new REST()
 		);
 		
@@ -58,8 +58,8 @@ public class FlickrAuthTokenFetcher {
 	
 	public static String test(String frob) throws ParserConfigurationException, IOException, SAXException, FlickrException {
 		Flickr f = new Flickr(
-				GlobalConfiguration.getInstance().getFlickrApiKey(),
-				GlobalConfiguration.getInstance().getFlickrSecret(),
+				GlobalDefaultConfiguration.getInstance().getFlickrApiKey(),
+				GlobalDefaultConfiguration.getInstance().getFlickrSecret(),
 				new REST()
 		);
 		AuthInterface authInterface = f.getAuthInterface();

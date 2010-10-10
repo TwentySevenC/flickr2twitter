@@ -21,10 +21,9 @@ import twitter4j.http.Authorization;
 import twitter4j.http.OAuthAuthorization;
 import twitter4j.http.RequestToken;
 
-import com.gmail.yuyang226.autoflickr2twitter.core.GlobalConfiguration;
 import com.gmail.yuyang226.autoflickr2twitter.core.TwitterPoster;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.MyPersistenceManagerFactory;
-import com.gmail.yuyang226.autoflickr2twitter.datastore.model.GlobalServiceConfiguration;
+import com.gmail.yuyang226.autoflickr2twitter.datastore.model.GlobalTargetApplicationService;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.User;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserTargetService;
 import com.gmail.yuyang226.autoflickr2twitter.intf.IDataStoreService;
@@ -58,11 +57,11 @@ public class TargetServiceProviderTwitter implements ITargetServiceProvider {
 		return ID;
 	}
 	
-	public String requestNewToken() throws TwitterException {
+	public String requestNewToken(GlobalTargetApplicationService globalAppConfig) throws TwitterException {
 		try {
 			twitter = new TwitterFactory().getInstance();
-			twitter.setOAuthConsumer(GlobalConfiguration.getInstance().getTwitterConsumerId(), 
-					GlobalConfiguration.getInstance().getTwitterConsumerSecret());
+			twitter.setOAuthConsumer(globalAppConfig.getTargetAppConsumerId(), 
+					globalAppConfig.getTargetAppConsumerSecret());
 			RequestToken requestToken = twitter.getOAuthRequestToken();
 			log.info("Open the following URL and grant access to your account:");
 			log.info(requestToken.getAuthorizationURL());
@@ -114,39 +113,47 @@ public class TargetServiceProviderTwitter implements ITargetServiceProvider {
 	 * @see com.gmail.yuyang226.autoflickr2twitter.intf.ITargetServiceProvider#postUpdate(com.gmail.yuyang226.autoflickr2twitter.model.IItem)
 	 */
 	@Override
-	public void postUpdate(GlobalServiceConfiguration globalConfig, 
-			UserTargetService targetConfig, IItem item) throws Exception {
-		log.info("Posting message -> " + item + " for " + targetConfig.getServiceUserName());
+	public void postUpdate(GlobalTargetApplicationService globalAppConfig, 
+			UserTargetService targetConfig, List<IItem> items) throws Exception {
 		// The factory instance is re-useable and thread safe.
 		AccessToken accessToken = new AccessToken(targetConfig.getServiceAccessToken(), 
 				targetConfig.getServiceTokenSecret()); 
 		PropertyConfiguration conf = new PropertyConfiguration(new Properties());
 		
-		Authorization auth = new OAuthAuthorization(conf, globalConfig.getTargetAppConsumerId(), 
-				globalConfig.getTargetAppConsumerSecret(), accessToken);
+		Authorization auth = new OAuthAuthorization(conf, globalAppConfig.getTargetAppConsumerId(), 
+				globalAppConfig.getTargetAppConsumerSecret(), accessToken);
 	    Twitter twitter = new TwitterFactory().getInstance(auth);
-	    GeoLocation geoLoc = null;
-	    if (item instanceof IGeoItem) {
-			if (((IGeoItem)item).getGeoData() != null) {
-				IGeoItem geoItem = (IGeoItem)item;
-				geoLoc = new GeoLocation(geoItem.getGeoData().getLatitude(), 
-						geoItem.getGeoData().getLongitude());
-			}
-		}
-	    String message = null;
-	    if (item instanceof IPhoto) {
-			IPhoto photo = (IPhoto)item;
-			message = photo.getTitle();
-			if (photo instanceof IShortUrl) {
-				message += " " + ((IShortUrl)photo).getShortUrl();
-			} else {
-				message += " " + photo.getUrl();
-			}
-			 
-		}
-	    if (message != null) {
-	    	Status status = geoLoc == null ? twitter.updateStatus(message) : twitter.updateStatus(message, geoLoc);
-	    	log.info("Successfully updated the status [" + status.getText() + "] to user @" + targetConfig.getServiceUserName());
+	    
+	    for (IItem item : items) {
+	    	log.info("Posting message -> " + item + " for " + targetConfig.getServiceUserName());
+
+	    	GeoLocation geoLoc = null;
+	    	if (item instanceof IGeoItem) {
+	    		if (((IGeoItem)item).getGeoData() != null) {
+	    			IGeoItem geoItem = (IGeoItem)item;
+	    			geoLoc = new GeoLocation(geoItem.getGeoData().getLatitude(), 
+	    					geoItem.getGeoData().getLongitude());
+	    		}
+	    	}
+	    	String message = null;
+	    	if (item instanceof IPhoto) {
+	    		IPhoto photo = (IPhoto)item;
+	    		message = photo.getTitle();
+	    		if (photo instanceof IShortUrl) {
+	    			message += " " + ((IShortUrl)photo).getShortUrl();
+	    		} else {
+	    			message += " " + photo.getUrl();
+	    		}
+
+	    	}
+	    	if (message != null) {
+	    		try {
+	    			Status status = geoLoc == null ? twitter.updateStatus(message) : twitter.updateStatus(message, geoLoc);
+	    			log.info("Successfully updated the status [" + status.getText() + "] to user @" + targetConfig.getServiceUserName());
+	    		} catch (TwitterException e) {
+	    			log.warning("Failed posting message ->" + message + ". Cause: " + e);
+	    		}
+	    	}
 	    }
 
 	}
