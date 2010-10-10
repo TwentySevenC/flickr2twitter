@@ -9,9 +9,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-import javax.jdo.PersistenceManager;
-import javax.jdo.PersistenceManagerFactory;
-
 import twitter4j.GeoLocation;
 import twitter4j.Status;
 import twitter4j.Twitter;
@@ -23,11 +20,8 @@ import twitter4j.http.Authorization;
 import twitter4j.http.OAuthAuthorization;
 import twitter4j.http.RequestToken;
 
-import com.gmail.yuyang226.autoflickr2twitter.core.GlobalDefaultConfiguration;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.GlobalTargetApplicationService;
-import com.gmail.yuyang226.autoflickr2twitter.datastore.model.User;
-import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserSourceService;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserTargetService;
 import com.gmail.yuyang226.autoflickr2twitter.intf.ITargetServiceProvider;
 import com.gmail.yuyang226.autoflickr2twitter.model.IGeoItem;
@@ -42,7 +36,6 @@ import com.gmail.yuyang226.autoflickr2twitter.model.IShortUrl;
 public class TargetServiceProviderTwitter implements ITargetServiceProvider {
 	public static final String ID = "twitter";
 	private static final Logger log = Logger.getLogger(TwitterPoster.class.getName());
-	//private Twitter twitter = null;
 
 	/**
 	 * 

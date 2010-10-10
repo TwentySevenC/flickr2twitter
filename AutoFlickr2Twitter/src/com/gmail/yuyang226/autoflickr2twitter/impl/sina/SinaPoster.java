@@ -1,4 +1,4 @@
-package com.gmail.yuyang226.autoflickr2twitter.core;
+package com.gmail.yuyang226.autoflickr2twitter.impl.sina;
 
 import twitter4j.GeoLocation;
 
