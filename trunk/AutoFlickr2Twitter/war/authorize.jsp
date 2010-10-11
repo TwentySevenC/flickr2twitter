@@ -26,7 +26,7 @@
 	<table>
 
 		<tr>
-			<td><a href="/oauth?<%=OAuthServlet.PARA_OPT%>=<%=OAuthServlet.OPT_AUTH_SOURCE %>&<%=OAuthServlet.PARA_PROVIDER_ID%>=flickr">Authorize Flicker Account</a></td>
+			<td><a href="/oauth?<%=OAuthServlet.PARA_OPT%>=<%=OAuthServlet.OPT_AUTH_SOURCE %>&<%=OAuthServlet.PARA_PROVIDER_ID%>=flickr" target="_new">Authorize Flicker Account</a></td>
 			<td>Here we can add a button so user can test the authorize
 			result</td>
 		</tr>
@@ -38,7 +38,7 @@
 	</li>
 	<table>
 		<tr>
-			<td><a href="/oauth?<%=OAuthServlet.PARA_OPT%>=<%=OAuthServlet.OPT_AUTH_SOURCE %>&<%=OAuthServlet.PARA_PROVIDER_ID%>=twitter">Authorize Twitter Account</a></td>
+			<td><a href="/oauth?<%=OAuthServlet.PARA_OPT%>=<%=OAuthServlet.OPT_AUTH_SOURCE %>&<%=OAuthServlet.PARA_PROVIDER_ID%>=twitter" target="_new">Authorize Twitter Account</a></td>
 			<td>Here we can add a button so user can test the authorize
 			result</td>
 		</tr>
