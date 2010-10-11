@@ -36,6 +36,15 @@
   </servlet-mapping>
   
   <servlet>
+    <servlet-name>sinacallback</servlet-name>
+    <servlet-class>com.gmail.yuyang226.autoflickr2twitter.sina.weibo4j.http.SinaSignInCallBackServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>sinacallback</servlet-name>
+    <url-pattern>/sinacallback</url-pattern>
+  </servlet-mapping>
+  
+  <servlet>
     <servlet-name>callback</servlet-name>
     <servlet-class>com.gmail.yuyang226.autoflickr2twitter.twitter.TwitterSignInCallback</servlet-class>
   </servlet>
