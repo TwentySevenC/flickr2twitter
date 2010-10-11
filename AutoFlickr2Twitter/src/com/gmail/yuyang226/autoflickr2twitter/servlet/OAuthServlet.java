@@ -31,8 +31,8 @@ public class OAuthServlet extends HttpServlet {
 
 	private AutoFlickr2TwitterService authService = new AutoFlirckr2TwitterServiceImpl();
 
-	private void authSource(HttpServletRequest req, HttpServletResponse resp, boolean sourceProvider, 
- StringBuffer msg) {
+	private void doAuth(HttpServletRequest req, HttpServletResponse resp,
+			boolean sourceProvider, StringBuffer msg) {
 		String providerId = req.getParameter(PARA_PROVIDER_ID);
 		User user = (User) req.getSession().getAttribute(
 				UserAccountServlet.PARA_SESSION_USER);
@@ -52,7 +52,7 @@ public class OAuthServlet extends HttpServlet {
 						.readyAuthorization(userEmail, data);
 			}
 			log.info(retMsg);
-			
+
 			msg.append("Auth successful!");
 
 		} catch (Exception e) {
@@ -62,7 +62,6 @@ public class OAuthServlet extends HttpServlet {
 		}
 	}
 
-
 	private void testAuth(HttpServletRequest req, HttpServletResponse resp,
 			StringBuffer msg) {
 
@@ -71,9 +70,10 @@ public class OAuthServlet extends HttpServlet {
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		
-		User user = (User)req.getSession().getAttribute(UserAccountServlet.PARA_SESSION_USER);
-		if(user == null){
+
+		User user = (User) req.getSession().getAttribute(
+				UserAccountServlet.PARA_SESSION_USER);
+		if (user == null) {
 			req.getSession().setAttribute("message", "Please Login first!");
 			resp.sendRedirect("/index.jsp");
 			return;
@@ -83,9 +83,9 @@ public class OAuthServlet extends HttpServlet {
 		StringBuffer msg = new StringBuffer();
 		try {
 			if (OPT_AUTH_SOURCE.equalsIgnoreCase(operation)) {
-				authSource(req, resp, true, msg);
+				doAuth(req, resp, true, msg);
 			} else if (OPT_AUTH_TARGET.equalsIgnoreCase(operation)) {
-				authSource(req, resp, false, msg);
+				doAuth(req, resp, false, msg);
 			} else if (OPT_TEST_AUTH.equalsIgnoreCase(operation)) {
 				testAuth(req, resp, msg);
 			}

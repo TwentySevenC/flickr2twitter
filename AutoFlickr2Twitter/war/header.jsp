@@ -10,9 +10,8 @@
 	<tr>
 		<td>|&nbsp;<a href="/index.jsp">Index</a>&nbsp;</td>
 		<td>|&nbsp;<a href="/register.jsp">Register</a> &nbsp;</td>
-		<td>|&nbsp;<a href="/userOperation">Auth Source</a> &nbsp;</td>
-		<td>|&nbsp;<a href="/userOperation">Auth Target</a> &nbsp;</td>
-		<td>|&nbsp;<a href="/userOperation">Link S &amp; T</a> &nbsp;</td>
+		<td>|&nbsp;<a href="/authorize.jsp">Authorize Source &amp; Target</a> &nbsp;</td>
+		<td>|&nbsp;<a href="/authorize.jsp">Link Source &amp; Target</a> &nbsp;</td>
 		<td>|&nbsp;<a href="/about.jsp">About &amp; Help</a>&nbsp;|</td>
 		<%
 			User user = (User) session.getAttribute(UserAccountServlet.PARA_SESSION_USER);
