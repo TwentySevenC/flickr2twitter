@@ -242,7 +242,7 @@ public class User {
 	 */
 	@Override
 	public String toString() {
-		return "User [" + (userId != null ? "userId=" + userId + ", " : "")
+		return "User [" + (userId != null ? "userId=" + userId.getEmail() + ", " : "")
 				+ (password != null ? "password=" + password + ", " : "")
 				+ (permission != null ? "permission=" + permission + ", " : "")
 				+ (screenName != null ? "screenName=" + screenName : "") + "]";
