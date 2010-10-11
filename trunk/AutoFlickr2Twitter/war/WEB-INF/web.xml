@@ -52,6 +52,18 @@
     <servlet-name>callback</servlet-name>
     <url-pattern>/callback</url-pattern>
   </servlet-mapping>
+  
+  
+  <servlet>
+    <servlet-name>userOperation</servlet-name>
+    <servlet-class>com.gmail.yuyang226.autoflickr2twitter.servlet.UserAccountServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>userOperation</servlet-name>
+    <url-pattern>/userOperation</url-pattern>
+  </servlet-mapping>
+  
+  
   <!-- 
   <servlet>
     <servlet-name>twitterPostStatus</servlet-name>

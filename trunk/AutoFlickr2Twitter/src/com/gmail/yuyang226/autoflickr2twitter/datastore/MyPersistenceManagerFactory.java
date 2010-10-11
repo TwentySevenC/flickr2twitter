@@ -187,6 +187,24 @@ public final class MyPersistenceManagerFactory {
 		}
 		return null;
 	}
+	
+	public static User getLoginUser(String userEmail, String password) {
+		PersistenceManagerFactory pmf = MyPersistenceManagerFactory
+				.getInstance();
+		PersistenceManager pm = pmf.getPersistenceManager();
+		try {
+			Query query = pm.newQuery(User.class);
+			query.setFilter("userId == userEmailAddress");
+			query.setFilter("password == userPassword");
+			query.declareParameters("String userEmailAddress, String userPassword");
+			List<?> data = (List<?>) query.execute(userEmail, password);
+			if (data != null && data.isEmpty() == false)
+				return (User) data.get(0);
+		} finally {
+			pm.close();
+		}
+		return null;
+	}
 
 	public static List<User> getAllUsers() {
 		List<User> users = new ArrayList<User>();
