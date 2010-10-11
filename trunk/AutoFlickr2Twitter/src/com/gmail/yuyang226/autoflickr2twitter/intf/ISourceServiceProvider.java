@@ -12,13 +12,8 @@ import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserSourceService;
  * @author Toby Yu(yuyang226@gmail.com)
  *
  */
-public interface ISourceServiceProvider<T> extends IServiceAuthorizer{
+public interface ISourceServiceProvider<T> extends IServiceAuthorizer, IServiceProvider{
 	
-	/**
-	 * A lower case representation of the source service provider.
-	 * @return a string to represent the underlying source service provider.
-	 */
-	public String getId();
 	
 	/**
 	 * Get the list of latest items

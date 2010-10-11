@@ -38,7 +38,7 @@ public class ServiceFactory {
 				PersistenceManager pm = pmf.getPersistenceManager();
 				try {
 					GlobalSourceApplicationService srcApp = new GlobalSourceApplicationService();
-					srcApp.setSourceProviderId(SourceServiceProviderFlickr.ID);
+					srcApp.setProviderId(SourceServiceProviderFlickr.ID);
 					pm.makePersistent(srcApp);
 				} catch (Exception e) {
 					log.throwing(ServiceFactory.class.getName(), "<init_db>", e);

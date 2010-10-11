@@ -3,10 +3,8 @@
  */
 package com.gmail.yuyang226.autoflickr2twitter.datastore.model;
 
-import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
-import javax.jdo.annotations.PrimaryKey;
 
 import com.gmail.yuyang226.autoflickr2twitter.core.GlobalDefaultConfiguration;
 import com.gmail.yuyang226.autoflickr2twitter.impl.flickr.SourceServiceProviderFlickr;
@@ -16,11 +14,8 @@ import com.gmail.yuyang226.autoflickr2twitter.impl.flickr.SourceServiceProviderF
  *
  */
 @PersistenceCapable
-public class GlobalSourceApplicationService {
+public class GlobalSourceApplicationService extends GlobalApplicationConfig {
 	
-	@PrimaryKey
-	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-	private String sourceProviderId = SourceServiceProviderFlickr.ID;
 
 	@Persistent
 	private String sourceAppApiKey = GlobalDefaultConfiguration.getInstance().getFlickrApiKey();
@@ -28,25 +23,17 @@ public class GlobalSourceApplicationService {
 	@Persistent
 	private String sourceAppSecret = GlobalDefaultConfiguration.getInstance().getFlickrSecret();
 	
+	
 	/**
 	 * 
 	 */
 	public GlobalSourceApplicationService() {
 		super();
-	}
-
-	/**
-	 * @return the sourceProviderId
-	 */
-	public String getSourceProviderId() {
-		return sourceProviderId;
-	}
-
-	/**
-	 * @param sourceProviderId the sourceProviderId to set
-	 */
-	public void setSourceProviderId(String sourceProviderId) {
-		this.sourceProviderId = sourceProviderId;
+		//default values
+		super.setAppName("Flickr");
+		super.setProviderId(SourceServiceProviderFlickr.ID);
+		super.setDescription("The world's leading online photo storage service");
+		super.setAuthPagePath(null); //TODO set the default auth page path
 	}
 
 	/**
@@ -76,7 +63,5 @@ public class GlobalSourceApplicationService {
 	public void setSourceAppSecret(String sourceAppSecret) {
 		this.sourceAppSecret = sourceAppSecret;
 	}
-	
-	
 
 }
