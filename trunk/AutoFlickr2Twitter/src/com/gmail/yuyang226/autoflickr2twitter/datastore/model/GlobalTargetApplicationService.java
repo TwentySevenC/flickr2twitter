@@ -6,9 +6,6 @@ package com.gmail.yuyang226.autoflickr2twitter.datastore.model;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
-import com.gmail.yuyang226.autoflickr2twitter.core.GlobalDefaultConfiguration;
-import com.gmail.yuyang226.autoflickr2twitter.impl.twitter.TargetServiceProviderTwitter;
-
 /**
  * @author Toby Yu(yuyang226@gmail.com)
  *
@@ -17,10 +14,10 @@ import com.gmail.yuyang226.autoflickr2twitter.impl.twitter.TargetServiceProvider
 public class GlobalTargetApplicationService extends GlobalApplicationConfig {
 
 	@Persistent
-	private String targetAppConsumerId = GlobalDefaultConfiguration.getInstance().getTwitterConsumerId();
+	private String targetAppConsumerId;
 	
 	@Persistent
-	private String targetAppConsumerSecret = GlobalDefaultConfiguration.getInstance().getTwitterConsumerSecret();
+	private String targetAppConsumerSecret;
 
 	
 	/**
@@ -28,11 +25,6 @@ public class GlobalTargetApplicationService extends GlobalApplicationConfig {
 	 */
 	public GlobalTargetApplicationService() {
 		super();
-		//default values
-		super.setAppName("Twitter");
-		super.setProviderId(TargetServiceProviderTwitter.ID);
-		super.setDescription("The world's leading online micro-blog service");
-		super.setAuthPagePath(null); //TODO set the default auth page path
 	}
 
 	/**

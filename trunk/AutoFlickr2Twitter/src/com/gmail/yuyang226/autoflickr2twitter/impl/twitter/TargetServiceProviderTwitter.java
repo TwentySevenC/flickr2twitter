@@ -20,9 +20,12 @@ import twitter4j.http.Authorization;
 import twitter4j.http.OAuthAuthorization;
 import twitter4j.http.RequestToken;
 
+import com.gmail.yuyang226.autoflickr2twitter.core.GlobalDefaultConfiguration;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.MyPersistenceManagerFactory;
+import com.gmail.yuyang226.autoflickr2twitter.datastore.model.GlobalSourceApplicationService;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.GlobalTargetApplicationService;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserTargetService;
+import com.gmail.yuyang226.autoflickr2twitter.impl.flickr.SourceServiceProviderFlickr;
 import com.gmail.yuyang226.autoflickr2twitter.intf.ITargetServiceProvider;
 import com.gmail.yuyang226.autoflickr2twitter.model.IGeoItem;
 import com.gmail.yuyang226.autoflickr2twitter.model.IItem;
@@ -163,6 +166,22 @@ public class TargetServiceProviderTwitter implements ITargetServiceProvider {
 		} catch (TwitterException e) {
 			throw e;
 		}
+		return result;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.gmail.yuyang226.autoflickr2twitter.intf.IServiceProvider#createDefaultGlobalApplicationConfig()
+	 */
+	@Override
+	public GlobalTargetApplicationService createDefaultGlobalApplicationConfig() {
+		GlobalTargetApplicationService result = new GlobalTargetApplicationService();
+		result.setAppName("Twitter");
+		result.setProviderId(ID);
+		result.setDescription("The world's leading online micro-blog service");
+		result.setTargetAppConsumerId(GlobalDefaultConfiguration.getInstance().getTwitterConsumerId());
+		result.setTargetAppConsumerSecret(GlobalDefaultConfiguration.getInstance().getTwitterConsumerSecret());
+		result.setAuthPagePath(null); //TODO set the default auth page path
+		result.setImagePath(null); //TODO set the default image path
 		return result;
 	}
 

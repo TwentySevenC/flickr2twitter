@@ -6,9 +6,6 @@ package com.gmail.yuyang226.autoflickr2twitter.datastore.model;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
-import com.gmail.yuyang226.autoflickr2twitter.core.GlobalDefaultConfiguration;
-import com.gmail.yuyang226.autoflickr2twitter.impl.flickr.SourceServiceProviderFlickr;
-
 /**
  * @author Toby Yu(yuyang226@gmail.com)
  *
@@ -18,10 +15,10 @@ public class GlobalSourceApplicationService extends GlobalApplicationConfig {
 	
 
 	@Persistent
-	private String sourceAppApiKey = GlobalDefaultConfiguration.getInstance().getFlickrApiKey();
+	private String sourceAppApiKey;
 	
 	@Persistent
-	private String sourceAppSecret = GlobalDefaultConfiguration.getInstance().getFlickrSecret();
+	private String sourceAppSecret;
 	
 	
 	/**
@@ -29,11 +26,6 @@ public class GlobalSourceApplicationService extends GlobalApplicationConfig {
 	 */
 	public GlobalSourceApplicationService() {
 		super();
-		//default values
-		super.setAppName("Flickr");
-		super.setProviderId(SourceServiceProviderFlickr.ID);
-		super.setDescription("The world's leading online photo storage service");
-		super.setAuthPagePath(null); //TODO set the default auth page path
 	}
 
 	/**

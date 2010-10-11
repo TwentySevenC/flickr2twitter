@@ -163,5 +163,21 @@ public class TargetServiceProviderSina implements ITargetServiceProvider {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	/* (non-Javadoc)
+	 * @see com.gmail.yuyang226.autoflickr2twitter.intf.IServiceProvider#createDefaultGlobalApplicationConfig()
+	 */
+	@Override
+	public GlobalTargetApplicationService createDefaultGlobalApplicationConfig() {
+		GlobalTargetApplicationService result = new GlobalTargetApplicationService();
+		result.setAppName("Sina");
+		result.setProviderId(ID);
+		result.setDescription("The MaLeGeBi's leading online micro-blog service");
+		result.setTargetAppConsumerId("test");
+		result.setTargetAppConsumerSecret("test");
+		result.setAuthPagePath(null); //TODO set the default auth page path
+		result.setImagePath(null); //TODO set the default image path
+		return result;
+	}
 
 }
