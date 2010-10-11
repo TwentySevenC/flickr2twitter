@@ -206,4 +206,20 @@ public class SourceServiceProviderFlickr implements ISourceServiceProvider<IItem
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.gmail.yuyang226.autoflickr2twitter.intf.IServiceProvider#createDefaultGlobalApplicationConfig()
+	 */
+	@Override
+	public GlobalSourceApplicationService createDefaultGlobalApplicationConfig() {
+		GlobalSourceApplicationService result = new GlobalSourceApplicationService();
+		result.setAppName("Flickr");
+		result.setProviderId(ID);
+		result.setDescription("The world's leading online photo storage service");
+		result.setSourceAppApiKey(GlobalDefaultConfiguration.getInstance().getFlickrApiKey());
+		result.setSourceAppSecret(GlobalDefaultConfiguration.getInstance().getFlickrSecret());
+		result.setAuthPagePath(null); //TODO set the default auth page path
+		result.setImagePath(null); //TODO set the default image path
+		return result;
+	}
+
 }
