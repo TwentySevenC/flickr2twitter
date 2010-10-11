@@ -10,7 +10,7 @@
 <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
 
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<title>Cost Record System - House Management</title>
+<title>Twitter the World - Register </title>
 </head>
 <body>
 <%request.setAttribute("checkLogin", false); %>
