@@ -14,8 +14,11 @@ import com.google.appengine.repackaged.com.google.common.base.StringUtil;
 
 public class UserAccountServlet extends HttpServlet {
 
-	private static final Logger log = Logger.getLogger(UserAccountServlet.class
-			.getName());
+	private static final long serialVersionUID = 1L;
+
+	// private static final Logger log =
+	// Logger.getLogger(UserAccountServlet.class
+	// .getName());
 
 	public static final String OPT_ADD_USER = "Add_User";
 	public static final String OPT_LOGIN = "Login";

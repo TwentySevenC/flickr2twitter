@@ -63,6 +63,15 @@
     <url-pattern>/userOperation</url-pattern>
   </servlet-mapping>
   
+  <servlet>
+    <servlet-name>oauth</servlet-name>
+    <servlet-class>com.gmail.yuyang226.autoflickr2twitter.servlet.OAuthServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>oauth</servlet-name>
+    <url-pattern>/oauth</url-pattern>
+  </servlet-mapping>
+  
   
   <!-- 
   <servlet>
