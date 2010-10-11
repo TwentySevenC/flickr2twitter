@@ -173,8 +173,8 @@ public class TargetServiceProviderSina implements ITargetServiceProvider {
 		result.setAppName("Sina");
 		result.setProviderId(ID);
 		result.setDescription("The MaLeGeBi's leading online micro-blog service");
-		result.setTargetAppConsumerId("test");
-		result.setTargetAppConsumerSecret("test");
+		result.setTargetAppConsumerId(Weibo.CONSUMER_KEY);
+		result.setTargetAppConsumerSecret(Weibo.CONSUMER_SECRET);
 		result.setAuthPagePath(null); //TODO set the default auth page path
 		result.setImagePath(null); //TODO set the default image path
 		return result;
