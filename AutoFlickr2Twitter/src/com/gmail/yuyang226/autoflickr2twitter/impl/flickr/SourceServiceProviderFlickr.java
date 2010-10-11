@@ -110,7 +110,7 @@ public class SourceServiceProviderFlickr implements ISourceServiceProvider<IItem
 		GlobalSourceApplicationService globalAppConfig = MyPersistenceManagerFactory
 		.getGlobalSourceAppService(ID);
 		if (globalAppConfig == null 
-				|| ID.equalsIgnoreCase(globalAppConfig.getSourceProviderId()) == false) {
+				|| ID.equalsIgnoreCase(globalAppConfig.getProviderId()) == false) {
 			throw new IllegalArgumentException("Invalid source service provider: " + globalAppConfig);
 		}
 		REST transport = new REST();
@@ -185,7 +185,7 @@ public class SourceServiceProviderFlickr implements ISourceServiceProvider<IItem
 		GlobalSourceApplicationService globalAppConfig = MyPersistenceManagerFactory
 		.getGlobalSourceAppService(ID);
 		if (globalAppConfig == null 
-				|| ID.equalsIgnoreCase(globalAppConfig.getSourceProviderId()) == false) {
+				|| ID.equalsIgnoreCase(globalAppConfig.getProviderId()) == false) {
 			throw new IllegalArgumentException("Invalid source service provider: " + globalAppConfig);
 		}
 		Map<String, Object> result = new HashMap<String, Object>();

@@ -13,13 +13,7 @@ import com.gmail.yuyang226.autoflickr2twitter.model.IItem;
  * @author Toby Yu(yuyang226@gmail.com)
  *
  */
-public interface ITargetServiceProvider extends IServiceAuthorizer {
-
-	/**
-	 * A lower case representation of the source service provider.
-	 * @return a string to represent the underlying target service provider.
-	 */
-	public String getId();
+public interface ITargetServiceProvider extends IServiceAuthorizer, IServiceProvider {
 	
 	/**
 	 * Post an update for a new item

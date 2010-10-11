@@ -53,8 +53,8 @@ public final class MyPersistenceManagerFactory {
 		PersistenceManager pm = pmf.getPersistenceManager();
 		try {
 			Query query = pm.newQuery(GlobalSourceApplicationService.class);
-			query.setFilter("sourceProviderId == providerId");
-			query.declareParameters("String providerId");
+			query.setFilter("providerId == id");
+			query.declareParameters("String id");
 			List<?> data = (List<?>) query.execute(providerId);
 			if (data != null && data.isEmpty() == false)
 				return (GlobalSourceApplicationService) data.get(0);
@@ -73,8 +73,8 @@ public final class MyPersistenceManagerFactory {
 		PersistenceManager pm = pmf.getPersistenceManager();
 		try {
 			Query query = pm.newQuery(GlobalTargetApplicationService.class);
-			query.setFilter("targetProviderId == providerId");
-			query.declareParameters("String providerId");
+			query.setFilter("providerId == id");
+			query.declareParameters("String id");
 			List<?> data = (List<?>) query.execute(providerId);
 			if (data != null && data.isEmpty() == false)
 				return (GlobalTargetApplicationService) data.get(0);

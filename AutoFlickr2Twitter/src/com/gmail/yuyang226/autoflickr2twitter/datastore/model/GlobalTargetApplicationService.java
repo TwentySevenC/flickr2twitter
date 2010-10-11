@@ -3,10 +3,8 @@
  */
 package com.gmail.yuyang226.autoflickr2twitter.datastore.model;
 
-import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
-import javax.jdo.annotations.PrimaryKey;
 
 import com.gmail.yuyang226.autoflickr2twitter.core.GlobalDefaultConfiguration;
 import com.gmail.yuyang226.autoflickr2twitter.impl.twitter.TargetServiceProviderTwitter;
@@ -16,11 +14,7 @@ import com.gmail.yuyang226.autoflickr2twitter.impl.twitter.TargetServiceProvider
  *
  */
 @PersistenceCapable
-public class GlobalTargetApplicationService {
-	
-	@PrimaryKey
-	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-	private String targetProviderId = TargetServiceProviderTwitter.ID;
+public class GlobalTargetApplicationService extends GlobalApplicationConfig {
 
 	@Persistent
 	private String targetAppConsumerId = GlobalDefaultConfiguration.getInstance().getTwitterConsumerId();
@@ -28,25 +22,17 @@ public class GlobalTargetApplicationService {
 	@Persistent
 	private String targetAppConsumerSecret = GlobalDefaultConfiguration.getInstance().getTwitterConsumerSecret();
 
+	
 	/**
 	 * 
 	 */
 	public GlobalTargetApplicationService() {
 		super();
-	}
-
-	/**
-	 * @return the targetProviderId
-	 */
-	public String getTargetProviderId() {
-		return targetProviderId;
-	}
-
-	/**
-	 * @param targetProviderId the targetProviderId to set
-	 */
-	public void setTargetProviderId(String targetProviderId) {
-		this.targetProviderId = targetProviderId;
+		//default values
+		super.setAppName("Twitter");
+		super.setProviderId(TargetServiceProviderTwitter.ID);
+		super.setDescription("The world's leading online micro-blog service");
+		super.setAuthPagePath(null); //TODO set the default auth page path
 	}
 
 	/**
@@ -77,5 +63,4 @@ public class GlobalTargetApplicationService {
 		this.targetAppConsumerSecret = targetAppConsumerSecret;
 	}
 
-	
 }
