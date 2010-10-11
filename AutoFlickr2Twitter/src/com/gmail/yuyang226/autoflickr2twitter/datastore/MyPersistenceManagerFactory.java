@@ -15,7 +15,6 @@ import javax.jdo.Query;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.GlobalServiceConfiguration;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.GlobalSourceApplicationService;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.GlobalTargetApplicationService;
-import com.gmail.yuyang226.autoflickr2twitter.datastore.model.SinaToken;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.User;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserSourceService;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserTargetService;
@@ -290,29 +289,6 @@ public final class MyPersistenceManagerFactory {
 			pm.close();
 		}
 		return conf;
-	}
-
-	// TODO test only, will remove later
-	public static SinaToken getSinaToken() {
-		List<SinaToken> tokens = new ArrayList<SinaToken>();
-		PersistenceManagerFactory pmf = MyPersistenceManagerFactory
-				.getInstance();
-		PersistenceManager pm = pmf.getPersistenceManager();
-		try {
-			Query query = pm.newQuery(SinaToken.class);
-			List<SinaToken> data = (List<SinaToken>) query.execute();
-			if (data != null && !data.isEmpty()) {
-				tokens.addAll(data);
-			}
-		} finally {
-			pm.close();
-		}
-
-		if (tokens.isEmpty()) {
-			return null;
-		} else {
-			return tokens.get(0);
-		}
 	}
 
 }
