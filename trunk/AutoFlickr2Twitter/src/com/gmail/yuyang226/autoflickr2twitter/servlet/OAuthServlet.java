@@ -23,24 +23,32 @@ public class OAuthServlet extends HttpServlet {
 
 	public static final String OPT_AUTH_SOURCE = "Auth_Source";
 	public static final String OPT_AUTH_TARGET = "Auth_Target";
+
+	public static final String OPT_AUTH_SOURCE_CONFIRM = "Auth_Source_Confirm";
+	public static final String OPT_AUTH_TARGET_CONFIRM = "Auth_Target_Confirm";
+
 	public static final String OPT_TEST_AUTH = "Auth_Test";
 
 	public static final String PARA_OPT = "operation";
 
 	public static final String PARA_PROVIDER_ID = "provider_id";
 
+	public static final String PARA_SESSION_FLICKER_AUTH_TOKEN = "flicker_auth_token";
+	public static final String PARA_SESSION_TWITTER_AUTH_TOKEN = "twitter_auth_token";
+
 	private AutoFlickr2TwitterService authService = new AutoFlirckr2TwitterServiceImpl();
 
-	private void doAuth(HttpServletRequest req, HttpServletResponse resp,
-			boolean sourceProvider, StringBuffer msg) {
+	@SuppressWarnings("unchecked")
+	private void doAuthConfirm(HttpServletRequest req,
+			HttpServletResponse resp, boolean sourceProvider, StringBuffer msg) {
 		String providerId = req.getParameter(PARA_PROVIDER_ID);
 		User user = (User) req.getSession().getAttribute(
 				UserAccountServlet.PARA_SESSION_USER);
 		String userEmail = user.getUserId().getEmail();
 		try {
 
-			Map<String, Object> data = authService.authorize(sourceProvider,
-					providerId);
+			Map<String, Object> data = (Map<String, Object>) req.getSession()
+					.getAttribute(providerId);
 			authService.testToken(sourceProvider, providerId, userEmail, data);
 
 			String retMsg = null;
@@ -55,9 +63,11 @@ public class OAuthServlet extends HttpServlet {
 
 			msg.append("Auth successful!");
 
+			req.getSession().removeAttribute(providerId);
+
 		} catch (Exception e) {
 			e.printStackTrace();
-			msg.append("Auth faild. Provider ID is: " + providerId
+			msg.append("Auth confirm faild. Provider ID is: " + providerId
 					+ ". Error message is:" + e.getMessage());
 		}
 	}
@@ -65,6 +75,26 @@ public class OAuthServlet extends HttpServlet {
 	private void testAuth(HttpServletRequest req, HttpServletResponse resp,
 			StringBuffer msg) {
 
+	}
+
+	private void doAuth(HttpServletRequest req, HttpServletResponse resp,
+			boolean sourceProvider, StringBuffer msg) {
+		String providerId = req.getParameter(PARA_PROVIDER_ID);
+		try {
+			// FIXME: shall we store the token now? if session times out, this
+			// token will be lost forever.
+			Map<String, Object> data = authService.authorize(sourceProvider,
+					providerId);
+
+			req.getSession().setAttribute(providerId, data);
+			String tokenUrl = String.valueOf(data.get("url"));
+			resp.sendRedirect(tokenUrl);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			msg.append("Auth faild. Provider ID is: " + providerId
+					+ ". Error message is:" + e.getMessage());
+		}
 	}
 
 	@Override
@@ -84,8 +114,14 @@ public class OAuthServlet extends HttpServlet {
 		try {
 			if (OPT_AUTH_SOURCE.equalsIgnoreCase(operation)) {
 				doAuth(req, resp, true, msg);
+				return;
 			} else if (OPT_AUTH_TARGET.equalsIgnoreCase(operation)) {
 				doAuth(req, resp, false, msg);
+				return;
+			} else if (OPT_AUTH_SOURCE_CONFIRM.equalsIgnoreCase(operation)) {
+				doAuthConfirm(req, resp, true, msg);
+			} else if (OPT_AUTH_TARGET_CONFIRM.equalsIgnoreCase(operation)) {
+				doAuthConfirm(req, resp, false, msg);
 			} else if (OPT_TEST_AUTH.equalsIgnoreCase(operation)) {
 				testAuth(req, resp, msg);
 			}

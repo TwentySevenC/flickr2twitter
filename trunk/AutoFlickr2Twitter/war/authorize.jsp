@@ -1,5 +1,5 @@
 <%@ page language="java"
-	import="com.gmail.yuyang226.autoflickr2twitter.datastore.*,com.gmail.yuyang226.autoflickr2twitter.datastore.model.*,com.gmail.yuyang226.autoflickr2twitter.servlet.*"
+	import="com.gmail.yuyang226.autoflickr2twitter.datastore.*,com.gmail.yuyang226.autoflickr2twitter.datastore.model.*,com.gmail.yuyang226.autoflickr2twitter.servlet.*,java.util.*"
 	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 
@@ -26,9 +26,26 @@
 	<table>
 
 		<tr>
-			<td><a href="/oauth?<%=OAuthServlet.PARA_OPT%>=<%=OAuthServlet.OPT_AUTH_SOURCE %>&<%=OAuthServlet.PARA_PROVIDER_ID%>=flickr" target="_new">Authorize Flicker Account</a></td>
-			<td>Here we can add a button so user can test the authorize
-			result</td>
+			<%
+				String currentProviderID = null;
+				currentProviderID = "flickr";
+				Map<String, Object> currentData = (Map<String, Object>) session
+						.getAttribute(currentProviderID);
+			%>
+			<td><a
+				href="/oauth?<%=OAuthServlet.PARA_OPT%>=<%=OAuthServlet.OPT_AUTH_SOURCE%>&<%=OAuthServlet.PARA_PROVIDER_ID%>=<%=currentProviderID%>"
+				target="_new">Authorize Flicker Account</a></td>
+			<td>
+			<%
+				if (currentData == null) {
+					out.print(" <-Please click the link on the left side. It will lead you to the offical authorize page. After authorization, please refresh this page and click the Confirm Authorize link. ");
+				} else {
+			%>
+				<a href="/oauth?<%=OAuthServlet.PARA_OPT%>=<%=OAuthServlet.OPT_AUTH_SOURCE_CONFIRM%>&<%=OAuthServlet.PARA_PROVIDER_ID%>=<%=currentProviderID%>">Confirm Authorize</a>
+			<%
+				}
+			%>
+			</td>
 		</tr>
 
 	</table>
@@ -38,13 +55,31 @@
 	</li>
 	<table>
 		<tr>
-			<td><a href="/oauth?<%=OAuthServlet.PARA_OPT%>=<%=OAuthServlet.OPT_AUTH_SOURCE %>&<%=OAuthServlet.PARA_PROVIDER_ID%>=twitter" target="_new">Authorize Twitter Account</a></td>
-			<td>Here we can add a button so user can test the authorize
-			result</td>
+			<td>
+			<%
+				currentProviderID = "twitter";
+				currentData = (Map<String, Object>) session
+						.getAttribute(currentProviderID);
+			%>
+			<a
+				href="/oauth?<%=OAuthServlet.PARA_OPT%>=<%=OAuthServlet.OPT_AUTH_TARGET%>&<%=OAuthServlet.PARA_PROVIDER_ID%>=twitter"
+				target="_new">Authorize Twitter Account</a></td>
+			<td>
+			<%
+				if (currentData == null) {
+					out.print(" <-Please click the link on the left side. It will lead you to the offical authorize page. After authorization, please refresh this page and click the Confirm Authorize link. ");
+				} else {
+			%>
+				<a href="/oauth?<%=OAuthServlet.PARA_OPT%>=<%=OAuthServlet.OPT_AUTH_TARGET_CONFIRM%>&<%=OAuthServlet.PARA_PROVIDER_ID%>=<%=currentProviderID%>">Confirm Authorize</a>
+			<%
+				}
+			%>
+			</td>
 		</tr>
 
 		<tr>
-			<td><a href="/sinacall.jsp" target="_new">Authorize Sina Account</a></td>
+			<td><a href="/sinacall.jsp" target="_new">Authorize Sina
+			Account</a></td>
 			<td>Here we can add a button so user can test the authorize
 			result</td>
 		</tr>
