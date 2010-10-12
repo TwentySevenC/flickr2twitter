@@ -10,7 +10,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 /**
  * @author yayu
- *
+ * @deprecated do not use GWT anymore
  */
 @RemoteServiceRelativePath("recheck")
 public interface AutoFlickr2TwitterService extends RemoteService {

@@ -195,8 +195,7 @@ public final class MyPersistenceManagerFactory {
 		PersistenceManager pm = pmf.getPersistenceManager();
 		try {
 			Query query = pm.newQuery(User.class);
-			query.setFilter("userId == userEmailAddress");
-			query.setFilter("password == userPassword");
+			query.setFilter("userId == userEmailAddress && password == userPassword");
 			query.declareParameters("String userEmailAddress, String userPassword");
 			List<?> data = (List<?>) query.execute(userEmail, password);
 			if (data != null && !data.isEmpty()) {
