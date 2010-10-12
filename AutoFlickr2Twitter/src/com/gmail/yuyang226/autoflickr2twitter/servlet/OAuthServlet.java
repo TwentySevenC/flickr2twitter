@@ -10,13 +10,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.gmail.yuyang226.autoflickr2twitter.client.AutoFlickr2TwitterService;
-import com.gmail.yuyang226.autoflickr2twitter.core.ServiceFactory;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.User;
 import com.gmail.yuyang226.autoflickr2twitter.server.AutoFlirckr2TwitterServiceImpl;
 
 /**
  * @author Meng Zang (DeepNightTwo@gmail.com)
- *
+ * 
  */
 
 public class OAuthServlet extends HttpServlet {
@@ -54,16 +53,9 @@ public class OAuthServlet extends HttpServlet {
 
 			Map<String, Object> data = (Map<String, Object>) req.getSession()
 					.getAttribute(providerId);
-			authService.testToken(sourceProvider, providerId, userEmail, data);
+			String retMsg = authService.testToken(sourceProvider, providerId,
+					userEmail, data);
 
-			String retMsg = null;
-			if (sourceProvider == true) {
-				retMsg = ServiceFactory.getSourceServiceProvider(providerId)
-						.readyAuthorization(userEmail, data);
-			} else {
-				retMsg = ServiceFactory.getTargetServiceProvider(providerId)
-						.readyAuthorization(userEmail, data);
-			}
 			log.info(retMsg);
 
 			msg.append("Auth successful!");
@@ -108,6 +100,7 @@ public class OAuthServlet extends HttpServlet {
 
 		User user = (User) req.getSession().getAttribute(
 				UserAccountServlet.PARA_SESSION_USER);
+
 		if (user == null) {
 			req.getSession().setAttribute("message", "Please Login first!");
 			resp.sendRedirect("/index.jsp");
@@ -115,13 +108,18 @@ public class OAuthServlet extends HttpServlet {
 		}
 
 		String operation = req.getParameter(PARA_OPT);
+
+		boolean needRedirect = true;
+
 		StringBuffer msg = new StringBuffer();
 		try {
 			if (OPT_AUTH_SOURCE.equalsIgnoreCase(operation)) {
 				doAuth(req, resp, true, msg);
+				needRedirect = false;
 				return;
 			} else if (OPT_AUTH_TARGET.equalsIgnoreCase(operation)) {
 				doAuth(req, resp, false, msg);
+				needRedirect = false;
 				return;
 			} else if (OPT_AUTH_SOURCE_CONFIRM.equalsIgnoreCase(operation)) {
 				doAuthConfirm(req, resp, true, msg);
@@ -137,7 +135,9 @@ public class OAuthServlet extends HttpServlet {
 			if (msg.length() > 0) {
 				req.getSession().setAttribute("message", msg.toString());
 			}
-			resp.sendRedirect("/authorize.jsp");
+			if (needRedirect == true) {
+				resp.sendRedirect("/authorize.jsp");
+			}
 		}
 	}
 
