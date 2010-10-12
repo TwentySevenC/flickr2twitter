@@ -11,7 +11,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.gmail.yuyang226.autoflickr2twitter.datastore.model.User;
 import com.gmail.yuyang226.autoflickr2twitter.impl.sina.TargetServiceProviderSina;
+import com.gmail.yuyang226.autoflickr2twitter.servlet.UserAccountServlet;
 import com.gmail.yuyang226.autoflickr2twitter.sina.weibo4j.Weibo;
 import com.gmail.yuyang226.autoflickr2twitter.sina.weibo4j.WeiboException;
 
@@ -24,6 +26,14 @@ public class SinaSignInCallBackServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+		
+		//get user information from session
+		User currentUser = (User) req.getSession().getAttribute(UserAccountServlet.PARA_SESSION_USER);
+		if( currentUser == null ) {
+			resp.getWriter().println("Use not signed in, please sign in first.");
+			return;
+		}
+
 
 		// Get the verifier;
 		String verifier = req.getParameter("verifier");
@@ -56,15 +66,16 @@ public class SinaSignInCallBackServlet extends HttpServlet {
 				return;
 			} else {
 				resp.getWriter().println("Authorization done.");
-				// TODO save the token into db.
+				
+				//save the access token into db
 				TargetServiceProviderSina tps = new TargetServiceProviderSina();
 				Map<String,Object> data = new HashMap<String,Object>();
 				data.put("token",accessToken.getToken());
 				data.put("secret", accessToken.getTokenSecret());
 				try {
-					tps.readyAuthorization("charleszq@gmail.com", data);
+					tps.readyAuthorization(currentUser.getUserId().getEmail(), data);
 				} catch (Exception e) {
-					resp.getWriter().println("<p>But error to save the access token.");
+					resp.getWriter().println("<p>But error to save the access token." + e.getMessage());
 					log.log(Level.WARNING, e.getMessage());
 				}
 				return;
