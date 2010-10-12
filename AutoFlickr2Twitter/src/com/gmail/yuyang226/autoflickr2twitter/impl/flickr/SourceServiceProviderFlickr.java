@@ -37,7 +37,7 @@ import com.gmail.yuyang226.autoflickr2twitter.datastore.MyPersistenceManagerFact
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.GlobalServiceConfiguration;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.GlobalSourceApplicationService;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.User;
-import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserSourceService;
+import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserSourceServiceConfig;
 import com.gmail.yuyang226.autoflickr2twitter.intf.ISourceServiceProvider;
 import com.gmail.yuyang226.autoflickr2twitter.model.IItem;
 
@@ -106,7 +106,7 @@ public class SourceServiceProviderFlickr implements ISourceServiceProvider<IItem
 	 * @see com.gmail.yuyang226.autoflickr2twitter.intf.ISourceServiceProvider#getLatestItems()
 	 */
 	@Override
-	public List<IItem> getLatestItems(GlobalServiceConfiguration globalConfig, UserSourceService sourceService) throws Exception {
+	public List<IItem> getLatestItems(GlobalServiceConfiguration globalConfig, UserSourceServiceConfig sourceService) throws Exception {
 		GlobalSourceApplicationService globalAppConfig = MyPersistenceManagerFactory
 		.getGlobalSourceAppService(ID);
 		if (globalAppConfig == null 
@@ -156,22 +156,25 @@ public class SourceServiceProviderFlickr implements ISourceServiceProvider<IItem
 		buf.append("\n");
 		buf.append("Realname: " + auth.getUser().getRealName());
 		buf.append("\n");
+		buf.append("User Site: " + auth.getUser().getPhotosurl());
+		buf.append("\n");
 		buf.append("Username: " + auth.getUser().getUsername());
 		buf.append("\n");
 		buf.append("Permission: " + auth.getPermission().getType());
 
 		String userId = auth.getUser().getId();
-		for (UserSourceService service : MyPersistenceManagerFactory.getUserSourceServices(user)) {
+		for (UserSourceServiceConfig service : MyPersistenceManagerFactory.getUserSourceServices(user)) {
 			if (auth.getToken().equals(service.getServiceAccessToken())) { 
 				throw new IllegalArgumentException("Token already registered: " + auth.getToken());
 			}
 		}
-		UserSourceService service = new UserSourceService();
+		UserSourceServiceConfig service = new UserSourceServiceConfig();
 		service.setServiceUserId(userId);
 		service.setServiceUserName(auth.getUser().getUsername());
 		service.setServiceAccessToken(auth.getToken());
-		service.setSourceServiceProviderId(ID);
+		service.setServiceProviderId(ID);
 		service.setUserEmail(userEmail);
+		service.setUserSiteUrl(auth.getUser().getPhotosurl());
 		MyPersistenceManagerFactory.addSourceServiceApp(userEmail, service);
 
 		return buf.toString();

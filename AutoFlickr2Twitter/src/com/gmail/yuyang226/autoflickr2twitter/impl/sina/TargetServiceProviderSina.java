@@ -11,7 +11,7 @@ import twitter4j.GeoLocation;
 
 import com.gmail.yuyang226.autoflickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.GlobalTargetApplicationService;
-import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserTargetService;
+import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserTargetServiceConfig;
 import com.gmail.yuyang226.autoflickr2twitter.intf.ITargetServiceProvider;
 import com.gmail.yuyang226.autoflickr2twitter.model.IGeoItem;
 import com.gmail.yuyang226.autoflickr2twitter.model.IItem;
@@ -54,12 +54,12 @@ public class TargetServiceProviderSina implements ITargetServiceProvider {
 	 * com.gmail.yuyang226.autoflickr2twitter.intf.ITargetServiceProvider#postUpdate
 	 * (com.gmail.yuyang226.autoflickr2twitter.datastore.model.
 	 * GlobalTargetApplicationService,
-	 * com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserTargetService,
+	 * com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserTargetServiceConfig,
 	 * java.util.List)
 	 */
 	@Override
 	public void postUpdate(GlobalTargetApplicationService globalAppConfig,
-			UserTargetService targetConfig, List<IItem> items) throws Exception {
+			UserTargetServiceConfig targetConfig, List<IItem> items) throws Exception {
 		// api key and secret
 		System.setProperty("weibo4j.oauth.consumerKey", Weibo.CONSUMER_KEY);
 		System.setProperty("weibo4j.oauth.consumerSecret",
@@ -132,7 +132,7 @@ public class TargetServiceProviderSina implements ITargetServiceProvider {
 		String token = String.valueOf(data.get("token"));
 		String secret = String.valueOf(data.get("secret"));
 
-		for (UserTargetService service : MyPersistenceManagerFactory
+		for (UserTargetServiceConfig service : MyPersistenceManagerFactory
 				.getUserTargetServices(userEmail)) {
 			if (token.equals(service.getServiceAccessToken()) && secret.equals(service.getServiceTokenSecret())) {
 				throw new IllegalArgumentException(
@@ -140,13 +140,14 @@ public class TargetServiceProviderSina implements ITargetServiceProvider {
 			}
 		}
 		
-		UserTargetService service = new UserTargetService();
-		service.setTargetServiceProviderId(ID);
+		UserTargetServiceConfig service = new UserTargetServiceConfig();
+		service.setServiceProviderId(ID);
 		service.setServiceAccessToken(token);
 		service.setServiceTokenSecret(secret);
 		service.setServiceUserId(userEmail);
 		service.setUserEmail(userEmail);
 		service.setServiceUserName(userEmail);
+		service.setUserSiteUrl("http://www.sina.com.cn");
 		MyPersistenceManagerFactory.addTargetServiceApp(userEmail, service);
 
 		buf.append(ID).append(token).append(secret);

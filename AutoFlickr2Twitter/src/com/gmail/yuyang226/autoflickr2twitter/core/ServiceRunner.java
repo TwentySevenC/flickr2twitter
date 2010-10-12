@@ -11,8 +11,8 @@ import com.gmail.yuyang226.autoflickr2twitter.datastore.MyPersistenceManagerFact
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.GlobalServiceConfiguration;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.GlobalTargetApplicationService;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.User;
-import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserSourceService;
-import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserTargetService;
+import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserSourceServiceConfig;
+import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserTargetServiceConfig;
 import com.gmail.yuyang226.autoflickr2twitter.intf.ISourceServiceProvider;
 import com.gmail.yuyang226.autoflickr2twitter.intf.ITargetServiceProvider;
 import com.gmail.yuyang226.autoflickr2twitter.model.IItem;
@@ -49,11 +49,11 @@ public class ServiceRunner {
 			}
 			log.info("Retrieving latest updates for user: " + user);
 			List<IItem> items = new ArrayList<IItem>();
-			for (UserSourceService source : user.getSourceServices()) {
+			for (UserSourceServiceConfig source : user.getSourceServices()) {
 				ISourceServiceProvider<IItem> sourceProvider = 
-					ServiceFactory.getSourceServiceProvider(source.getSourceServiceProviderId());
+					ServiceFactory.getSourceServiceProvider(source.getServiceProviderId());
 				if (sourceProvider == null) {
-					log.warning("Invalid source service provider configured: " + source.getSourceServiceProviderId());
+					log.warning("Invalid source service provider configured: " + source.getServiceProviderId());
 				} else {
 					try {
 						items.addAll(sourceProvider.getLatestItems(globalConfig, source));
@@ -65,13 +65,13 @@ public class ServiceRunner {
 			if (items.isEmpty()) {
 				log.info("No recent updates found for user: " + user);
 			} else {
-				for (UserTargetService target : user.getTargetServices()) {
+				for (UserTargetServiceConfig target : user.getTargetServices()) {
 					ITargetServiceProvider targetProvider = 
-						ServiceFactory.getTargetServiceProvider(target.getTargetServiceProviderId());
+						ServiceFactory.getTargetServiceProvider(target.getServiceProviderId());
 					GlobalTargetApplicationService globalAppConfig = 
-						MyPersistenceManagerFactory.getGlobalTargetAppService(target.getTargetServiceProviderId());
+						MyPersistenceManagerFactory.getGlobalTargetAppService(target.getServiceProviderId());
 					if (targetProvider == null || globalAppConfig == null) {
-						log.warning("Invalid target service provider configured: " + target.getTargetServiceProviderId());
+						log.warning("Invalid target service provider configured: " + target.getServiceProviderId());
 					} else {
 						try {
 							targetProvider.postUpdate(globalAppConfig, target, items);
