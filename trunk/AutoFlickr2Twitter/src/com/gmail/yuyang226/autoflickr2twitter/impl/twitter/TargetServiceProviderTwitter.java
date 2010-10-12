@@ -22,10 +22,8 @@ import twitter4j.http.RequestToken;
 
 import com.gmail.yuyang226.autoflickr2twitter.core.GlobalDefaultConfiguration;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.MyPersistenceManagerFactory;
-import com.gmail.yuyang226.autoflickr2twitter.datastore.model.GlobalSourceApplicationService;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.GlobalTargetApplicationService;
-import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserTargetService;
-import com.gmail.yuyang226.autoflickr2twitter.impl.flickr.SourceServiceProviderFlickr;
+import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserTargetServiceConfig;
 import com.gmail.yuyang226.autoflickr2twitter.intf.ITargetServiceProvider;
 import com.gmail.yuyang226.autoflickr2twitter.model.IGeoItem;
 import com.gmail.yuyang226.autoflickr2twitter.model.IItem;
@@ -60,7 +58,7 @@ public class TargetServiceProviderTwitter implements ITargetServiceProvider {
 	 */
 	@Override
 	public void postUpdate(GlobalTargetApplicationService globalAppConfig, 
-			UserTargetService targetConfig, List<IItem> items) throws Exception {
+			UserTargetServiceConfig targetConfig, List<IItem> items) throws Exception {
 		// The factory instance is re-useable and thread safe.
 		AccessToken accessToken = new AccessToken(targetConfig.getServiceAccessToken(), 
 				targetConfig.getServiceTokenSecret()); 
@@ -129,18 +127,19 @@ public class TargetServiceProviderTwitter implements ITargetServiceProvider {
 		buf.append(" Token Secret: " + accessToken.getTokenSecret());
 
 
-		for (UserTargetService service : MyPersistenceManagerFactory.getUserTargetServices(userEmail)) {
+		for (UserTargetServiceConfig service : MyPersistenceManagerFactory.getUserTargetServices(userEmail)) {
 			if (accessToken.getToken().equals(service.getServiceAccessToken())) { 
 				throw new IllegalArgumentException("Token already registered: " + accessToken.getToken());
 			}
 		}
-		UserTargetService service = new UserTargetService();
-		service.setTargetServiceProviderId(ID);
+		UserTargetServiceConfig service = new UserTargetServiceConfig();
+		service.setServiceProviderId(ID);
 		service.setServiceAccessToken(accessToken.getToken());
 		service.setServiceTokenSecret(accessToken.getTokenSecret());
 		service.setServiceUserId(String.valueOf(accessToken.getUserId()));
 		service.setUserEmail(userEmail);
 		service.setServiceUserName(accessToken.getScreenName());
+		service.setUserSiteUrl("http://twitter.com/" + accessToken.getScreenName());
 		MyPersistenceManagerFactory.addTargetServiceApp(userEmail, service);
 		return buf.toString();
 	}

@@ -27,13 +27,13 @@
 
 		<tr>
 			<%
-				List<UserSourceService> sourceSvcs = user.getSourceServices();
-				List<UserTargetService> targetSvcs = user.getTargetServices();
+				List<UserSourceServiceConfig> sourceSvcs = MyPersistenceManagerFactory.getUserSourceServices(user);
+						List<UserTargetServiceConfig> targetSvcs = MyPersistenceManagerFactory.getUserTargetServices(user);
 
-				String currentProviderID = null;
-				currentProviderID = "flickr";
-				Map<String, Object> currentData = (Map<String, Object>) session
-						.getAttribute(currentProviderID);
+						String currentProviderID = null;
+						currentProviderID = "flickr";
+						Map<String, Object> currentData = (Map<String, Object>) session
+								.getAttribute(currentProviderID);
 			%>
 			<td><a
 				href="/oauth?<%=OAuthServlet.PARA_OPT%>=<%=OAuthServlet.OPT_AUTH_SOURCE%>&<%=OAuthServlet.PARA_PROVIDER_ID%>=<%=currentProviderID%>"
@@ -41,19 +41,19 @@
 			<td>
 			<%
 				if (currentData == null) {
-					out.print(" <-Please click the link on the left side. It will lead you to the offical authorize page. After authorization, please refresh this page and click the Confirm Authorize link. ");
-				} else {
+							out.print(" <-Please click the link on the left side. It will lead you to the offical authorize page. After authorization, please refresh this page and click the Confirm Authorize link. ");
+						} else {
 			%>
 				<a href="/oauth?<%=OAuthServlet.PARA_OPT%>=<%=OAuthServlet.OPT_AUTH_SOURCE_CONFIRM%>&<%=OAuthServlet.PARA_PROVIDER_ID%>=<%=currentProviderID%>">Confirm Authorize</a>
 			<%
 				}
-			
-				out.println(" Already Authorized Accounts: ");
-				for( UserSourceService sourceSvc : sourceSvcs){
-					if(currentProviderID.equalsIgnoreCase(sourceSvc.getSourceServiceProviderId())){
-						out.println(sourceSvc.getServiceUserName() + "     ");
-					}
-				}
+					
+						out.println("Already Authorized Accounts: ");
+						for( UserSourceServiceConfig sourceSvc : sourceSvcs){
+							if(currentProviderID.equalsIgnoreCase(sourceSvc.getServiceProviderId())){
+								out.println(sourceSvc.getServiceUserName() + "     <br>");
+							}
+						}
 			%>
 			</td>
 		</tr>
@@ -67,10 +67,9 @@
 		<tr>
 			<td>
 			<%
-			
 				currentProviderID = "twitter";
-				currentData = (Map<String, Object>) session
-						.getAttribute(currentProviderID);
+					currentData = (Map<String, Object>) session
+							.getAttribute(currentProviderID);
 			%>
 			<a
 				href="/oauth?<%=OAuthServlet.PARA_OPT%>=<%=OAuthServlet.OPT_AUTH_TARGET%>&<%=OAuthServlet.PARA_PROVIDER_ID%>=twitter"
@@ -78,18 +77,18 @@
 			<td>
 			<%
 				if (currentData == null) {
-					out.print(" <-Please click the link on the left side. It will lead you to the offical authorize page. After authorization, please refresh this page and click the Confirm Authorize link. ");
-				} else {
+						out.print(" <-Please click the link on the left side. It will lead you to the offical authorize page. After authorization, please refresh this page and click the Confirm Authorize link. ");
+					} else {
 			%>
 				<a href="/oauth?<%=OAuthServlet.PARA_OPT%>=<%=OAuthServlet.OPT_AUTH_TARGET_CONFIRM%>&<%=OAuthServlet.PARA_PROVIDER_ID%>=<%=currentProviderID%>">Confirm Authorize</a>
 			<%
 				}
-				out.println(" Already Authorized Accounts: ");
-				for( UserTargetService targetSvc : targetSvcs){
-					if(currentProviderID.equalsIgnoreCase(targetSvc.getTargetServiceProviderId())){
-						out.println(targetSvc.getServiceUserName() + "    ");
+					out.println(" Already Authorized Accounts: ");
+					for( UserTargetServiceConfig targetSvc : targetSvcs){
+						if(currentProviderID.equalsIgnoreCase(targetSvc.getServiceProviderId())){
+							out.println(targetSvc.getServiceUserName() + "    ");
+						}
 					}
-				}
 			%>
 			</td>
 		</tr>

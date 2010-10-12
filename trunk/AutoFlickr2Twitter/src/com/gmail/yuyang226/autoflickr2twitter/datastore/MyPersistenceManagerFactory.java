@@ -17,8 +17,8 @@ import com.gmail.yuyang226.autoflickr2twitter.datastore.model.GlobalServiceConfi
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.GlobalSourceApplicationService;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.GlobalTargetApplicationService;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.User;
-import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserSourceService;
-import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserTargetService;
+import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserSourceServiceConfig;
+import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserTargetServiceConfig;
 import com.google.appengine.api.datastore.Email;
 
 /**
@@ -96,17 +96,17 @@ public final class MyPersistenceManagerFactory {
 		return createNewUser(userEmail, password, screenName, Permission.NORMAL);
 	}
 
-	public static UserSourceService addSourceServiceApp(String userEmail,
-			UserSourceService srcService) {
+	public static UserSourceServiceConfig addSourceServiceApp(String userEmail,
+			UserSourceServiceConfig srcService) {
 		return addSourceServiceApp(getUser(userEmail), srcService);
 	}
 
-	public static UserSourceService addSourceServiceApp(User user,
-			UserSourceService srcService) {
+	public static UserSourceServiceConfig addSourceServiceApp(User user,
+			UserSourceServiceConfig srcService) {
 		if (user == null) {
 			throw new IllegalArgumentException("Invalid user: " + user);
 		}
-		List<UserSourceService> services = getUserSourceServices(user);
+		List<UserSourceServiceConfig> services = getUserSourceServices(user);
 		int index = services.indexOf(srcService);
 		if (index >= 0) {
 			return services.get(index);
@@ -124,17 +124,17 @@ public final class MyPersistenceManagerFactory {
 		}
 	}
 
-	public static UserTargetService addTargetServiceApp(String userEmail,
-			UserTargetService targetService) {
+	public static UserTargetServiceConfig addTargetServiceApp(String userEmail,
+			UserTargetServiceConfig targetService) {
 		return addTargetServiceApp(getUser(userEmail), targetService);
 	}
 
-	public static UserTargetService addTargetServiceApp(User user,
-			UserTargetService targetService) {
+	public static UserTargetServiceConfig addTargetServiceApp(User user,
+			UserTargetServiceConfig targetService) {
 		if (user == null) {
 			throw new IllegalArgumentException("Invalid user: " + user);
 		}
-		List<UserTargetService> services = getUserTargetServices(user);
+		List<UserTargetServiceConfig> services = getUserTargetServices(user);
 		int index = services.indexOf(targetService);
 		if (index >= 0) {
 			return services.get(index);
@@ -200,7 +200,7 @@ public final class MyPersistenceManagerFactory {
 			List<?> data = (List<?>) query.execute(userEmail, password);
 			if (data != null && !data.isEmpty()) {
 				User u = (User) data.get(0);
-				log.log(Level.INFO, u.getScreenName());
+				log.log(Level.INFO, u.toString());
 				return u;
 			}
 		} finally {
@@ -233,11 +233,11 @@ public final class MyPersistenceManagerFactory {
 		return users;
 	}
 
-	public static List<UserSourceService> getUserSourceServices(String userEmail) {
+	public static List<UserSourceServiceConfig> getUserSourceServices(String userEmail) {
 		return getUserSourceServices(getUser(userEmail));
 	}
 
-	public static List<UserSourceService> getUserSourceServices(User user) {
+	public static List<UserSourceServiceConfig> getUserSourceServices(User user) {
 		if (user == null) {
 			throw new IllegalArgumentException("Invalid user: " + user);
 		}
@@ -245,14 +245,14 @@ public final class MyPersistenceManagerFactory {
 				.getInstance();
 		PersistenceManager pm = pmf.getPersistenceManager();
 		try {
-			Query query = pm.newQuery(UserSourceService.class);
+			Query query = pm.newQuery(UserSourceServiceConfig.class);
 			query.setFilter("userEmail == userEmailAddress");
 			query.declareParameters("String userEmailAddress");
 			List<?> data = (List<?>) query.execute(user.getUserId().getEmail());
 			if (data != null) {
 				for (Object o : data) {
 					if (user.getSourceServices().contains(o) == false) {
-						user.addSourceService((UserSourceService) o);
+						user.addSourceService((UserSourceServiceConfig) o);
 					}
 				}
 			}
@@ -262,11 +262,11 @@ public final class MyPersistenceManagerFactory {
 		return user.getSourceServices();
 	}
 
-	public static List<UserTargetService> getUserTargetServices(String userEmail) {
+	public static List<UserTargetServiceConfig> getUserTargetServices(String userEmail) {
 		return getUserTargetServices(getUser(userEmail));
 	}
 
-	public static List<UserTargetService> getUserTargetServices(User user) {
+	public static List<UserTargetServiceConfig> getUserTargetServices(User user) {
 		if (user == null) {
 			throw new IllegalArgumentException("Invalid user: " + user);
 		}
@@ -274,14 +274,14 @@ public final class MyPersistenceManagerFactory {
 				.getInstance();
 		PersistenceManager pm = pmf.getPersistenceManager();
 		try {
-			Query query = pm.newQuery(UserTargetService.class);
+			Query query = pm.newQuery(UserTargetServiceConfig.class);
 			query.setFilter("userEmail == userEmailAddress");
 			query.declareParameters("String userEmailAddress");
 			List<?> data = (List<?>) query.execute(user.getUserId().getEmail());
 			if (data != null) {
 				for (Object o : data) {
 					if (user.getTargetServices().contains(o) == false) {
-						user.addTargetService((UserTargetService) o);
+						user.addTargetService((UserTargetServiceConfig) o);
 					}
 				}
 			}

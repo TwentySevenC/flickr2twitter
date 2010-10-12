@@ -23,6 +23,11 @@ import com.google.appengine.api.datastore.Key;
  */
 @PersistenceCapable
 public class User implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	private Key key;
@@ -46,10 +51,10 @@ public class User implements Serializable {
 	private String screenName;
 	
 	@Persistent
-	private List<UserSourceService> sourceServices;
+	private List<UserSourceServiceConfig> sourceServices;
 	
 	@Persistent
-	private List<UserTargetService> targetServices;
+	private List<UserTargetServiceConfig> targetServices;
 
 	/**
 	 * 
@@ -142,47 +147,47 @@ public class User implements Serializable {
 		this.permission = permission;
 	}
 
-	public boolean addSourceService(UserSourceService e) {
+	public boolean addSourceService(UserSourceServiceConfig e) {
 		if (sourceServices == null)
-			sourceServices = new ArrayList<UserSourceService>();
+			sourceServices = new ArrayList<UserSourceServiceConfig>();
 		return sourceServices.add(e);
 	}
 
-	public boolean addSourceServices(Collection<? extends UserSourceService> c) {
+	public boolean addSourceServices(Collection<? extends UserSourceServiceConfig> c) {
 		if (sourceServices == null)
-			sourceServices = new ArrayList<UserSourceService>();
+			sourceServices = new ArrayList<UserSourceServiceConfig>();
 		return sourceServices.addAll(c);
 	}
 
-	public List<UserSourceService> getSourceServices() {
+	public List<UserSourceServiceConfig> getSourceServices() {
 		if (sourceServices == null)
-			sourceServices = new ArrayList<UserSourceService>();
+			sourceServices = new ArrayList<UserSourceServiceConfig>();
 		return sourceServices;
 	}
 
-	public void setSourceServices(List<UserSourceService> sourceServices) {
+	public void setSourceServices(List<UserSourceServiceConfig> sourceServices) {
 		this.sourceServices = sourceServices;
 	}
 
-	public List<UserTargetService> getTargetServices() {
+	public List<UserTargetServiceConfig> getTargetServices() {
 		if (targetServices == null)
-			targetServices = new ArrayList<UserTargetService>();
+			targetServices = new ArrayList<UserTargetServiceConfig>();
 		return targetServices;
 	}
 
-	public void setTargetServices(List<UserTargetService> targetServices) {
+	public void setTargetServices(List<UserTargetServiceConfig> targetServices) {
 		this.targetServices = targetServices;
 	}
 
-	public boolean addTargetService(UserTargetService e) {
+	public boolean addTargetService(UserTargetServiceConfig e) {
 		if (targetServices == null)
-			targetServices = new ArrayList<UserTargetService>();
+			targetServices = new ArrayList<UserTargetServiceConfig>();
 		return targetServices.add(e);
 	}
 	
-	public boolean addTargetServices(Collection<? extends UserTargetService> c) {
+	public boolean addTargetServices(Collection<? extends UserTargetServiceConfig> c) {
 		if (targetServices == null)
-			targetServices = new ArrayList<UserTargetService>();
+			targetServices = new ArrayList<UserTargetServiceConfig>();
 		return targetServices.addAll(c);
 	}
 
