@@ -16,17 +16,6 @@
     <servlet-class>com.gmail.yuyang226.autoflickr2twitter.server.GreetingServiceImpl</servlet-class>
   </servlet>
   
-  <servlet>
-    <servlet-name>greetServlet</servlet-name>
-    <servlet-class>com.gmail.yuyang226.autoflickr2twitter.server.GreetingServiceImpl</servlet-class>
-  </servlet>
-  
-  <servlet>
-	<servlet-name>SystemInitial</servlet-name>
-  	<servlet-class>com.gmail.yuyang226.autoflickr2twitter.servlet.SystemInitializeServlet</servlet-class>
-  	<load-on-startup>3</load-on-startup>
-  </servlet>
-  
   <servlet-mapping>
     <servlet-name>greetServlet</servlet-name>
     <url-pattern>/autoflickr2twitter/greet</url-pattern>
