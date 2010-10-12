@@ -1,7 +1,6 @@
 package com.gmail.yuyang226.autoflickr2twitter.servlet;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -11,6 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.User;
 import com.google.appengine.repackaged.com.google.common.base.StringUtil;
+
+/**
+ * @author Meng Zang (DeepNightTwo@gmail.com)
+ *
+ */
 
 public class UserAccountServlet extends HttpServlet {
 

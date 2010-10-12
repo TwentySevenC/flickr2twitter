@@ -32,6 +32,10 @@ public final class GlobalDefaultConfiguration {
 	
 	private long interval = 600000L; //10 mins
 	
+	// System initialize related property keys
+	public static String KEY_ADMIN_EMAIL = "adminEmail";
+	public static String KEY_ADMIN_DISPLAY_NAME = "adminDisplayName";
+	public static String KEY_ADMIN_PASSWORD = "adminPassword";
 	
 	private Properties properties = null;
 	
