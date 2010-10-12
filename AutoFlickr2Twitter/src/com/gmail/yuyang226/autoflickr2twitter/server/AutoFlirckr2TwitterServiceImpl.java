@@ -18,7 +18,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 /**
  * @author yayu
- *
+ * @deprecated do not use GWT anymore
  */
 public class AutoFlirckr2TwitterServiceImpl extends RemoteServiceServlet
 		implements AutoFlickr2TwitterService {

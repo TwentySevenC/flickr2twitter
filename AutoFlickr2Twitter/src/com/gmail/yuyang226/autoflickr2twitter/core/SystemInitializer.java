@@ -45,9 +45,9 @@ public class SystemInitializer implements ServletContextListener {
 					.getProperty(GlobalDefaultConfiguration.KEY_ADMIN_DISPLAY_NAME);
 			String adminPassword = props
 					.getProperty(GlobalDefaultConfiguration.KEY_ADMIN_PASSWORD);
-			MyPersistenceManagerFactory.createNewUser(adminEmail,
-					adminDisplayname, adminPassword, Permission.ADMIN);
-			log.info("Admin account created.");
+			admin = MyPersistenceManagerFactory.createNewUser(adminEmail,
+					adminPassword, adminDisplayname, Permission.ADMIN);
+			log.info("Admin account created. " + admin);
 		} else{
 			log.info("Admin account already created.");
 		}

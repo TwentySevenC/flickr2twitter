@@ -9,7 +9,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
  * @author yayu
- *
+ * @deprecated do not use GWT anymore
  */
 public interface AutoFlickr2TwitterServiceAsync {
 
