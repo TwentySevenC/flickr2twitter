@@ -5,6 +5,7 @@ package com.gmail.yuyang226.autoflickr2twitter.datastore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.jdo.JDOHelper;
@@ -198,8 +199,11 @@ public final class MyPersistenceManagerFactory {
 			query.setFilter("password == userPassword");
 			query.declareParameters("String userEmailAddress, String userPassword");
 			List<?> data = (List<?>) query.execute(userEmail, password);
-			if (data != null && data.isEmpty() == false)
-				return (User) data.get(0);
+			if (data != null && !data.isEmpty()) {
+				User u = (User) data.get(0);
+				log.log(Level.INFO, u.getScreenName());
+				return u;
+			}
 		} finally {
 			pm.close();
 		}

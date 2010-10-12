@@ -3,6 +3,7 @@
  */
 package com.gmail.yuyang226.autoflickr2twitter.datastore.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -21,7 +22,7 @@ import com.google.appengine.api.datastore.Key;
  *
  */
 @PersistenceCapable
-public class User {
+public class User implements Serializable {
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	private Key key;
