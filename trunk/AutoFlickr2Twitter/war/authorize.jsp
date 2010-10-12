@@ -27,6 +27,9 @@
 
 		<tr>
 			<%
+				List<UserSourceService> sourceSvcs = user.getSourceServices();
+				List<UserTargetService> targetSvcs = user.getTargetServices();
+
 				String currentProviderID = null;
 				currentProviderID = "flickr";
 				Map<String, Object> currentData = (Map<String, Object>) session
@@ -44,6 +47,13 @@
 				<a href="/oauth?<%=OAuthServlet.PARA_OPT%>=<%=OAuthServlet.OPT_AUTH_SOURCE_CONFIRM%>&<%=OAuthServlet.PARA_PROVIDER_ID%>=<%=currentProviderID%>">Confirm Authorize</a>
 			<%
 				}
+			
+				out.println(" Already Authorized Accounts: ");
+				for( UserSourceService sourceSvc : sourceSvcs){
+					if(currentProviderID.equalsIgnoreCase(sourceSvc.getSourceServiceProviderId())){
+						out.println(sourceSvc.getServiceUserName() + "     ");
+					}
+				}
 			%>
 			</td>
 		</tr>
@@ -57,6 +67,7 @@
 		<tr>
 			<td>
 			<%
+			
 				currentProviderID = "twitter";
 				currentData = (Map<String, Object>) session
 						.getAttribute(currentProviderID);
@@ -72,6 +83,12 @@
 			%>
 				<a href="/oauth?<%=OAuthServlet.PARA_OPT%>=<%=OAuthServlet.OPT_AUTH_TARGET_CONFIRM%>&<%=OAuthServlet.PARA_PROVIDER_ID%>=<%=currentProviderID%>">Confirm Authorize</a>
 			<%
+				}
+				out.println(" Already Authorized Accounts: ");
+				for( UserTargetService targetSvc : targetSvcs){
+					if(currentProviderID.equalsIgnoreCase(targetSvc.getTargetServiceProviderId())){
+						out.println(targetSvc.getServiceUserName() + "    ");
+					}
 				}
 			%>
 			</td>
