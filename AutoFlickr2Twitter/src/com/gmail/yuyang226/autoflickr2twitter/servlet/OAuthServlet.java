@@ -14,6 +14,11 @@ import com.gmail.yuyang226.autoflickr2twitter.core.ServiceFactory;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.User;
 import com.gmail.yuyang226.autoflickr2twitter.server.AutoFlirckr2TwitterServiceImpl;
 
+/**
+ * @author Meng Zang (DeepNightTwo@gmail.com)
+ *
+ */
+
 public class OAuthServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
