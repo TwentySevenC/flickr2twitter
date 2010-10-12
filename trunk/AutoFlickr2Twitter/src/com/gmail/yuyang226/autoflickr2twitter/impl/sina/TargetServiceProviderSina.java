@@ -132,13 +132,14 @@ public class TargetServiceProviderSina implements ITargetServiceProvider {
 		String token = String.valueOf(data.get("token"));
 		String secret = String.valueOf(data.get("secret"));
 
-//		for (UserTargetService service : MyPersistenceManagerFactory
-//				.getUserTargetServices(userEmail)) {
-//			if (ID.equals(service.getTargetServiceProviderId())) {
-//				throw new IllegalArgumentException(
-//						"Target already registered: " + ID);
-//			}
-//		}
+		for (UserTargetService service : MyPersistenceManagerFactory
+				.getUserTargetServices(userEmail)) {
+			if (token.equals(service.getServiceAccessToken()) && secret.equals(service.getServiceTokenSecret())) {
+				throw new IllegalArgumentException(
+						"Target already registered: " + ID);
+			}
+		}
+		
 		UserTargetService service = new UserTargetService();
 		service.setTargetServiceProviderId(ID);
 		service.setServiceAccessToken(token);
