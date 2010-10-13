@@ -3,23 +3,27 @@
  */
 package com.gmail.yuyang226.autoflickr2twitter.datastore.model;
 
+import java.io.Serializable;
+
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
 /**
  * @author Toby Yu(yuyang226@gmail.com)
- *
+ * 
  */
 @PersistenceCapable
-public class GlobalTargetApplicationService extends GlobalApplicationConfig {
+public class GlobalTargetApplicationService extends GlobalApplicationConfig
+		implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Persistent
 	private String targetAppConsumerId;
-	
+
 	@Persistent
 	private String targetAppConsumerSecret;
 
-	
 	/**
 	 * 
 	 */
@@ -35,7 +39,8 @@ public class GlobalTargetApplicationService extends GlobalApplicationConfig {
 	}
 
 	/**
-	 * @param targetAppConsumerId the targetAppConsumerId to set
+	 * @param targetAppConsumerId
+	 *            the targetAppConsumerId to set
 	 */
 	public void setTargetAppConsumerId(String targetAppConsumerId) {
 		this.targetAppConsumerId = targetAppConsumerId;
@@ -49,7 +54,8 @@ public class GlobalTargetApplicationService extends GlobalApplicationConfig {
 	}
 
 	/**
-	 * @param targetAppConsumerSecret the targetAppConsumerSecret to set
+	 * @param targetAppConsumerSecret
+	 *            the targetAppConsumerSecret to set
 	 */
 	public void setTargetAppConsumerSecret(String targetAppConsumerSecret) {
 		this.targetAppConsumerSecret = targetAppConsumerSecret;
