@@ -19,8 +19,8 @@ import java.util.logging.Logger;
 
 import org.xml.sax.SAXException;
 
-import com.gmail.yuyang226.autoflickr2twitter.client.FlickrException;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.Flickr;
+import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.FlickrException;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.REST;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.RequestContext;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.auth.Auth;

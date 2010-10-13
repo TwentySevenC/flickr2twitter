@@ -4,7 +4,7 @@
 
 package com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.auth;
 
-import com.gmail.yuyang226.autoflickr2twitter.client.FlickrException;
+import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.FlickrException;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.Parameter;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.Response;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.Transport;
