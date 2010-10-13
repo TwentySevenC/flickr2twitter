@@ -1,6 +1,6 @@
-<%@ page language="java" import="com.gmail.yuyang226.autoflickr2twitter.datastore.*, 
-								 com.gmail.yuyang226.autoflickr2twitter.datastore.model.*,
-								 com.gmail.yuyang226.autoflickr2twitter.servlet.*"
+<%@ page language="java" import="com.googlecode.flickr2twitter.datastore.*, 
+								 com.googlecode.flickr2twitter.datastore.model.*,
+								 com.googlecode.flickr2twitter.servlet.*"
 	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 

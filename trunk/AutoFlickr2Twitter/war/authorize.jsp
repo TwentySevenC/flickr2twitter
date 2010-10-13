@@ -1,5 +1,5 @@
 <%@ page language="java"
-	import="com.gmail.yuyang226.autoflickr2twitter.datastore.*,com.gmail.yuyang226.autoflickr2twitter.datastore.model.*,com.gmail.yuyang226.autoflickr2twitter.servlet.*,java.util.*,com.gmail.yuyang226.autoflickr2twitter.core.*,com.gmail.yuyang226.autoflickr2twitter.model.*,com.gmail.yuyang226.autoflickr2twitter.intf.*"
+	import="com.googlecode.flickr2twitter.datastore.*,com.googlecode.flickr2twitter.datastore.model.*,com.googlecode.flickr2twitter.servlet.*,java.util.*,com.googlecode.flickr2twitter.core.*,com.googlecode.flickr2twitter.model.*,com.googlecode.flickr2twitter.intf.*"
 	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 
