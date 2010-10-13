@@ -17,8 +17,6 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.logging.Logger;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.xml.sax.SAXException;
 
 import com.gmail.yuyang226.autoflickr2twitter.client.FlickrException;
@@ -49,14 +47,14 @@ import com.gmail.yuyang226.autoflickr2twitter.model.IItem;
 public class SourceServiceProviderFlickr implements
 		ISourceServiceProvider<IItem> {
 	public static final String ID = "flickr";
+	public static final String DISPLAY_NAME = "Flickr";
 	private static final Logger log = Logger
 			.getLogger(SourceServiceProviderFlickr.class.getName());
 
 	/**
 	 * 
 	 */
-	public SourceServiceProviderFlickr() throws ParserConfigurationException,
-			IOException {
+	public SourceServiceProviderFlickr() {
 		super();
 	}
 
@@ -244,7 +242,7 @@ public class SourceServiceProviderFlickr implements
 	@Override
 	public GlobalSourceApplicationService createDefaultGlobalApplicationConfig() {
 		GlobalSourceApplicationService result = new GlobalSourceApplicationService();
-		result.setAppName("Flickr");
+		result.setAppName(DISPLAY_NAME);
 		result.setProviderId(ID);
 		result.setDescription("The world's leading online photo storage service");
 		result.setSourceAppApiKey(GlobalDefaultConfiguration.getInstance()

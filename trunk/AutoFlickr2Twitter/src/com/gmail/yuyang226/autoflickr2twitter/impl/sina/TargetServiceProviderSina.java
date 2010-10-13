@@ -25,6 +25,8 @@ import com.gmail.yuyang226.autoflickr2twitter.sina.weibo4j.Weibo;
  */
 public class TargetServiceProviderSina implements ITargetServiceProvider {
 	public static final String ID = "sina";
+	public static final String DISPLAY_NAME = "Sina";
+
 	private static final Logger log = Logger
 			.getLogger(TargetServiceProviderSina.class.getName());
 
@@ -54,12 +56,13 @@ public class TargetServiceProviderSina implements ITargetServiceProvider {
 	 * com.gmail.yuyang226.autoflickr2twitter.intf.ITargetServiceProvider#postUpdate
 	 * (com.gmail.yuyang226.autoflickr2twitter.datastore.model.
 	 * GlobalTargetApplicationService,
-	 * com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserTargetServiceConfig,
-	 * java.util.List)
+	 * com.gmail.yuyang226.autoflickr2twitter.datastore
+	 * .model.UserTargetServiceConfig, java.util.List)
 	 */
 	@Override
 	public void postUpdate(GlobalTargetApplicationService globalAppConfig,
-			UserTargetServiceConfig targetConfig, List<IItem> items) throws Exception {
+			UserTargetServiceConfig targetConfig, List<IItem> items)
+			throws Exception {
 		// api key and secret
 		System.setProperty("weibo4j.oauth.consumerKey", Weibo.CONSUMER_KEY);
 		System.setProperty("weibo4j.oauth.consumerSecret",
@@ -72,8 +75,8 @@ public class TargetServiceProviderSina implements ITargetServiceProvider {
 		// weibo.setToken("c9e5472c8723cc478a6332ce8b321008",
 		// "5c206226f6cd6d87c75c1c60c601d27b");
 
-		weibo.setToken(targetConfig.getServiceAccessToken(), targetConfig
-				.getServiceTokenSecret());
+		weibo.setToken(targetConfig.getServiceAccessToken(),
+				targetConfig.getServiceTokenSecret());
 		for (IItem item : items) {
 			log.info("Posting message -> " + item + " for "
 					+ targetConfig.getServiceUserName());
@@ -134,12 +137,13 @@ public class TargetServiceProviderSina implements ITargetServiceProvider {
 
 		for (UserTargetServiceConfig service : MyPersistenceManagerFactory
 				.getUserTargetServices(userEmail)) {
-			if (token.equals(service.getServiceAccessToken()) && secret.equals(service.getServiceTokenSecret())) {
+			if (token.equals(service.getServiceAccessToken())
+					&& secret.equals(service.getServiceTokenSecret())) {
 				throw new IllegalArgumentException(
 						"Target already registered: " + ID);
 			}
 		}
-		
+
 		UserTargetServiceConfig service = new UserTargetServiceConfig();
 		service.setServiceProviderId(ID);
 		service.setServiceAccessToken(token);
@@ -165,21 +169,23 @@ public class TargetServiceProviderSina implements ITargetServiceProvider {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	/* (non-Javadoc)
-	 * @see com.gmail.yuyang226.autoflickr2twitter.intf.IServiceProvider#createDefaultGlobalApplicationConfig()
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.gmail.yuyang226.autoflickr2twitter.intf.IServiceProvider#
+	 * createDefaultGlobalApplicationConfig()
 	 */
 	@Override
 	public GlobalTargetApplicationService createDefaultGlobalApplicationConfig() {
 		GlobalTargetApplicationService result = new GlobalTargetApplicationService();
-		result.setAppName("Sina");
+		result.setAppName(DISPLAY_NAME);
 		result.setProviderId(ID);
 		result.setDescription("The MaLeGeBi's leading online micro-blog service");
 		result.setTargetAppConsumerId(Weibo.CONSUMER_KEY);
 		result.setTargetAppConsumerSecret(Weibo.CONSUMER_SECRET);
-		result.setAuthPagePath(null); //TODO set the default auth page path
-		result.setImagePath(null); //TODO set the default image path
+		result.setAuthPagePath(null); // TODO set the default auth page path
+		result.setImagePath(null); // TODO set the default image path
 		return result;
 	}
-
 }
