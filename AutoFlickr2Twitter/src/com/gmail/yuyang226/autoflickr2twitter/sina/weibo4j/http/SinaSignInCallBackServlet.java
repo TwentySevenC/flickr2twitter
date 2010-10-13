@@ -27,21 +27,23 @@ public class SinaSignInCallBackServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		
-		//get user information from session
-		User currentUser = (User) req.getSession().getAttribute(UserAccountServlet.PARA_SESSION_USER);
-		if( currentUser == null ) {
+//		//get user information from session
+//		User currentUser = (User) req.getSession().getAttribute(UserAccountServlet.PARA_SESSION_USER);
+		String email = req.getParameter("u");
+		if( email == null ) {
 			resp.getWriter().println("Use not signed in, please sign in first.");
 			return;
 		}
+		
 
 
 		// Get the verifier;
-		String verifier = req.getParameter("verifier");
+		String verifier = req.getParameter("oauth_verifier");
 		log.log(Level.INFO, "oauth_verifier = " + verifier);
 
 		// Request token and secret
-		String requestToken = req.getParameter("token");
-		String requestTokenSecret = req.getParameter("secret");
+		String requestToken = req.getParameter("t"); //token
+		String requestTokenSecret = req.getParameter("s"); //secret
 
 		if (verifier == null) {
 			resp.getWriter().println("Error to get the verifier.");
@@ -73,7 +75,7 @@ public class SinaSignInCallBackServlet extends HttpServlet {
 				data.put("token",accessToken.getToken());
 				data.put("secret", accessToken.getTokenSecret());
 				try {
-					tps.readyAuthorization(currentUser.getUserId().getEmail(), data);
+					tps.readyAuthorization(email, data);
 				} catch (Exception e) {
 					resp.getWriter().println("<p>But error to save the access token." + e.getMessage());
 					log.log(Level.WARNING, e.getMessage());
