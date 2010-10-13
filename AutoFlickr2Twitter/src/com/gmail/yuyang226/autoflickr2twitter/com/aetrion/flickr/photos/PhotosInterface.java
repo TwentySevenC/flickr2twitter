@@ -13,7 +13,7 @@ import java.util.Set;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-import com.gmail.yuyang226.autoflickr2twitter.client.FlickrException;
+import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.FlickrException;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.Parameter;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.Response;
 import com.gmail.yuyang226.autoflickr2twitter.com.aetrion.flickr.Transport;
