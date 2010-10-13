@@ -38,112 +38,135 @@ import com.gmail.yuyang226.autoflickr2twitter.datastore.model.GlobalServiceConfi
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.GlobalSourceApplicationService;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.User;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.UserSourceServiceConfig;
+import com.gmail.yuyang226.autoflickr2twitter.exceptions.TokenAlreadyRegisteredException;
 import com.gmail.yuyang226.autoflickr2twitter.intf.ISourceServiceProvider;
 import com.gmail.yuyang226.autoflickr2twitter.model.IItem;
 
 /**
  * @author Toby Yu(yuyang226@gmail.com)
- *
+ * 
  */
-public class SourceServiceProviderFlickr implements ISourceServiceProvider<IItem> {
+public class SourceServiceProviderFlickr implements
+		ISourceServiceProvider<IItem> {
 	public static final String ID = "flickr";
-    private static final Logger log = Logger.getLogger(SourceServiceProviderFlickr.class.getName());
+	private static final Logger log = Logger
+			.getLogger(SourceServiceProviderFlickr.class.getName());
 
 	/**
 	 * 
 	 */
-	public SourceServiceProviderFlickr() throws ParserConfigurationException, IOException {
+	public SourceServiceProviderFlickr() throws ParserConfigurationException,
+			IOException {
 		super();
 	}
-    
-    private List<IItem> showRecentPhotos(Flickr f, String userId, String token, long interval) throws IOException, SAXException, FlickrException {
-    	 RequestContext requestContext = RequestContext.getRequestContext();
-         Auth auth = new Auth();
-         auth.setPermission(Permission.READ);
-         auth.setToken(token);
-         requestContext.setAuth(auth);
-    	List<IItem> photos = new ArrayList<IItem>();
-    	//PeopleInterface pface =  f.getPeopleInterface();
-    	PhotosInterface photosFace = f.getPhotosInterface();
-    	Set<String> extras = new HashSet<String>(2);
-    	extras.add(Extras.DATE_UPLOAD);
-    	extras.add(Extras.LAST_UPDATE);
-    	extras.add(Extras.GEO);
-    	
-    	//pface.getPublicPhotos(userId, extras, 10, 1);
-    	Date now = Calendar.getInstance(TimeZone.getTimeZone("CST"), Locale.UK).getTime();
-    	log.info("Current time: " + now);
-    	Calendar past = Calendar.getInstance(TimeZone.getTimeZone("CST"), Locale.UK);
-    	long newTime = now.getTime() - interval;
-    	past.setTimeInMillis(newTime);
-    	PhotoList list = photosFace.recentlyUpdated(past.getTime(), extras, 20, 1); 
-		
-    	log.info("Trying to find photos uploaded for user " + userId + " after " + past.getTime().toString() + " from " 
-    			+ list.getTotal() + " new photos");
-    	for (Object obj : list) {
-    		if (obj instanceof Photo) {
-    			Photo photo = (Photo)obj;
-    			log.fine("processing photo: " + photo.getTitle() + ", date uploaded: " + photo.getDatePosted());
-    			if (photo.isPublicFlag() && photo.getDatePosted().after(past.getTime())) {
-    				log.info(photo.getTitle() + ", URL: " + photo.getUrl() 
-    						+ ", date uploaded: " + photo.getDatePosted() + ", GEO: " + photo.getGeoData());
-    				photos.add(photo);
-    			}
-    		}
-    	}
-    	return photos;
-    }
 
-	/* (non-Javadoc)
-	 * @see com.gmail.yuyang226.autoflickr2twitter.intf.ISourceServiceProvider#getId()
+	private List<IItem> showRecentPhotos(Flickr f, String userId, String token,
+			long interval) throws IOException, SAXException, FlickrException {
+		RequestContext requestContext = RequestContext.getRequestContext();
+		Auth auth = new Auth();
+		auth.setPermission(Permission.READ);
+		auth.setToken(token);
+		requestContext.setAuth(auth);
+		List<IItem> photos = new ArrayList<IItem>();
+		// PeopleInterface pface = f.getPeopleInterface();
+		PhotosInterface photosFace = f.getPhotosInterface();
+		Set<String> extras = new HashSet<String>(2);
+		extras.add(Extras.DATE_UPLOAD);
+		extras.add(Extras.LAST_UPDATE);
+		extras.add(Extras.GEO);
+
+		// pface.getPublicPhotos(userId, extras, 10, 1);
+		Date now = Calendar.getInstance(TimeZone.getTimeZone("CST"), Locale.UK)
+				.getTime();
+		log.info("Current time: " + now);
+		Calendar past = Calendar.getInstance(TimeZone.getTimeZone("CST"),
+				Locale.UK);
+		long newTime = now.getTime() - interval;
+		past.setTimeInMillis(newTime);
+		PhotoList list = photosFace.recentlyUpdated(past.getTime(), extras, 20,
+				1);
+
+		log.info("Trying to find photos uploaded for user " + userId
+				+ " after " + past.getTime().toString() + " from "
+				+ list.getTotal() + " new photos");
+		for (Object obj : list) {
+			if (obj instanceof Photo) {
+				Photo photo = (Photo) obj;
+				log.fine("processing photo: " + photo.getTitle()
+						+ ", date uploaded: " + photo.getDatePosted());
+				if (photo.isPublicFlag()
+						&& photo.getDatePosted().after(past.getTime())) {
+					log.info(photo.getTitle() + ", URL: " + photo.getUrl()
+							+ ", date uploaded: " + photo.getDatePosted()
+							+ ", GEO: " + photo.getGeoData());
+					photos.add(photo);
+				}
+			}
+		}
+		return photos;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.gmail.yuyang226.autoflickr2twitter.intf.ISourceServiceProvider#getId
+	 * ()
 	 */
 	@Override
 	public String getId() {
 		return ID;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.gmail.yuyang226.autoflickr2twitter.intf.ISourceServiceProvider#getLatestItems()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.gmail.yuyang226.autoflickr2twitter.intf.ISourceServiceProvider#
+	 * getLatestItems()
 	 */
 	@Override
-	public List<IItem> getLatestItems(GlobalServiceConfiguration globalConfig, UserSourceServiceConfig sourceService) throws Exception {
+	public List<IItem> getLatestItems(GlobalServiceConfiguration globalConfig,
+			UserSourceServiceConfig sourceService) throws Exception {
 		GlobalSourceApplicationService globalAppConfig = MyPersistenceManagerFactory
-		.getGlobalSourceAppService(ID);
-		if (globalAppConfig == null 
+				.getGlobalSourceAppService(ID);
+		if (globalAppConfig == null
 				|| ID.equalsIgnoreCase(globalAppConfig.getProviderId()) == false) {
-			throw new IllegalArgumentException("Invalid source service provider: " + globalAppConfig);
+			throw new IllegalArgumentException(
+					"Invalid source service provider: " + globalAppConfig);
 		}
 		REST transport = new REST();
-		Flickr  f = new Flickr(
-				globalAppConfig.getSourceAppApiKey(),
-				globalAppConfig.getSourceAppSecret(),
-				transport
-		);
-        transport.setAllowCache(false);
-       
-        Flickr.debugRequest = false;
-        Flickr.debugStream = false;
-		return showRecentPhotos(f, sourceService.getServiceUserId(), sourceService.getServiceAccessToken()
-				, globalConfig.getMinUploadTime());
+		Flickr f = new Flickr(globalAppConfig.getSourceAppApiKey(),
+				globalAppConfig.getSourceAppSecret(), transport);
+		transport.setAllowCache(false);
+
+		Flickr.debugRequest = false;
+		Flickr.debugStream = false;
+		return showRecentPhotos(f, sourceService.getServiceUserId(),
+				sourceService.getServiceAccessToken(),
+				globalConfig.getMinUploadTime());
 	}
 
-	/* (non-Javadoc)
-	 * @see com.gmail.yuyang226.autoflickr2twitter.intf.ISourceServiceProvider#storeToken(com.gmail.yuyang226.autoflickr2twitter.intf.IDataStoreService)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.gmail.yuyang226.autoflickr2twitter.intf.ISourceServiceProvider#storeToken
+	 * (com.gmail.yuyang226.autoflickr2twitter.intf.IDataStoreService)
 	 */
 	@Override
-	public String readyAuthorization(String userEmail, Map<String, Object> data) throws Exception {
+	public String readyAuthorization(String userEmail, Map<String, Object> data)
+			throws Exception {
 		if (data == null || data.containsKey("frob") == false) {
 			throw new IllegalArgumentException("Invalid data: " + data);
 		}
 		User user = MyPersistenceManagerFactory.getUser(userEmail);
 		if (user == null) {
-			throw new IllegalArgumentException("Can not find the specified user: " + userEmail);
+			throw new IllegalArgumentException(
+					"Can not find the specified user: " + userEmail);
 		}
-		Flickr f = new Flickr(
-				GlobalDefaultConfiguration.getInstance().getFlickrApiKey(),
-				GlobalDefaultConfiguration.getInstance().getFlickrSecret(),
-				new REST()
-		);
+		Flickr f = new Flickr(GlobalDefaultConfiguration.getInstance()
+				.getFlickrApiKey(), GlobalDefaultConfiguration.getInstance()
+				.getFlickrSecret(), new REST());
 		String frob = String.valueOf(data.get("frob"));
 		AuthInterface authInterface = f.getAuthInterface();
 		Auth auth = authInterface.getToken(frob);
@@ -163,9 +186,11 @@ public class SourceServiceProviderFlickr implements ISourceServiceProvider<IItem
 		buf.append("Permission: " + auth.getPermission().getType());
 
 		String userId = auth.getUser().getId();
-		for (UserSourceServiceConfig service : MyPersistenceManagerFactory.getUserSourceServices(user)) {
-			if (auth.getToken().equals(service.getServiceAccessToken())) { 
-				throw new IllegalArgumentException("Token already registered: " + auth.getToken());
+		for (UserSourceServiceConfig service : MyPersistenceManagerFactory
+				.getUserSourceServices(user)) {
+			if (auth.getToken().equals(service.getServiceAccessToken())) {
+				throw new TokenAlreadyRegisteredException(auth.getToken(), auth
+						.getUser().getUsername());
 			}
 		}
 		UserSourceServiceConfig service = new UserSourceServiceConfig();
@@ -180,28 +205,29 @@ public class SourceServiceProviderFlickr implements ISourceServiceProvider<IItem
 		return buf.toString();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.gmail.yuyang226.autoflickr2twitter.intf.ISourceServiceProvider#requestAuthorization()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.gmail.yuyang226.autoflickr2twitter.intf.ISourceServiceProvider#
+	 * requestAuthorization()
 	 */
 	@Override
 	public Map<String, Object> requestAuthorization() throws Exception {
 		GlobalSourceApplicationService globalAppConfig = MyPersistenceManagerFactory
-		.getGlobalSourceAppService(ID);
-		if (globalAppConfig == null 
+				.getGlobalSourceAppService(ID);
+		if (globalAppConfig == null
 				|| ID.equalsIgnoreCase(globalAppConfig.getProviderId()) == false) {
-			throw new IllegalArgumentException("Invalid source service provider: " + globalAppConfig);
+			throw new IllegalArgumentException(
+					"Invalid source service provider: " + globalAppConfig);
 		}
 		Map<String, Object> result = new HashMap<String, Object>();
-		
-		Flickr f = new Flickr(
-				globalAppConfig.getSourceAppApiKey(),
-				globalAppConfig.getSourceAppSecret(),
-				new REST()
-		);
+
+		Flickr f = new Flickr(globalAppConfig.getSourceAppApiKey(),
+				globalAppConfig.getSourceAppSecret(), new REST());
 		AuthInterface authInterface = f.getAuthInterface();
 
 		String frob = authInterface.getFrob();
-		
+
 		URL url = authInterface.buildAuthenticationUrl(Permission.READ, frob);
 		log.info("frob: " + frob + ", Token URL: " + url.toExternalForm());
 		result.put("frob", frob);
@@ -209,8 +235,11 @@ public class SourceServiceProviderFlickr implements ISourceServiceProvider<IItem
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.gmail.yuyang226.autoflickr2twitter.intf.IServiceProvider#createDefaultGlobalApplicationConfig()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.gmail.yuyang226.autoflickr2twitter.intf.IServiceProvider#
+	 * createDefaultGlobalApplicationConfig()
 	 */
 	@Override
 	public GlobalSourceApplicationService createDefaultGlobalApplicationConfig() {
@@ -218,10 +247,12 @@ public class SourceServiceProviderFlickr implements ISourceServiceProvider<IItem
 		result.setAppName("Flickr");
 		result.setProviderId(ID);
 		result.setDescription("The world's leading online photo storage service");
-		result.setSourceAppApiKey(GlobalDefaultConfiguration.getInstance().getFlickrApiKey());
-		result.setSourceAppSecret(GlobalDefaultConfiguration.getInstance().getFlickrSecret());
-		result.setAuthPagePath(null); //TODO set the default auth page path
-		result.setImagePath(null); //TODO set the default image path
+		result.setSourceAppApiKey(GlobalDefaultConfiguration.getInstance()
+				.getFlickrApiKey());
+		result.setSourceAppSecret(GlobalDefaultConfiguration.getInstance()
+				.getFlickrSecret());
+		result.setAuthPagePath(null); // TODO set the default auth page path
+		result.setImagePath(null); // TODO set the default image path
 		return result;
 	}
 

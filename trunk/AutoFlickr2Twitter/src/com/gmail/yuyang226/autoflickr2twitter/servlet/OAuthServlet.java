@@ -9,9 +9,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.gmail.yuyang226.autoflickr2twitter.client.AutoFlickr2TwitterService;
+import com.gmail.yuyang226.autoflickr2twitter.core.ServiceFactory;
 import com.gmail.yuyang226.autoflickr2twitter.datastore.model.User;
-import com.gmail.yuyang226.autoflickr2twitter.server.AutoFlirckr2TwitterServiceImpl;
+import com.gmail.yuyang226.autoflickr2twitter.exceptions.TokenAlreadyRegisteredException;
 
 /**
  * @author Meng Zang (DeepNightTwo@gmail.com)
@@ -40,8 +40,6 @@ public class OAuthServlet extends HttpServlet {
 	public static final String PARA_SESSION_FLICKER_AUTH_TOKEN = "flicker_auth_token";
 	public static final String PARA_SESSION_TWITTER_AUTH_TOKEN = "twitter_auth_token";
 
-	private AutoFlickr2TwitterService authService = new AutoFlirckr2TwitterServiceImpl();
-
 	@SuppressWarnings("unchecked")
 	private void doAuthConfirm(HttpServletRequest req,
 			HttpServletResponse resp, boolean sourceProvider, StringBuffer msg) {
@@ -49,24 +47,31 @@ public class OAuthServlet extends HttpServlet {
 		User user = (User) req.getSession().getAttribute(
 				UserAccountServlet.PARA_SESSION_USER);
 		String userEmail = user.getUserId().getEmail();
+		String retMsg = null;
+		Map<String, Object> data = (Map<String, Object>) req.getSession()
+				.getAttribute(providerId);
 		try {
-
-			Map<String, Object> data = (Map<String, Object>) req.getSession()
-					.getAttribute(providerId);
-			String retMsg = authService.testToken(sourceProvider, providerId,
-					userEmail, data);
+			if (sourceProvider == true) {
+				retMsg = ServiceFactory.getSourceServiceProvider(providerId)
+						.readyAuthorization(userEmail, data);
+			} else {
+				retMsg = ServiceFactory.getTargetServiceProvider(providerId)
+						.readyAuthorization(userEmail, data);
+			}
 
 			log.info(retMsg);
-
 			msg.append("Auth successful!");
-
+		} catch (TokenAlreadyRegisteredException ex) {
 			req.getSession().removeAttribute(providerId);
-
+			msg.append("Account \"" + ex.getUserName()
+					+ "\" is already authorized. Token for this account is:"
+					+ ex.getToken());
 		} catch (Exception e) {
 			e.printStackTrace();
 			msg.append("Auth confirm faild. Provider ID is: " + providerId
 					+ ". Error message is:" + e.getMessage());
 		}
+		req.getSession().removeAttribute(providerId);
 	}
 
 	private void testAuth(HttpServletRequest req, HttpServletResponse resp,
@@ -80,9 +85,14 @@ public class OAuthServlet extends HttpServlet {
 		try {
 			// FIXME: shall we store the token now? if session times out, this
 			// token will be lost forever.
-			Map<String, Object> data = authService.authorize(sourceProvider,
-					providerId);
-
+			Map<String, Object> data = null;
+			if (sourceProvider == true) {
+				data = ServiceFactory.getSourceServiceProvider(providerId)
+						.requestAuthorization();
+			} else {
+				data = ServiceFactory.getTargetServiceProvider(providerId)
+						.requestAuthorization();
+			}
 			req.getSession().setAttribute(providerId, data);
 			String tokenUrl = String.valueOf(data.get("url"));
 			resp.sendRedirect(tokenUrl);

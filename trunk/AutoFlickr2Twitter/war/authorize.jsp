@@ -9,6 +9,7 @@
 <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
 
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta http-equiv="refresh" content="15" > 
 <title>Twitter the World - Authorize your Source and Target</title>
 </head>
 <body>
@@ -27,34 +28,43 @@
 
 		<tr>
 			<%
-				List<UserSourceServiceConfig> sourceSvcs = MyPersistenceManagerFactory.getUserSourceServices(user);
-						List<UserTargetServiceConfig> targetSvcs = MyPersistenceManagerFactory.getUserTargetServices(user);
+				List<UserSourceServiceConfig> sourceSvcs = MyPersistenceManagerFactory
+						.getUserSourceServices(user);
+				List<UserTargetServiceConfig> targetSvcs = MyPersistenceManagerFactory
+						.getUserTargetServices(user);
 
-						String currentProviderID = null;
-						currentProviderID = "flickr";
-						Map<String, Object> currentData = (Map<String, Object>) session
-								.getAttribute(currentProviderID);
+				String currentProviderID = null;
+				currentProviderID = "flickr";
+				Map<String, Object> currentData = (Map<String, Object>) session
+						.getAttribute(currentProviderID);
 			%>
-			<td><a
-				href="/oauth?<%=OAuthServlet.PARA_OPT%>=<%=OAuthServlet.OPT_AUTH_SOURCE%>&<%=OAuthServlet.PARA_PROVIDER_ID%>=<%=currentProviderID%>"
-				target="_new">Authorize Flicker Account</a></td>
+			<td>
+			<!-- onclick="location.reload()"  -->
+			<a  
+				href="/oauth?<%=OAuthServlet.PARA_OPT%>=<%=OAuthServlet.OPT_AUTH_SOURCE%>&<%=OAuthServlet.PARA_PROVIDER_ID%>=<%=currentProviderID%>" target="_blank">Authorize Flicker Account</a></td>
 			<td>
 			<%
 				if (currentData == null) {
-							out.print(" <-Please click the link on the left side. It will lead you to the offical authorize page. After authorization, please refresh this page and click the Confirm Authorize link. ");
-						} else {
+					out.print(" <-Please click the link on the left side. It will lead you to the offical authorize page. After authorization, please refresh this page and click the Confirm Authorize link. ");
+				} else {
 			%>
 				<a href="/oauth?<%=OAuthServlet.PARA_OPT%>=<%=OAuthServlet.OPT_AUTH_SOURCE_CONFIRM%>&<%=OAuthServlet.PARA_PROVIDER_ID%>=<%=currentProviderID%>">Confirm Authorize</a>
 			<%
 				}
-					
-						out.println("Already Authorized Accounts: ");
-						for( UserSourceServiceConfig sourceSvc : sourceSvcs){
-							if(currentProviderID.equalsIgnoreCase(sourceSvc.getServiceProviderId())){
-								out.println(sourceSvc.getServiceUserName() + "     <br>");
-							}
-						}
 			%>
+			<h4>Already Authorized Accounts:</h4>
+			<ul>
+			<%
+				for (UserSourceServiceConfig sourceSvc : sourceSvcs) {
+					if (currentProviderID.equalsIgnoreCase(sourceSvc
+							.getServiceProviderId())) {
+						out.println("<li>" + sourceSvc.getServiceUserName()
+								+ "  <a href=\"" + sourceSvc.getUserSiteUrl()
+								+ "\">Go to my page</a></li>");
+					}
+				}
+			%>
+				</ul>
 			</td>
 		</tr>
 
@@ -68,27 +78,27 @@
 			<td>
 			<%
 				currentProviderID = "twitter";
-					currentData = (Map<String, Object>) session
-							.getAttribute(currentProviderID);
+				currentData = (Map<String, Object>) session
+						.getAttribute(currentProviderID);
 			%>
 			<a
-				href="/oauth?<%=OAuthServlet.PARA_OPT%>=<%=OAuthServlet.OPT_AUTH_TARGET%>&<%=OAuthServlet.PARA_PROVIDER_ID%>=twitter"
-				target="_new">Authorize Twitter Account</a></td>
+				href="/oauth?<%=OAuthServlet.PARA_OPT%>=<%=OAuthServlet.OPT_AUTH_TARGET%>&<%=OAuthServlet.PARA_PROVIDER_ID%>=twitter" target="_blank">Authorize Twitter Account</a></td>
 			<td>
 			<%
 				if (currentData == null) {
-						out.print(" <-Please click the link on the left side. It will lead you to the offical authorize page. After authorization, please refresh this page and click the Confirm Authorize link. ");
-					} else {
+					out.print(" <-Please click the link on the left side. It will lead you to the offical authorize page. After authorization, please refresh this page and click the Confirm Authorize link. ");
+				} else {
 			%>
 				<a href="/oauth?<%=OAuthServlet.PARA_OPT%>=<%=OAuthServlet.OPT_AUTH_TARGET_CONFIRM%>&<%=OAuthServlet.PARA_PROVIDER_ID%>=<%=currentProviderID%>">Confirm Authorize</a>
 			<%
 				}
-					out.println(" Already Authorized Accounts: ");
-					for( UserTargetServiceConfig targetSvc : targetSvcs){
-						if(currentProviderID.equalsIgnoreCase(targetSvc.getServiceProviderId())){
-							out.println(targetSvc.getServiceUserName() + "    ");
-						}
+				out.println(" Already Authorized Accounts: ");
+				for (UserTargetServiceConfig targetSvc : targetSvcs) {
+					if (currentProviderID.equalsIgnoreCase(targetSvc
+							.getServiceProviderId())) {
+						out.println(targetSvc.getServiceUserName() + "    ");
 					}
+				}
 			%>
 			</td>
 		</tr>
