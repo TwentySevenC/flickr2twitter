@@ -1,8 +1,8 @@
 <%@ page contentType="text/html;charset=utf-8" %>
-<%@ page language="java" import="com.gmail.yuyang226.autoflickr2twitter.sina.weibo4j.*" %>
-<%@ page language="java" import="com.gmail.yuyang226.autoflickr2twitter.sina.weibo4j.http.*" %>
-<%@ page language="java" import="com.gmail.yuyang226.autoflickr2twitter.datastore.model.User" %>
-<%@ page language="java" import="com.gmail.yuyang226.autoflickr2twitter.servlet.UserAccountServlet" %>
+<%@ page language="java" import="com.googlecode.flickr2twitter.sina.weibo4j.*" %>
+<%@ page language="java" import="com.googlecode.flickr2twitter.sina.weibo4j.http.*" %>
+<%@ page language="java" import="com.googlecode.flickr2twitter.datastore.model.User" %>
+<%@ page language="java" import="com.googlecode.flickr2twitter.servlet.UserAccountServlet" %>
 
 <%
 	User currentUser = (User) session.getAttribute(UserAccountServlet.PARA_SESSION_USER);

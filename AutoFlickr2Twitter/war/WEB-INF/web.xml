@@ -7,13 +7,13 @@
 
   <!-- Listener -->
   <listener>
-  	<listener-class>com.gmail.yuyang226.autoflickr2twitter.core.SystemInitializer</listener-class>
+  	<listener-class>com.googlecode.flickr2twitter.core.SystemInitializer</listener-class>
   </listener>
   
   <!-- Servlets -->
   <servlet>
     <servlet-name>recheckServlet</servlet-name>
-    <servlet-class>com.gmail.yuyang226.autoflickr2twitter.servlet.ServiceExecutionServlet</servlet-class>
+    <servlet-class>com.googlecode.flickr2twitter.servlet.ServiceExecutionServlet</servlet-class>
   </servlet>
   
   <servlet-mapping>
@@ -23,7 +23,7 @@
   
   <servlet>
     <servlet-name>login</servlet-name>
-    <servlet-class>com.gmail.yuyang226.autoflickr2twitter.twitter.SignInWithTwitter</servlet-class>
+    <servlet-class>com.googlecode.flickr2twitter.twitter.SignInWithTwitter</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>login</servlet-name>
@@ -32,7 +32,7 @@
   
   <servlet>
     <servlet-name>sinacallback</servlet-name>
-    <servlet-class>com.gmail.yuyang226.autoflickr2twitter.sina.weibo4j.http.SinaSignInCallBackServlet</servlet-class>
+    <servlet-class>com.googlecode.flickr2twitter.sina.weibo4j.http.SinaSignInCallBackServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>sinacallback</servlet-name>
@@ -41,7 +41,7 @@
   
   <servlet>
     <servlet-name>callback</servlet-name>
-    <servlet-class>com.gmail.yuyang226.autoflickr2twitter.twitter.TwitterSignInCallback</servlet-class>
+    <servlet-class>com.googlecode.flickr2twitter.twitter.TwitterSignInCallback</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>callback</servlet-name>
@@ -51,7 +51,7 @@
   
   <servlet>
     <servlet-name>userOperation</servlet-name>
-    <servlet-class>com.gmail.yuyang226.autoflickr2twitter.servlet.UserAccountServlet</servlet-class>
+    <servlet-class>com.googlecode.flickr2twitter.servlet.UserAccountServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>userOperation</servlet-name>
@@ -60,7 +60,7 @@
   
   <servlet>
     <servlet-name>oauth</servlet-name>
-    <servlet-class>com.gmail.yuyang226.autoflickr2twitter.servlet.OAuthServlet</servlet-class>
+    <servlet-class>com.googlecode.flickr2twitter.servlet.OAuthServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>oauth</servlet-name>
@@ -71,7 +71,7 @@
   <!-- 
   <servlet>
     <servlet-name>twitterPostStatus</servlet-name>
-    <servlet-class>com.gmail.yuyang226.autoflickr2twitter.twitter.PostTweet</servlet-class>
+    <servlet-class>com.googlecode.flickr2twitter.twitter.PostTweet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>twitterPostStatus</servlet-name>
