@@ -100,7 +100,7 @@
 		%>
 		<tr>
 			<td><a
-				href="/oauth?<%=OAuthServlet.PARA_OPT%>=<%=OAuthServlet.OPT_AUTH_SOURCE%>&<%=OAuthServlet.PARA_PROVIDER_ID%>=<%=currentProviderID%>"
+				href="/oauth?<%=OAuthServlet.PARA_OPT%>=<%=OAuthServlet.OPT_AUTH_TARGET%>&<%=OAuthServlet.PARA_PROVIDER_ID%>=<%=currentProviderID%>"
 				target="_blank">Authorize <%=targetApp.getAppName()%>
 			Account </a></td>
 			<td>

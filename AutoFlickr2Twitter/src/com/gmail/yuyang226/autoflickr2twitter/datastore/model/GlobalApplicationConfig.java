@@ -3,6 +3,8 @@
  */
 package com.gmail.yuyang226.autoflickr2twitter.datastore.model;
 
+import java.io.Serializable;
+
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.Inheritance;
 import javax.jdo.annotations.InheritanceStrategy;
@@ -12,24 +14,27 @@ import javax.jdo.annotations.PrimaryKey;
 
 /**
  * @author Toby Yu(yuyang226@gmail.com)
- *
+ * 
  */
 @PersistenceCapable
 @Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
-public abstract class GlobalApplicationConfig {
+public abstract class GlobalApplicationConfig implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
 	@PrimaryKey
 	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	private String providerId;
-	
+
 	@Persistent
 	private String appName = "Flickr";
-	
+
 	@Persistent
 	private String description = "The world's leading online phone album service";
-	
+
 	@Persistent
 	private String authPagePath;
-	
+
 	@Persistent
 	private String imagePath;
 
@@ -48,7 +53,8 @@ public abstract class GlobalApplicationConfig {
 	}
 
 	/**
-	 * @param providerId the providerId to set
+	 * @param providerId
+	 *            the providerId to set
 	 */
 	public void setProviderId(String providerId) {
 		this.providerId = providerId;
@@ -62,7 +68,8 @@ public abstract class GlobalApplicationConfig {
 	}
 
 	/**
-	 * @param appName the appName to set
+	 * @param appName
+	 *            the appName to set
 	 */
 	public void setAppName(String appName) {
 		this.appName = appName;
@@ -76,7 +83,8 @@ public abstract class GlobalApplicationConfig {
 	}
 
 	/**
-	 * @param description the description to set
+	 * @param description
+	 *            the description to set
 	 */
 	public void setDescription(String description) {
 		this.description = description;
@@ -90,7 +98,8 @@ public abstract class GlobalApplicationConfig {
 	}
 
 	/**
-	 * @param authPagePath the authPagePath to set
+	 * @param authPagePath
+	 *            the authPagePath to set
 	 */
 	public void setAuthPagePath(String authPagePath) {
 		this.authPagePath = authPagePath;
@@ -104,11 +113,11 @@ public abstract class GlobalApplicationConfig {
 	}
 
 	/**
-	 * @param imagePath the imagePath to set
+	 * @param imagePath
+	 *            the imagePath to set
 	 */
 	public void setImagePath(String imagePath) {
 		this.imagePath = imagePath;
 	}
-	
 
 }

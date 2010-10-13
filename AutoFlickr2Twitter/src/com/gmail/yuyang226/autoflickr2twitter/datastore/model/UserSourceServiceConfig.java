@@ -3,19 +3,23 @@
  */
 package com.gmail.yuyang226.autoflickr2twitter.datastore.model;
 
+import java.io.Serializable;
+
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 
 /**
  * @author Toby Yu(yuyang226@gmail.com)
- *
+ * 
  */
 @PersistenceCapable
-public class UserSourceServiceConfig extends UserServiceConfig{
-	
+public class UserSourceServiceConfig extends UserServiceConfig implements
+		Serializable {
+
+	private static final long serialVersionUID = 1L;
+
 	@Persistent
 	private String serviceAccessToken;
-	
 
 	/**
 	 * 
@@ -32,7 +36,9 @@ public class UserSourceServiceConfig extends UserServiceConfig{
 		this.serviceAccessToken = serviceAccessToken;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -46,7 +52,9 @@ public class UserSourceServiceConfig extends UserServiceConfig{
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -65,6 +73,5 @@ public class UserSourceServiceConfig extends UserServiceConfig{
 			return false;
 		return true;
 	}
-	
 
 }
