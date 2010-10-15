@@ -197,7 +197,11 @@ public class SourceServiceProviderFlickr implements
 		service.setServiceAccessToken(auth.getToken());
 		service.setServiceProviderId(ID);
 		service.setUserEmail(userEmail);
-		service.setUserSiteUrl(auth.getUser().getPhotosurl());
+		com.googlecode.flickr2twitter.com.aetrion.flickr.people.User flickrUser = 
+			f.getPeopleInterface().getInfo(userId);
+		if (flickrUser != null) {
+			service.setUserSiteUrl(flickrUser.getPhotosurl());
+		}
 		MyPersistenceManagerFactory.addSourceServiceApp(userEmail, service);
 
 		return buf.toString();
