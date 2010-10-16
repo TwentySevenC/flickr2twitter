@@ -31,7 +31,7 @@ public class SystemInitializer implements ServletContextListener {
 
 	@Override
 	public void contextInitialized(ServletContextEvent arg0) {
-		log.info("Initlizing Twitter the World System.....");
+		log.info("Initializing Twitter the World System.....");
 
 		Properties props = GlobalDefaultConfiguration.getInstance()
 				.getProperties();

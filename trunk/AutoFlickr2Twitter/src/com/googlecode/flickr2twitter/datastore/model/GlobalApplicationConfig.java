@@ -34,6 +34,9 @@ public abstract class GlobalApplicationConfig implements Serializable {
 
 	@Persistent
 	private String authPagePath;
+	
+	@Persistent
+	private String configPathPath;
 
 	@Persistent
 	private String imagePath;
@@ -119,5 +122,20 @@ public abstract class GlobalApplicationConfig implements Serializable {
 	public void setImagePath(String imagePath) {
 		this.imagePath = imagePath;
 	}
+
+	/**
+	 * @return the configPathPath
+	 */
+	public String getConfigPathPath() {
+		return configPathPath;
+	}
+
+	/**
+	 * @param configPathPath the configPathPath to set
+	 */
+	public void setConfigPathPath(String configPathPath) {
+		this.configPathPath = configPathPath;
+	}
+	
 
 }
