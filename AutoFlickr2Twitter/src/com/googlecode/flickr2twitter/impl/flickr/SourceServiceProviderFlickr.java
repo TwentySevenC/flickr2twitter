@@ -17,6 +17,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.logging.Logger;
 
 import org.xml.sax.SAXException;
 
@@ -33,7 +34,6 @@ import com.googlecode.flickr2twitter.com.aetrion.flickr.photos.PhotoList;
 import com.googlecode.flickr2twitter.com.aetrion.flickr.photos.PhotosInterface;
 import com.googlecode.flickr2twitter.com.aetrion.flickr.tags.Tag;
 import com.googlecode.flickr2twitter.core.GlobalDefaultConfiguration;
-import com.googlecode.flickr2twitter.core.MyLogger;
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.googlecode.flickr2twitter.datastore.model.ConfigProperty;
 import com.googlecode.flickr2twitter.datastore.model.GlobalServiceConfiguration;
@@ -57,7 +57,7 @@ public class SourceServiceProviderFlickr implements
 	public static final String KEY_FILTER_TAGS = "filter_tags";
 	public static final String TAGS_DELIMITER = ",";
 	public static final String TIMEZONE_CST = "CST";
-	private static final MyLogger log = MyLogger.getLogger();
+	private static final Logger log = Logger.getLogger(SourceServiceProviderFlickr.class.getName());
 
 	/**
 	 * 
