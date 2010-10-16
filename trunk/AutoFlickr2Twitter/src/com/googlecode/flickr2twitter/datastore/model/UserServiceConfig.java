@@ -44,6 +44,9 @@ public abstract class UserServiceConfig {
 	@Persistent
 	private List<ConfigProperty> addtionalParameters;
 	
+	@Persistent
+	private boolean enabled = true;
+	
 	/**
 	 * 
 	 */
@@ -157,6 +160,20 @@ public abstract class UserServiceConfig {
 	 */
 	public void setAddtionalParameters(List<ConfigProperty> addtionalParameters) {
 		this.addtionalParameters = addtionalParameters;
+	}
+
+	/**
+	 * @return the enabled
+	 */
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	/**
+	 * @param enabled the enabled to set
+	 */
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 
 	/* (non-Javadoc)

@@ -45,6 +45,13 @@ public class ConfigProperty implements Serializable {
 	}
 
 	/**
+	 * @return the autoKey
+	 */
+	public Key getAutoKey() {
+		return autoKey;
+	}
+
+	/**
 	 * @return the key
 	 */
 	public String getKey() {

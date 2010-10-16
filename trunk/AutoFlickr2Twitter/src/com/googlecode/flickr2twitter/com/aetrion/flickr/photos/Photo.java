@@ -8,11 +8,13 @@ import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 
 import com.googlecode.flickr2twitter.com.aetrion.flickr.people.User;
+import com.googlecode.flickr2twitter.com.aetrion.flickr.tags.Tag;
 import com.googlecode.flickr2twitter.com.aetrion.flickr.util.StringUtilities;
 import com.googlecode.flickr2twitter.impl.flickr.FlickrBaseEncoder;
 import com.googlecode.flickr2twitter.model.IGeoItem;
@@ -46,6 +48,7 @@ public class Photo extends Item implements IPhoto, IGeoItem, IShortUrl{
     private Date lastUpdate;
     private String url;
     private ItemGeoData geoData;
+    private Collection<Tag> tags;
 
     public Photo() {
     }
@@ -145,6 +148,20 @@ public class Photo extends Item implements IPhoto, IGeoItem, IShortUrl{
     }
 
     /**
+	 * @return the tags
+	 */
+	public Collection<Tag> getTags() {
+		return tags;
+	}
+
+	/**
+	 * @param tags the tags to set
+	 */
+	public void setTags(Collection<Tag> tags) {
+		this.tags = tags;
+	}
+
+	/**
      * @see java.lang.Object#equals(java.lang.Object)
      * @see <a href="http://www.ibm.com/developerworks/library/j-dyn0603/">http://www.ibm.com/developerworks/library/j-dyn0603/</a>
      */

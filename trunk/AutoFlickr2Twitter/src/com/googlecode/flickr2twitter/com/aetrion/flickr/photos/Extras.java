@@ -19,6 +19,7 @@ public class Extras {
     public static final String DATE_UPLOAD = "date_upload";
     public static final String DATE_TAKEN = "date_taken";
     public static final String OWNER_NAME = "owner_name";
+    public static final String TAGS = "tags";
     public static final String LAST_UPDATE = "last_update";
     public static final String GEO = "geo";
 
@@ -64,6 +65,7 @@ public class Extras {
         ALL_EXTRAS.add(LAST_UPDATE);
         ALL_EXTRAS.add(OWNER_NAME);
         ALL_EXTRAS.add(GEO);
+        ALL_EXTRAS.add(TAGS);
     }
 
     static {
