@@ -4,7 +4,6 @@
 package com.googlecode.flickr2twitter.com.aetrion.flickr.photos;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
