@@ -1,8 +1,13 @@
 package com.googlecode.flickr2twitter.com.aetrion.flickr.photos;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 
+import com.googlecode.flickr2twitter.com.aetrion.flickr.tags.Tag;
 import com.googlecode.flickr2twitter.com.aetrion.flickr.util.XMLUtilities;
 
 /**
@@ -141,6 +146,41 @@ public final class PhotoUtils {
                 && !("0".equals(longitude) && "0".equals(latitude))) {
                 photo.setGeoData(new GeoData(longitude, latitude, accuracy));
             }
+        }
+        
+        // Tags coming as space-seperated attribute calling
+        // InterestingnessInterface#getList().
+        // Through PhotoInterface#getInfo() the Photo has a list of
+        // Elements.
+        try {
+            List<Tag> tags = new ArrayList<Tag>();
+            String tagsAttr = photoElement.getAttribute("tags");
+            if (!tagsAttr.equals("")) {
+                String[] values = tagsAttr.split("\\s+");
+                for (int i = 0; i < values.length; i++) {
+                    Tag tag = new Tag();
+                    tag.setValue(values[i]);
+                    tags.add(tag);
+                }
+            } else {
+                 try {
+                    Element tagsElement = (Element) photoElement.getElementsByTagName("tags").item(0);
+                    NodeList tagNodes = tagsElement.getElementsByTagName("tag");
+                    for (int i = 0; i < tagNodes.getLength(); i++) {
+                        Element tagElement = (Element) tagNodes.item(i);
+                        Tag tag = new Tag();
+                        tag.setId(tagElement.getAttribute("id"));
+                        tag.setAuthor(tagElement.getAttribute("author"));
+                        tag.setRaw(tagElement.getAttribute("raw"));
+                        tag.setValue(((Text) tagElement.getFirstChild()).getData());
+                        tags.add(tag);
+                    }
+                } catch (IndexOutOfBoundsException e) {
+                }
+            }
+            photo.setTags(tags);
+        } catch (NullPointerException e) {
+            photo.setTags(new ArrayList<Tag>());
         }
 
         return photo;
