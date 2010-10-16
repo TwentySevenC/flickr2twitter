@@ -78,13 +78,15 @@ public class SourceServiceProviderFlickr implements
 		List<IItem> photos = new ArrayList<IItem>();
 		// PeopleInterface pface = f.getPeopleInterface();
 		List<String> filterTags = new ArrayList<String>();
-		for (ConfigProperty config : sourceService.getAddtionalParameters()) {
-			if (KEY_FILTER_TAGS.equals(config.getKey())) {
-				if(config.getValue() != null && config.getValue().trim().length() > 0) {
-					String value = config.getValue().trim();
-					filterTags.addAll(Arrays.asList(StringUtils.split(value, TAGS_DELIMITER)));
+		if (sourceService.getAddtionalParameters() != null) {
+			for (ConfigProperty config : sourceService.getAddtionalParameters()) {
+				if (KEY_FILTER_TAGS.equals(config.getKey())) {
+					if(config.getValue() != null && config.getValue().trim().length() > 0) {
+						String value = config.getValue().trim();
+						filterTags.addAll(Arrays.asList(StringUtils.split(value, TAGS_DELIMITER)));
+					}
+					break;
 				}
-				break;
 			}
 		}
 		PhotosInterface photosFace = f.getPhotosInterface();
