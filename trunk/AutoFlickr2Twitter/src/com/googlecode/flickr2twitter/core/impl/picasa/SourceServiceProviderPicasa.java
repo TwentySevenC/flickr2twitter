@@ -111,8 +111,7 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 	 */
 	@Override
 	public String getId() {
-		// TODO Auto-generated method stub
-		return null;
+		return ID;
 	}
 
 }
