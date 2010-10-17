@@ -98,7 +98,7 @@ public class TargetServiceProviderTwitter implements ITargetServiceProvider {
 			String message = null;
 			if (item instanceof IPhoto) {
 				IPhoto photo = (IPhoto) item;
-				message = photo.getTitle();
+				message = "My new photo: " + photo.getTitle();
 				if (photo instanceof IShortUrl) {
 					message += " " + ((IShortUrl) photo).getShortUrl();
 				} else {
