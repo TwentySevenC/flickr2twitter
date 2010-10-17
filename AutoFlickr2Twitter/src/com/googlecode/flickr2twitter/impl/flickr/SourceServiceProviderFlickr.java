@@ -120,7 +120,7 @@ public class SourceServiceProviderFlickr implements
 						+ ", date uploaded: " + photo.getDatePosted());
 				if (photo.isPublicFlag()
 						&& photo.getDatePosted().after(past.getTime())) {
-					if (filterTags.isEmpty() && containsTags(filterTags, photo.getTags()) == false) {
+					if (!filterTags.isEmpty() && containsTags(filterTags, photo.getTags()) == false) {
 						log.warning("Photo does not contains the required tags, contained tags are: " + photo.getTags());
 					} else {
 						log.info(photo.getTitle() + ", URL: " + photo.getUrl()
