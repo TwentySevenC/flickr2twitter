@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.googlecode.flickr2twitter.core.impl.picasa.model;
+package com.googlecode.flickr2twitter.impl.picasa.model;
 
 import com.google.api.client.googleapis.xml.atom.AtomPatchRelativeToOriginalContent;
 import com.google.api.client.googleapis.xml.atom.GData;

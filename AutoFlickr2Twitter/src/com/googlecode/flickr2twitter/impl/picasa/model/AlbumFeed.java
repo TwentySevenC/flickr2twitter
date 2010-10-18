@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.googlecode.flickr2twitter.core.impl.picasa.model;
+package com.googlecode.flickr2twitter.impl.picasa.model;
 
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.util.Key;
@@ -25,20 +25,15 @@ import java.util.List;
 /**
  * @author Yaniv Inbar
  */
-public class UserFeed extends Feed {
+public class AlbumFeed extends Feed {
 
   @Key("entry")
-  public List<AlbumEntry> albums;
+  public List<PhotoEntry> photos;
 
-  public static UserFeed executeGet(HttpTransport transport, PicasaUrl url)
+  public static AlbumFeed executeGet(HttpTransport transport, PicasaUrl url)
       throws IOException {
-    url.kinds = "album";
-    url.maxResults = 3;
-    return (UserFeed) Feed.executeGet(transport, url, UserFeed.class);
-  }
-
-  public AlbumEntry insertAlbum(HttpTransport transport, AlbumEntry entry)
-      throws IOException {
-    return (AlbumEntry) super.executeInsert(transport, entry);
+    url.kinds = "photo";
+    url.maxResults = 5;
+    return (AlbumFeed) Feed.executeGet(transport, url, AlbumFeed.class);
   }
 }

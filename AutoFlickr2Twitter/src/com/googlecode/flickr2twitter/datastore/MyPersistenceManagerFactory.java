@@ -14,6 +14,7 @@ import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
 
 import com.google.appengine.api.datastore.Email;
+import com.googlecode.flickr2twitter.core.GlobalDefaultConfiguration;
 import com.googlecode.flickr2twitter.datastore.model.GlobalServiceConfiguration;
 import com.googlecode.flickr2twitter.datastore.model.GlobalSourceApplicationService;
 import com.googlecode.flickr2twitter.datastore.model.GlobalTargetApplicationService;
@@ -304,6 +305,7 @@ public final class MyPersistenceManagerFactory {
 			} else {
 				conf = new GlobalServiceConfiguration();
 				conf.setKey("1");
+				conf.setMinUploadTime(GlobalDefaultConfiguration.getInstance().getInterval());
 				pm.makePersistent(conf);
 			}
 		} finally {
