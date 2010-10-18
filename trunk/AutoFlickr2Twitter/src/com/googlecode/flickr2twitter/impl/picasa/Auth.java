@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.googlecode.flickr2twitter.core.impl.picasa;
+package com.googlecode.flickr2twitter.impl.picasa;
 
 import com.google.api.client.auth.oauth.OAuthCredentialsResponse;
 import com.google.api.client.auth.oauth.OAuthHmacSigner;

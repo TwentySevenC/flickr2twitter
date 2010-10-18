@@ -14,26 +14,15 @@
  * the License.
  */
 
-package com.googlecode.flickr2twitter.core.impl.picasa.model;
+package com.googlecode.flickr2twitter.impl.picasa.model;
 
-import com.google.api.client.http.HttpTransport;
 import com.google.api.client.util.Key;
-
-import java.io.IOException;
-import java.util.List;
 
 /**
  * @author Yaniv Inbar
  */
-public class AlbumFeed extends Feed {
+public class Author {
 
-  @Key("entry")
-  public List<PhotoEntry> photos;
-
-  public static AlbumFeed executeGet(HttpTransport transport, PicasaUrl url)
-      throws IOException {
-    url.kinds = "photo";
-    url.maxResults = 5;
-    return (AlbumFeed) Feed.executeGet(transport, url, AlbumFeed.class);
-  }
+  @Key
+  public String name;
 }

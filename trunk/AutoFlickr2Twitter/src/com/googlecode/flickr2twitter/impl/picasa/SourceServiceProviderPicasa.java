@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.googlecode.flickr2twitter.core.impl.picasa;
+package com.googlecode.flickr2twitter.impl.picasa;
 
 import java.net.URL;
 import java.util.Collections;

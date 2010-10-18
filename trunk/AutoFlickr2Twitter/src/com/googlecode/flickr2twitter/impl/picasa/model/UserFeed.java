@@ -14,31 +14,31 @@
  * the License.
  */
 
-package com.googlecode.flickr2twitter.core.impl.picasa.model;
+package com.googlecode.flickr2twitter.impl.picasa.model;
 
+import com.google.api.client.http.HttpTransport;
 import com.google.api.client.util.Key;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
  * @author Yaniv Inbar
  */
-public class Link {
+public class UserFeed extends Feed {
 
-  @Key("@href")
-  public String href;
+  @Key("entry")
+  public List<AlbumEntry> albums;
 
-  @Key("@rel")
-  public String rel;
+  public static UserFeed executeGet(HttpTransport transport, PicasaUrl url)
+      throws IOException {
+    url.kinds = "album";
+    url.maxResults = 3;
+    return (UserFeed) Feed.executeGet(transport, url, UserFeed.class);
+  }
 
-  public static String find(List<Link> links, String rel) {
-    if (links != null) {
-      for (Link link : links) {
-        if (rel.equals(link.rel)) {
-          return link.href;
-        }
-      }
-    }
-    return null;
+  public AlbumEntry insertAlbum(HttpTransport transport, AlbumEntry entry)
+      throws IOException {
+    return (AlbumEntry) super.executeInsert(transport, entry);
   }
 }
