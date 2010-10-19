@@ -165,7 +165,7 @@ public class TargetServiceProviderSina implements ITargetServiceProvider {
 	 * requestAuthorization()
 	 */
 	@Override
-	public Map<String, Object> requestAuthorization() throws Exception {
+	public Map<String, Object> requestAuthorization(String baseUrl) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}

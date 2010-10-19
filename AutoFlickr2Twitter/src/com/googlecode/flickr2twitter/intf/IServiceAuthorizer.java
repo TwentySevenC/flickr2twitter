@@ -15,7 +15,7 @@ public interface IServiceAuthorizer {
 	 * @return
 	 * @throws Exception
 	 */
-	public Map<String, Object> requestAuthorization() throws Exception;
+	public Map<String, Object> requestAuthorization(String baseUrl) throws Exception;
 	
 	/**
 	 * Request a token and store it in the given data store service.

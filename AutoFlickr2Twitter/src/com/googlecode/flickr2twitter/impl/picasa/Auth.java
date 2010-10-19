@@ -16,16 +16,19 @@
 
 package com.googlecode.flickr2twitter.impl.picasa;
 
+import java.net.URL;
+
 import com.google.api.client.auth.oauth.OAuthCredentialsResponse;
 import com.google.api.client.auth.oauth.OAuthHmacSigner;
 import com.google.api.client.auth.oauth.OAuthParameters;
-import com.google.api.client.googleapis.auth.authsub.AuthSubHelper;
 import com.google.api.client.googleapis.auth.authsub.AuthSubSingleUseTokenRequestUrl;
-import com.google.api.client.googleapis.auth.authsub.AuthSubHelper.TokenInfoResponse;
 import com.google.api.client.googleapis.auth.oauth.GoogleOAuthAuthorizeTemporaryTokenUrl;
 import com.google.api.client.googleapis.auth.oauth.GoogleOAuthGetAccessToken;
 import com.google.api.client.googleapis.auth.oauth.GoogleOAuthGetTemporaryToken;
 import com.google.api.client.http.HttpTransport;
+import com.google.gdata.client.photos.PicasawebService;
+import com.google.gdata.data.photos.AlbumFeed;
+import com.google.gdata.data.photos.PhotoEntry;
 
 /**
  * Implements OAuth authentication.
@@ -142,6 +145,17 @@ public class Auth {
 	      authorizeUrl.temporaryToken = tempCredentials.token;
 	      String authorizationUrl = authorizeUrl.build();
 	      System.out.println(authorizationUrl);*/
+		  
+		  PicasawebService webService = new PicasawebService(hostedDomain);
+		  String sessionToken = "1/5S6EQK5cPxVyowDDUy3XKitee9KnXP3stQZDisKTe50"; //AuthSubUtil.exchangeForSessionToken("1/tuKx6ew2TxxEG32QYSDsJLNwULPGYHF3xn8RDS5p7qs", null);
+		  webService.setAuthSubToken(sessionToken, null);
+		  URL feedUrl = new URL("http://picasaweb.google.com/data/feed/api/user/default?kind=photo");
+
+		  AlbumFeed feed = webService.getFeed(feedUrl, AlbumFeed.class);
+
+		  for(PhotoEntry photo : feed.getPhotoEntries()) {
+		      System.out.println(photo.getTitle().getPlainText() + ", uploaded date: " + photo.getUpdated());
+		  }
 	  } catch (Exception e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();

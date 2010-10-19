@@ -86,12 +86,14 @@ public class OAuthServlet extends HttpServlet {
 			// FIXME: shall we store the token now? if session times out, this
 			// token will be lost forever.
 			Map<String, Object> data = null;
+			String baseUrl = req.getRequestURL().toString();
+
 			if (sourceProvider == true) {
 				data = ServiceFactory.getSourceServiceProvider(providerId)
-						.requestAuthorization();
+						.requestAuthorization(baseUrl);
 			} else {
 				data = ServiceFactory.getTargetServiceProvider(providerId)
-						.requestAuthorization();
+						.requestAuthorization(baseUrl);
 			}
 			req.getSession().setAttribute(providerId, data);
 			String tokenUrl = String.valueOf(data.get("url"));
