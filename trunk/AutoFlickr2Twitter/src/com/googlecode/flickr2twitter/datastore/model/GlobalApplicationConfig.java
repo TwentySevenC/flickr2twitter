@@ -36,7 +36,7 @@ public abstract class GlobalApplicationConfig implements Serializable {
 	private String authPagePath;
 	
 	@Persistent
-	private String configPathPath;
+	private String configPagePath;
 
 	@Persistent
 	private String imagePath;
@@ -124,17 +124,17 @@ public abstract class GlobalApplicationConfig implements Serializable {
 	}
 
 	/**
-	 * @return the configPathPath
+	 * @return the configPagePath
 	 */
-	public String getConfigPathPath() {
-		return configPathPath;
+	public String getConfigPagePath() {
+		return configPagePath;
 	}
 
 	/**
-	 * @param configPathPath the configPathPath to set
+	 * @param configPagePath the configPagePath to set
 	 */
-	public void setConfigPathPath(String configPathPath) {
-		this.configPathPath = configPathPath;
+	public void setConfigPagePath(String configPathPath) {
+		this.configPagePath = configPathPath;
 	}
 	
 
