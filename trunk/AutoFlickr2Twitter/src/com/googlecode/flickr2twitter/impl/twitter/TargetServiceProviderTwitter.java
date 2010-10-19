@@ -178,7 +178,7 @@ public class TargetServiceProviderTwitter implements ITargetServiceProvider {
 	 * requestAuthorization()
 	 */
 	@Override
-	public Map<String, Object> requestAuthorization() throws Exception {
+	public Map<String, Object> requestAuthorization(String baseUrl) throws Exception {
 		Map<String, Object> result = new HashMap<String, Object>();
 		try {
 			GlobalTargetApplicationService globalAppConfig = MyPersistenceManagerFactory

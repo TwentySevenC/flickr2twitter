@@ -267,7 +267,7 @@ public class SourceServiceProviderFlickr implements
 	 * requestAuthorization()
 	 */
 	@Override
-	public Map<String, Object> requestAuthorization() throws Exception {
+	public Map<String, Object> requestAuthorization(String baseUrl) throws Exception {
 		GlobalSourceApplicationService globalAppConfig = MyPersistenceManagerFactory
 				.getGlobalSourceAppService(ID);
 		if (globalAppConfig == null
