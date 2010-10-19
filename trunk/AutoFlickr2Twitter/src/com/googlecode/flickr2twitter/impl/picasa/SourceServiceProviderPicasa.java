@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import com.google.api.client.googleapis.auth.authsub.AuthSubSingleUseTokenRequestUrl;
 import com.googlecode.flickr2twitter.com.aetrion.flickr.Flickr;
 import com.googlecode.flickr2twitter.com.aetrion.flickr.REST;
 import com.googlecode.flickr2twitter.com.aetrion.flickr.auth.AuthInterface;
@@ -36,6 +37,8 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 	public static final String CONSUMER_KEY = "anonymous";
 	public static final String CONSUMER_SECRET = "anonymous";
 	
+	private static final String SCOPE = "http://picasaweb.google.com/data";
+	
 	/**
 	 * 
 	 */
@@ -60,7 +63,7 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 	public String readyAuthorization(String userEmail, Map<String, Object> data)
 			throws Exception {
 		// TODO Auto-generated method stub
-		return null;
+		return "";
 	}
 
 	/* (non-Javadoc)
@@ -77,7 +80,7 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 		}
 		Map<String, Object> result = new HashMap<String, Object>();
 
-		Flickr f = new Flickr(globalAppConfig.getSourceAppApiKey(),
+		/*Flickr f = new Flickr(globalAppConfig.getSourceAppApiKey(),
 				globalAppConfig.getSourceAppSecret(), new REST());
 		AuthInterface authInterface = f.getAuthInterface();
 
@@ -87,6 +90,21 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 		log.info("frob: " + frob + ", Token URL: " + url.toExternalForm());
 		result.put(KEY_FROB, frob);
 		result.put("url", url.toExternalForm());
+		return result;*/
+		String hostedDomain = "flickr2twitter.googlecode.com";
+		String nextUrl = "http://localhost:8888/picasacallback.jsp";
+		String scope = SCOPE;
+		AuthSubSingleUseTokenRequestUrl authorizeUrl = new AuthSubSingleUseTokenRequestUrl();
+		authorizeUrl.hostedDomain = hostedDomain;
+		authorizeUrl.nextUrl = nextUrl;
+		authorizeUrl.scope = scope;
+		authorizeUrl.session = 1;
+		//authorizeUrl.secure = AuthSub.
+		//String authSubUrl = AuthSubUtil.getRequestUrl(hostedDomain, nextUrl, scope, secure, session);
+		String authorizationUrl = authorizeUrl.build();
+		
+		System.out.println(authorizationUrl);
+		result.put("url", authorizationUrl);
 		return result;
 	}
 
