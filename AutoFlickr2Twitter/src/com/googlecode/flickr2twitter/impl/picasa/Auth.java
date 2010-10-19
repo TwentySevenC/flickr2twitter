@@ -19,14 +19,13 @@ package com.googlecode.flickr2twitter.impl.picasa;
 import com.google.api.client.auth.oauth.OAuthCredentialsResponse;
 import com.google.api.client.auth.oauth.OAuthHmacSigner;
 import com.google.api.client.auth.oauth.OAuthParameters;
+import com.google.api.client.googleapis.auth.authsub.AuthSubHelper;
+import com.google.api.client.googleapis.auth.authsub.AuthSubSingleUseTokenRequestUrl;
+import com.google.api.client.googleapis.auth.authsub.AuthSubHelper.TokenInfoResponse;
 import com.google.api.client.googleapis.auth.oauth.GoogleOAuthAuthorizeTemporaryTokenUrl;
 import com.google.api.client.googleapis.auth.oauth.GoogleOAuthGetAccessToken;
 import com.google.api.client.googleapis.auth.oauth.GoogleOAuthGetTemporaryToken;
 import com.google.api.client.http.HttpTransport;
-
-import java.awt.Desktop;
-import java.awt.Desktop.Action;
-import java.net.URI;
 
 /**
  * Implements OAuth authentication.
@@ -104,5 +103,49 @@ public class Auth {
     authorizer.signer = signer;
     authorizer.token = credentials.token;
     return authorizer;
+  }
+  
+  public static void main(String[] args) {
+	  try {
+		  
+		  String hostedDomain = "flickr2twitter.googlecode.com";
+		  String nextUrl = "http://autoflickr2twitter.appspot.com/";
+		  String scope = SCOPE;
+		  boolean secure = false;  // set secure=true to request AuthSub tokens
+		  boolean session = true;
+		  AuthSubSingleUseTokenRequestUrl authorizeUrl = new AuthSubSingleUseTokenRequestUrl();
+		  authorizeUrl.hostedDomain = hostedDomain;
+		  authorizeUrl.nextUrl = nextUrl;
+		  authorizeUrl.scope = scope;
+		  authorizeUrl.session = 1;
+		  //authorizeUrl.secure = AuthSub.
+		  //String authSubUrl = AuthSubUtil.getRequestUrl(hostedDomain, nextUrl, scope, secure, session);
+		  String authorizationUrl = authorizeUrl.build();
+		  System.out.println(authorizationUrl);
+		  
+		 /* AuthSubHelper helper = new AuthSubHelper();
+		  
+		  helper.setToken("SlDP_NSucGPZr17Kunt5lurog1WmnvLXZ-I4iSALAUg");
+		  TokenInfoResponse response = helper.requestTokenInfo();
+		  System.out.println(response);*/
+		  //System.out.println(tempToken);
+		  
+		  /*GoogleOAuthGetAccessToken token = new GoogleOAuthGetAccessToken();
+		  
+		  signer = new OAuthHmacSigner();
+		  signer.clientSharedSecret = "anonymous";
+	      token.signer = signer;
+	      token.consumerKey = "anonymous"; //"flickr2twitter.googlecode.com";
+	      OAuthCredentialsResponse tempCredentials = token.execute();
+	      GoogleOAuthAuthorizeTemporaryTokenUrl authorizeUrl =
+	          new GoogleOAuthAuthorizeTemporaryTokenUrl();
+	      authorizeUrl.temporaryToken = tempCredentials.token;
+	      String authorizationUrl = authorizeUrl.build();
+	      System.out.println(authorizationUrl);*/
+	  } catch (Exception e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	  
   }
 }
