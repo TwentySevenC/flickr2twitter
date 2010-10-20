@@ -4,10 +4,14 @@
 package com.googlecode.flickr2twitter.impl.picasa;
 
 import java.net.URL;
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.logging.Logger;
 
 import com.google.api.client.googleapis.auth.authsub.AuthSubSingleUseTokenRequestUrl;
@@ -23,6 +27,7 @@ import com.googlecode.flickr2twitter.datastore.model.GlobalSourceApplicationServ
 import com.googlecode.flickr2twitter.datastore.model.User;
 import com.googlecode.flickr2twitter.datastore.model.UserSourceServiceConfig;
 import com.googlecode.flickr2twitter.exceptions.TokenAlreadyRegisteredException;
+import com.googlecode.flickr2twitter.impl.picasa.model.PicasaPhoto;
 import com.googlecode.flickr2twitter.intf.ISourceServiceProvider;
 import com.googlecode.flickr2twitter.model.IPhoto;
 import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
@@ -34,7 +39,7 @@ import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
 public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhoto> {
 	public static final String ID = "picasa";
 	public static final String DISPLAY_NAME = "Picasa Web Album";
-	public static final String TIMEZONE_CST = "CST";
+	public static final String TIMEZONE_UTC = "UTC";
 	public static final String KEY_TOKEN = "token";
 	private static final Logger log = Logger.getLogger(SourceServiceProviderPicasa.class.getName());
 	
@@ -60,14 +65,35 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 		PicasawebService webService = new PicasawebService(HOSTED_DOMAIN);
 		String sessionToken = sourceService.getServiceAccessToken();
 		webService.setAuthSubToken(sessionToken, null);
-		URL feedUrl = new URL("http://picasaweb.google.com/data/feed/api/user/default?kind=photo&access=visibility");
+		URL feedUrl = new URL("http://picasaweb.google.com/data/feed/api/user/default?kind=photo&max-results=25");
+
+		Date now = Calendar.getInstance(TimeZone.getTimeZone(TIMEZONE_UTC), Locale.UK)
+		.getTime();
+		log.info("Current time: " + now);
+		Calendar past = Calendar.getInstance(TimeZone.getTimeZone(TIMEZONE_UTC),
+				Locale.UK);
+		long newTime = now.getTime() - globalConfig.getMinUploadTime();
+		past.setTimeInMillis(newTime);
 
 		AlbumFeed feed = webService.getFeed(feedUrl, AlbumFeed.class);
-
+		log.info("Trying to find photos uploaded for user " + sourceService.getServiceUserId()
+				+ " after " + past.getTime().toString() + " from "
+				+ feed.getPhotoEntries().size() + " new photos");
+		List<IPhoto> photos = new ArrayList<IPhoto>();
+		
 		for(PhotoEntry photo : feed.getPhotoEntries()) {
-			System.out.println(photo.getTitle().getPlainText() + ", uploaded date: " + photo.getUpdated());
+			PicasaPhoto pPhoto = new PicasaPhoto(photo);
+			log.info("processing photo: " + photo.getTitle().getPlainText()
+					+ ", date uploaded: " + pPhoto.getDatePosted());
+			
+			if (pPhoto.getDatePosted().after(past.getTime())) {
+					log.info(photo.getTitle() + ", URL: " + pPhoto.getUrl()
+							+ ", date uploaded: " + pPhoto.getDatePosted()
+							+ ", GEO: " + pPhoto.getGeoData());
+					photos.add(pPhoto);
+			}
 		}
-		return Collections.emptyList();
+		return photos;
 	}
 
 	/* (non-Javadoc)
@@ -96,10 +122,17 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 			person = persons.get(0);
 		}
 		
+		String userId = "default";
+		if (person.getUri() != null && person.getUri().startsWith("http://picasaweb.google.com/")) {
+			userId = StringUtils.substringAfterLast(person.getUri(), "/");
+		}
+		
 		StringBuffer buf = new StringBuffer();
 		buf.append("Authentication success\n");
 		// This token can be used until the user revokes it.
 		buf.append("Token: " + token);
+		buf.append("\n");
+		buf.append("UserId: " + userId);
 		buf.append("\n");
 		buf.append("Realname: " + person.getName());
 		buf.append("\n");
@@ -112,8 +145,9 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 			}
 		}
 		
+		
 		UserSourceServiceConfig serviceConfig = new UserSourceServiceConfig();
-		serviceConfig.setServiceUserId("1");
+		serviceConfig.setServiceUserId(userId);
 		serviceConfig.setServiceUserName(person != null ? person.getName() : "default");
 		serviceConfig.setServiceAccessToken(token);
 		serviceConfig.setServiceProviderId(ID);
@@ -141,9 +175,7 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 					"Invalid source service provider: " + globalAppConfig);
 		}
 		Map<String, Object> result = new HashMap<String, Object>();
-		if (baseUrl.endsWith("/oauth")) {
-			baseUrl = StringUtils.left(baseUrl, baseUrl.length() - "/oauth".length());
-		}
+		
 		String nextUrl = baseUrl + "/picasacallback.jsp";
 		String scope = SCOPE;
 		AuthSubSingleUseTokenRequestUrl authorizeUrl = new AuthSubSingleUseTokenRequestUrl();
@@ -153,7 +185,7 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 		authorizeUrl.session = 1;
 		String authorizationUrl = authorizeUrl.build();
 		
-		System.out.println(authorizationUrl);
+		log.info("Picasa Authorization URL: " + authorizationUrl);
 		result.put("url", authorizationUrl);
 		return result;
 	}

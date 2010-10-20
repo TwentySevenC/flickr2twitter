@@ -5,28 +5,38 @@ package com.googlecode.flickr2twitter.impl.picasa.model;
 
 import java.util.Date;
 
+import com.google.gdata.data.photos.PhotoEntry;
+import com.google.gdata.util.ServiceException;
+import com.googlecode.flickr2twitter.model.IGeoItem;
 import com.googlecode.flickr2twitter.model.IPhoto;
+import com.googlecode.flickr2twitter.model.ItemGeoData;
 
 /**
  * @author Toby Yu(yuyang226@gmail.com)
  *
  */
-public class PicasaPhoto implements IPhoto {
+public class PicasaPhoto implements IPhoto, IGeoItem {
+	private PhotoEntry photo;
+	private ItemGeoData geoData;
+	private Date datePosted;
 
 	/**
 	 * 
 	 */
-	public PicasaPhoto() {
+	public PicasaPhoto(PhotoEntry photo) {
 		super();
+		this.photo = photo;
 	}
 
 	/* (non-Javadoc)
 	 * @see com.googlecode.flickr2twitter.model.IPhoto#getDatePosted()
 	 */
 	@Override
-	public Date getDatePosted() {
-		// TODO Auto-generated method stub
-		return null;
+	public Date getDatePosted()  {
+		if (this.datePosted == null) {
+			this.datePosted = new Date(photo.getPublished().getValue());
+		}
+		return this.datePosted;
 	}
 
 	/* (non-Javadoc)
@@ -34,8 +44,11 @@ public class PicasaPhoto implements IPhoto {
 	 */
 	@Override
 	public Date getDateTaken() {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			return photo.getTimestamp();
+		} catch (ServiceException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -43,8 +56,7 @@ public class PicasaPhoto implements IPhoto {
 	 */
 	@Override
 	public String getUrl() {
-		// TODO Auto-generated method stub
-		return null;
+		return photo.getHtmlLink().getHref();
 	}
 
 	/* (non-Javadoc)
@@ -79,8 +91,7 @@ public class PicasaPhoto implements IPhoto {
 	 */
 	@Override
 	public String getDescription() {
-		// TODO Auto-generated method stub
-		return null;
+		return photo.getDescription().getPlainText();
 	}
 
 	/* (non-Javadoc)
@@ -88,8 +99,7 @@ public class PicasaPhoto implements IPhoto {
 	 */
 	@Override
 	public String getId() {
-		// TODO Auto-generated method stub
-		return null;
+		return photo.getId();
 	}
 
 	/* (non-Javadoc)
@@ -97,8 +107,7 @@ public class PicasaPhoto implements IPhoto {
 	 */
 	@Override
 	public String getTitle() {
-		// TODO Auto-generated method stub
-		return null;
+		return photo.getTitle().getPlainText();
 	}
 
 	/* (non-Javadoc)
@@ -126,6 +135,27 @@ public class PicasaPhoto implements IPhoto {
 	public void setTitle(String title) {
 		// TODO Auto-generated method stub
 
+	}
+
+	/* (non-Javadoc)
+	 * @see com.googlecode.flickr2twitter.model.IGeoItem#getGeoData()
+	 */
+	@Override
+	public ItemGeoData getGeoData() {
+		if (this.geoData == null && photo.getGeoLocation() != null) {
+			this.geoData = new ItemGeoData(photo.getGeoLocation().getLongitude(), 
+					photo.getGeoLocation().getLatitude());
+		}
+		return this.geoData;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.googlecode.flickr2twitter.model.IGeoItem#setGeoData(com.googlecode.flickr2twitter.model.ItemGeoData)
+	 */
+	@Override
+	public void setGeoData(ItemGeoData geoData) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
