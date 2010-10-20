@@ -8,6 +8,7 @@ import java.util.List;
 import com.googlecode.flickr2twitter.datastore.model.GlobalTargetApplicationService;
 import com.googlecode.flickr2twitter.datastore.model.UserTargetServiceConfig;
 import com.googlecode.flickr2twitter.model.IItem;
+import com.googlecode.flickr2twitter.model.IItemList;
 
 /**
  * @author Toby Yu(yuyang226@gmail.com)
@@ -21,5 +22,5 @@ public interface ITargetServiceProvider extends IServiceAuthorizer, IServiceProv
 	 * @throws Exception
 	 */
 	public void postUpdate(GlobalTargetApplicationService globalAppConfig, 
-			UserTargetServiceConfig targetConfig, List<IItem> items) throws Exception;
+			UserTargetServiceConfig targetConfig, List<IItemList<IItem>> items) throws Exception;
 }

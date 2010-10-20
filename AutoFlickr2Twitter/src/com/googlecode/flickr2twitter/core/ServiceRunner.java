@@ -16,6 +16,8 @@ import com.googlecode.flickr2twitter.datastore.model.UserTargetServiceConfig;
 import com.googlecode.flickr2twitter.intf.ISourceServiceProvider;
 import com.googlecode.flickr2twitter.intf.ITargetServiceProvider;
 import com.googlecode.flickr2twitter.model.IItem;
+import com.googlecode.flickr2twitter.model.IItemList;
+import com.googlecode.flickr2twitter.model.ItemList;
 
 /**
  * @author Toby Yu(yuyang226@gmail.com)
@@ -48,7 +50,8 @@ public class ServiceRunner {
 				continue;
 			}
 			log.info("Retrieving latest updates for user: " + user);
-			List<IItem> items = new ArrayList<IItem>();
+			final List<IItemList<IItem>> itemLists = new ArrayList<IItemList<IItem>>();
+			boolean isEmpty = true;
 			for (UserSourceServiceConfig source : user.getSourceServices()) {
 				ISourceServiceProvider<IItem> sourceProvider = 
 					ServiceFactory.getSourceServiceProvider(source.getServiceProviderId());
@@ -56,13 +59,17 @@ public class ServiceRunner {
 					log.warning("Invalid source service provider configured: " + source.getServiceProviderId());
 				} else {
 					try {
-						items.addAll(sourceProvider.getLatestItems(globalConfig, source));
+						IItemList<IItem> items = new ItemList();
+						items.setItems(sourceProvider.getLatestItems(globalConfig, source));
+						itemLists.add(items);
+						if (items.getItems().isEmpty() == false)
+							isEmpty = false;
 					} catch (Exception e) {
 						log.throwing(ServiceRunner.class.getName(), "", e);
 					}
 				}
 			}
-			if (items.isEmpty()) {
+			if (isEmpty) {
 				log.info("No recent updates found for user: " + user);
 			} else {
 				for (UserTargetServiceConfig target : user.getTargetServices()) {
@@ -74,7 +81,7 @@ public class ServiceRunner {
 						log.warning("Invalid target service provider configured: " + target.getServiceProviderId());
 					} else {
 						try {
-							targetProvider.postUpdate(globalAppConfig, target, items);
+							targetProvider.postUpdate(globalAppConfig, target, itemLists);
 						} catch (Exception e) {
 							log.throwing(ServiceRunner.class.getName(), "", e);
 						}
