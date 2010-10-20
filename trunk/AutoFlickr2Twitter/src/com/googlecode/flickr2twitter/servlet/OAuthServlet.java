@@ -51,6 +51,7 @@ public class OAuthServlet extends HttpServlet {
 		String retMsg = null;
 		Map<String, Object> data = (Map<String, Object>) req.getSession()
 				.getAttribute(providerId);
+		log.info("Current Data: " + data);
 		try {
 			if (sourceProvider == true) {
 				retMsg = ServiceFactory.getSourceServiceProvider(providerId)
