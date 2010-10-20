@@ -100,9 +100,23 @@ public class OAuthServlet extends HttpServlet {
 						.requestAuthorization(baseUrl);
 			}
 			req.getSession().setAttribute(providerId, data);
-			String tokenUrl = String.valueOf(data.get("url"));
-			resp.sendRedirect(tokenUrl);
-
+			Object obj = data.get("url");
+			if (obj != null) {
+				String tokenUrl = obj.toString();
+				resp.sendRedirect(tokenUrl);
+			} else {
+				//no url means call the ready function immediately
+				User user = (User) req.getSession().getAttribute(
+						UserAccountServlet.PARA_SESSION_USER);
+				if (sourceProvider == true) {
+					ServiceFactory.getSourceServiceProvider(providerId)
+							.readyAuthorization(user.getUserId().toString(), data);
+				} else {
+					ServiceFactory.getTargetServiceProvider(providerId)
+							.readyAuthorization(user.getUserId().getEmail(), data);
+				}
+				resp.sendRedirect("/authorize.jsp");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			msg.append("Auth faild. Provider ID is: " + providerId
