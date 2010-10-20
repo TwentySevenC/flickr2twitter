@@ -83,7 +83,7 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 		
 		for(PhotoEntry photo : feed.getPhotoEntries()) {
 			PicasaPhoto pPhoto = new PicasaPhoto(photo);
-			log.info("processing photo: " + photo.getTitle().getPlainText()
+			log.fine("processing photo: " + photo.getTitle().getPlainText()
 					+ ", date uploaded: " + pPhoto.getDatePosted());
 			
 			if (pPhoto.getDatePosted().after(past.getTime())) {
