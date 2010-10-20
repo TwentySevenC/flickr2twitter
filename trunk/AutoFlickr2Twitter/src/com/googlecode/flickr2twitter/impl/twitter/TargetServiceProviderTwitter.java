@@ -27,6 +27,7 @@ import com.googlecode.flickr2twitter.datastore.model.UserTargetServiceConfig;
 import com.googlecode.flickr2twitter.intf.ITargetServiceProvider;
 import com.googlecode.flickr2twitter.model.IGeoItem;
 import com.googlecode.flickr2twitter.model.IItem;
+import com.googlecode.flickr2twitter.model.IItemList;
 import com.googlecode.flickr2twitter.model.IPhoto;
 import com.googlecode.flickr2twitter.model.IShortUrl;
 
@@ -38,7 +39,7 @@ public class TargetServiceProviderTwitter implements ITargetServiceProvider {
 	public static final String ID = "twitter";
 	public static final String DISPLAY_NAME = "Twitter";
 
-	private static final Logger log = Logger.getLogger(TwitterPoster.class
+	private static final Logger log = Logger.getLogger(TargetServiceProviderTwitter.class
 			.getName());
 
 	/**
@@ -69,7 +70,7 @@ public class TargetServiceProviderTwitter implements ITargetServiceProvider {
 	 */
 	@Override
 	public void postUpdate(GlobalTargetApplicationService globalAppConfig,
-			UserTargetServiceConfig targetConfig, List<IItem> items)
+			UserTargetServiceConfig targetConfig, List<IItemList<IItem>> items)
 			throws Exception {
 		// The factory instance is re-useable and thread safe.
 		AccessToken accessToken = new AccessToken(
@@ -81,46 +82,47 @@ public class TargetServiceProviderTwitter implements ITargetServiceProvider {
 				globalAppConfig.getTargetAppConsumerId(),
 				globalAppConfig.getTargetAppConsumerSecret(), accessToken);
 		Twitter twitter = new TwitterFactory().getInstance(auth);
-
-		for (IItem item : items) {
-			log.info("Posting message -> " + item + " for "
-					+ targetConfig.getServiceUserName());
-
-			GeoLocation geoLoc = null;
-			if (item instanceof IGeoItem) {
-				if (((IGeoItem) item).getGeoData() != null) {
-					IGeoItem geoItem = (IGeoItem) item;
-					geoLoc = new GeoLocation(
-							geoItem.getGeoData().getLatitude(), geoItem
-									.getGeoData().getLongitude());
-				}
-			}
-			String message = null;
-			if (item instanceof IPhoto) {
-				IPhoto photo = (IPhoto) item;
-				message = "My new photo: " + photo.getTitle();
-				if (photo instanceof IShortUrl) {
-					message += " " + ((IShortUrl) photo).getShortUrl();
-				} else {
-					message += " " + photo.getUrl();
-				}
-
-			}
-			if (message != null) {
-				try {
-					Status status = geoLoc == null ? twitter
-							.updateStatus(message) : twitter.updateStatus(
-							message, geoLoc);
-					log.info("Successfully updated the status ["
-							+ status.getText() + "] to user @"
+		for (IItemList<IItem> itemList : items) {
+			log.info("Processing items from: " + itemList.getListTitle());
+			for (IItem item : itemList.getItems()) {
+					log.info("Posting message -> " + item + " for "
 							+ targetConfig.getServiceUserName());
-				} catch (TwitterException e) {
-					log.warning("Failed posting message ->" + message
-							+ ". Cause: " + e);
+
+					GeoLocation geoLoc = null;
+					if (item instanceof IGeoItem) {
+						if (((IGeoItem) item).getGeoData() != null) {
+							IGeoItem geoItem = (IGeoItem) item;
+							geoLoc = new GeoLocation(
+									geoItem.getGeoData().getLatitude(), geoItem
+									.getGeoData().getLongitude());
+						}
+					}
+					String message = null;
+					if (item instanceof IPhoto) {
+						IPhoto photo = (IPhoto) item;
+						message = "My new photo: " + photo.getTitle();
+						if (photo instanceof IShortUrl) {
+							message += " " + ((IShortUrl) photo).getShortUrl();
+						} else {
+							message += " " + photo.getUrl();
+						}
+
+					}
+					if (message != null) {
+						try {
+							Status status = geoLoc == null ? twitter
+									.updateStatus(message) : twitter.updateStatus(
+											message, geoLoc);
+									log.info("Successfully updated the status ["
+											+ status.getText() + "] to user @"
+											+ targetConfig.getServiceUserName());
+						} catch (TwitterException e) {
+							log.warning("Failed posting message ->" + message
+									+ ". Cause: " + e);
+						}
+					}
 				}
 			}
-		}
-
 	}
 
 	/*

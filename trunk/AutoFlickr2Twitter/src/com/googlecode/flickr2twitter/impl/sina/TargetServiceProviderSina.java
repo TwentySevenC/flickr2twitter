@@ -15,6 +15,7 @@ import com.googlecode.flickr2twitter.datastore.model.UserTargetServiceConfig;
 import com.googlecode.flickr2twitter.intf.ITargetServiceProvider;
 import com.googlecode.flickr2twitter.model.IGeoItem;
 import com.googlecode.flickr2twitter.model.IItem;
+import com.googlecode.flickr2twitter.model.IItemList;
 import com.googlecode.flickr2twitter.model.IPhoto;
 import com.googlecode.flickr2twitter.model.IShortUrl;
 import com.googlecode.flickr2twitter.sina.weibo4j.Weibo;
@@ -61,7 +62,7 @@ public class TargetServiceProviderSina implements ITargetServiceProvider {
 	 */
 	@Override
 	public void postUpdate(GlobalTargetApplicationService globalAppConfig,
-			UserTargetServiceConfig targetConfig, List<IItem> items)
+			UserTargetServiceConfig targetConfig, List<IItemList<IItem>> items)
 			throws Exception {
 		// api key and secret
 		System.setProperty("weibo4j.oauth.consumerKey", Weibo.CONSUMER_KEY);
@@ -77,45 +78,47 @@ public class TargetServiceProviderSina implements ITargetServiceProvider {
 
 		weibo.setToken(targetConfig.getServiceAccessToken(),
 				targetConfig.getServiceTokenSecret());
-		for (IItem item : items) {
-			log.info("Posting message -> " + item + " for "
-					+ targetConfig.getServiceUserName());
+		for (IItemList<IItem> itemList : items) {
+			log.info("Processing items from: " + itemList.getListTitle());
+			for (IItem item : itemList.getItems()) {
+				log.info("Posting message -> " + item + " for "
+						+ targetConfig.getServiceUserName());
 
-			GeoLocation geoLoc = null;
-			if (item instanceof IGeoItem) {
-				if (((IGeoItem) item).getGeoData() != null) {
-					IGeoItem geoItem = (IGeoItem) item;
-					geoLoc = new GeoLocation(
-							geoItem.getGeoData().getLatitude(), geoItem
-									.getGeoData().getLongitude());
-				}
-			}
-			String message = null;
-			if (item instanceof IPhoto) {
-				IPhoto photo = (IPhoto) item;
-				message = "My new photo: " + photo.getTitle();
-				if (photo instanceof IShortUrl) {
-					message += " " + ((IShortUrl) photo).getShortUrl();
-				} else {
-					message += " " + photo.getUrl();
-				}
-
-			}
-			if (message != null) {
-				try {
-					if (geoLoc != null) {
-						weibo.updateStatus(message, geoLoc.getLatitude(),
-								geoLoc.getLongitude());
-					} else {
-						weibo.updateStatus(message);
+				GeoLocation geoLoc = null;
+				if (item instanceof IGeoItem) {
+					if (((IGeoItem) item).getGeoData() != null) {
+						IGeoItem geoItem = (IGeoItem) item;
+						geoLoc = new GeoLocation(
+								geoItem.getGeoData().getLatitude(), geoItem
+								.getGeoData().getLongitude());
 					}
-				} catch (Exception e) {
-					log.warning("Failed posting message ->" + message
-							+ ". Cause: " + e);
+				}
+				String message = null;
+				if (item instanceof IPhoto) {
+					IPhoto photo = (IPhoto) item;
+					message = "My new photo: " + photo.getTitle();
+					if (photo instanceof IShortUrl) {
+						message += " " + ((IShortUrl) photo).getShortUrl();
+					} else {
+						message += " " + photo.getUrl();
+					}
+
+				}
+				if (message != null) {
+					try {
+						if (geoLoc != null) {
+							weibo.updateStatus(message, geoLoc.getLatitude(),
+									geoLoc.getLongitude());
+						} else {
+							weibo.updateStatus(message);
+						}
+					} catch (Exception e) {
+						log.warning("Failed posting message ->" + message
+								+ ". Cause: " + e);
+					}
 				}
 			}
 		}
-		/**/
 	}
 
 	/*
