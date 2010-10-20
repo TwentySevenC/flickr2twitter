@@ -59,7 +59,8 @@ public class ServiceRunner {
 					log.warning("Invalid source service provider configured: " + source.getServiceProviderId());
 				} else {
 					try {
-						IItemList<IItem> items = new ItemList();
+						IItemList<IItem> items = new ItemList(
+								MyPersistenceManagerFactory.getGlobalSourceAppService(sourceProvider.getId()).getAppName());
 						items.setItems(sourceProvider.getLatestItems(globalConfig, source));
 						itemLists.add(items);
 						if (items.getItems().isEmpty() == false)

@@ -3,27 +3,38 @@
  */
 package com.googlecode.flickr2twitter.impl.email;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
+import com.google.appengine.api.mail.MailServiceFactory;
+import com.google.appengine.api.mail.MailService.Message;
+import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.googlecode.flickr2twitter.datastore.model.GlobalApplicationConfig;
 import com.googlecode.flickr2twitter.datastore.model.GlobalTargetApplicationService;
 import com.googlecode.flickr2twitter.datastore.model.UserTargetServiceConfig;
 import com.googlecode.flickr2twitter.intf.ITargetServiceProvider;
 import com.googlecode.flickr2twitter.model.IItem;
 import com.googlecode.flickr2twitter.model.IItemList;
+import com.googlecode.flickr2twitter.model.IPhoto;
 
 /**
  * @author Toby Yu(yuyang226@gmail.com)
  *
  */
 public class TargetServiceProviderEmail implements ITargetServiceProvider {
-
+	public static final String ID = "email";
+	public static final String DISPLAY_NAME = "Email";
+	public static final String TIMEZONE_CST = "CST";
+	private static final Logger log = Logger.getLogger(TargetServiceProviderEmail.class.getName());
+	
 	/**
 	 * 
 	 */
 	public TargetServiceProviderEmail() {
-		// TODO Auto-generated constructor stub
+		super();
 	}
 
 	/* (non-Javadoc)
@@ -33,8 +44,41 @@ public class TargetServiceProviderEmail implements ITargetServiceProvider {
 	public void postUpdate(GlobalTargetApplicationService globalAppConfig,
 			UserTargetServiceConfig targetConfig, List<IItemList<IItem>> items)
 			throws Exception {
-		// TODO Auto-generated method stub
-		
+
+		Message msg = new Message();
+		msg.setReplyTo(globalAppConfig.getTargetAppConsumerId());
+		msg.setSender(globalAppConfig.getTargetAppConsumerSecret());
+		msg.setSubject("[flickr2twi] flickr2twitter just found some new updates!");
+		msg.setTo(targetConfig.getServiceUserId());
+		msg.setCc(targetConfig.getServiceUserId());
+		StringBuffer buf = new StringBuffer();
+		for (IItemList<IItem> itemList : items) {
+			log.info("Processing items from: " + itemList.getListTitle());
+			buf.append("<p>");
+			buf.append("<b>");
+			buf.append(itemList.getListTitle());
+			buf.append("</b><br><br>");
+			
+			for (IItem item : itemList.getItems()) {
+				log.info("Posting message -> " + item + " for "
+							+ targetConfig.getServiceUserName());
+				buf.append(item.getTitle());
+				buf.append(": ");
+				buf.append(item.getDescription());
+				if (item instanceof IPhoto) {
+					IPhoto photo = (IPhoto) item;
+					buf.append(". <a href=\"");
+					buf.append(photo.getUrl());
+					buf.append("\">");
+					buf.append(photo.getTitle());
+					buf.append("</a>");
+				}
+				buf.append("<br>");
+			}
+			buf.append("</p>");
+		}
+		msg.setHtmlBody(buf.toString());
+		MailServiceFactory.getMailService().send(msg);
 	}
 
 	/* (non-Javadoc)
@@ -43,8 +87,17 @@ public class TargetServiceProviderEmail implements ITargetServiceProvider {
 	@Override
 	public String readyAuthorization(String userEmail, Map<String, Object> data)
 			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		UserTargetServiceConfig service = new UserTargetServiceConfig();
+		String email = String.valueOf(data.get("email"));
+		service.setServiceProviderId(ID);
+		service.setServiceAccessToken("");
+		service.setServiceTokenSecret("");
+		service.setServiceUserId(email);
+		service.setUserEmail(userEmail);
+		service.setServiceUserName(email);
+		service.setUserSiteUrl(null);
+		MyPersistenceManagerFactory.addTargetServiceApp(userEmail, service);
+		return "";
 	}
 
 	/* (non-Javadoc)
@@ -53,8 +106,9 @@ public class TargetServiceProviderEmail implements ITargetServiceProvider {
 	@Override
 	public Map<String, Object> requestAuthorization(String baseUrl)
 			throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("email", "yuyang226@gmail.com");
+		return data;
 	}
 
 	/* (non-Javadoc)
@@ -62,8 +116,15 @@ public class TargetServiceProviderEmail implements ITargetServiceProvider {
 	 */
 	@Override
 	public GlobalApplicationConfig createDefaultGlobalApplicationConfig() {
-		// TODO Auto-generated method stub
-		return null;
+		GlobalTargetApplicationService result = new GlobalTargetApplicationService();
+		result.setAppName(DISPLAY_NAME);
+		result.setProviderId(ID);
+		result.setDescription("The Email target service");
+		result.setTargetAppConsumerId("flickr2twitter@googlegroups.com");
+		result.setTargetAppConsumerSecret("flickr2twitter@googlegroups.com");
+		result.setAuthPagePath(null); // TODO set the default auth page path
+		result.setImagePath(null); // TODO set the default image path
+		return result;
 	}
 
 	/* (non-Javadoc)
@@ -71,8 +132,7 @@ public class TargetServiceProviderEmail implements ITargetServiceProvider {
 	 */
 	@Override
 	public String getId() {
-		// TODO Auto-generated method stub
-		return null;
+		return ID;
 	}
 
 	
