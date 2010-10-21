@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.googlecode.flickr2twitter.core.ServiceFactory;
 import com.googlecode.flickr2twitter.datastore.model.User;
 import com.googlecode.flickr2twitter.exceptions.TokenAlreadyRegisteredException;
-import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Meng Zang (DeepNightTwo@gmail.com)
@@ -89,9 +88,6 @@ public class OAuthServlet extends HttpServlet {
 			// token will be lost forever.
 			Map<String, Object> data = null;
 			String baseUrl = req.getRequestURL().toString();
-			if (baseUrl.endsWith("/oauth")) {
-				baseUrl = StringUtils.left(baseUrl, baseUrl.length() - "/oauth".length());
-			}
 			if (sourceProvider == true) {
 				data = ServiceFactory.getSourceServiceProvider(providerId)
 						.requestAuthorization(baseUrl);

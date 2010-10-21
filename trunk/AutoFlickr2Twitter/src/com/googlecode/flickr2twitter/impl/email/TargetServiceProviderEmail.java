@@ -3,7 +3,6 @@
  */
 package com.googlecode.flickr2twitter.impl.email;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +10,8 @@ import java.util.logging.Logger;
 
 import com.google.appengine.api.mail.MailServiceFactory;
 import com.google.appengine.api.mail.MailService.Message;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.googlecode.flickr2twitter.datastore.model.GlobalApplicationConfig;
 import com.googlecode.flickr2twitter.datastore.model.GlobalTargetApplicationService;
@@ -19,6 +20,7 @@ import com.googlecode.flickr2twitter.intf.ITargetServiceProvider;
 import com.googlecode.flickr2twitter.model.IItem;
 import com.googlecode.flickr2twitter.model.IItemList;
 import com.googlecode.flickr2twitter.model.IPhoto;
+import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Toby Yu(yuyang226@gmail.com)
@@ -43,39 +45,51 @@ public class TargetServiceProviderEmail implements ITargetServiceProvider {
 	@Override
 	public void postUpdate(GlobalTargetApplicationService globalAppConfig,
 			UserTargetServiceConfig targetConfig, List<IItemList<IItem>> items)
-			throws Exception {
-
+	throws Exception {
+		UserService userService = UserServiceFactory.getUserService();
+		if (userService == null || userService.getCurrentUser() == null) {
+			throw new IllegalArgumentException("Can not get the current Google account user");
+		}
+		log.info("Current User: " + userService.getCurrentUser());
+		String email = userService.getCurrentUser().getEmail();
+		log.info("Admin user email:" + email);
+	    
 		Message msg = new Message();
 		msg.setReplyTo(globalAppConfig.getTargetAppConsumerId());
-		msg.setSender(globalAppConfig.getTargetAppConsumerSecret());
+		msg.setSender(email);
+		
 		msg.setSubject("[flickr2twi] flickr2twitter just found some new updates!");
-		msg.setTo(targetConfig.getServiceUserId());
-		msg.setCc(targetConfig.getServiceUserId());
+		
+		msg.setTo(StringUtils.split(targetConfig.getServiceUserId(), ","));
 		StringBuffer buf = new StringBuffer();
 		for (IItemList<IItem> itemList : items) {
 			log.info("Processing items from: " + itemList.getListTitle());
-			buf.append("<p>");
-			buf.append("<b>");
-			buf.append(itemList.getListTitle());
-			buf.append("</b><br><br>");
-			
-			for (IItem item : itemList.getItems()) {
-				log.info("Posting message -> " + item + " for "
+			if (itemList.getItems().isEmpty() == false) {
+				buf.append("<p>");
+				buf.append("<b>");
+				buf.append(itemList.getListTitle());
+				buf.append("</b><br><br>");
+
+				for (IItem item : itemList.getItems()) {
+					log.info("Posting message -> " + item + " for "
 							+ targetConfig.getServiceUserName());
-				buf.append(item.getTitle());
-				buf.append(": ");
-				buf.append(item.getDescription());
-				if (item instanceof IPhoto) {
-					IPhoto photo = (IPhoto) item;
-					buf.append(". <a href=\"");
-					buf.append(photo.getUrl());
-					buf.append("\">");
-					buf.append(photo.getTitle());
-					buf.append("</a>");
+					buf.append(item.getTitle());
+					if (StringUtils.isNotBlank(item.getDescription())) {
+						buf.append(": ");
+						buf.append(item.getDescription());
+					}
+					if (item instanceof IPhoto) {
+						IPhoto photo = (IPhoto) item;
+						buf.append(". <a href=\"");
+						buf.append(photo.getUrl());
+						buf.append("\">");
+						buf.append(photo.getTitle());
+						buf.append("</a>");
+					}
+					buf.append("<br>");
 				}
-				buf.append("<br>");
+				buf.append("</p>");
 			}
-			buf.append("</p>");
 		}
 		msg.setHtmlBody(buf.toString());
 		MailServiceFactory.getMailService().send(msg);
@@ -87,15 +101,22 @@ public class TargetServiceProviderEmail implements ITargetServiceProvider {
 	@Override
 	public String readyAuthorization(String userEmail, Map<String, Object> data)
 			throws Exception {
+		UserService userService = UserServiceFactory.getUserService();
+		if (userService == null || userService.getCurrentUser() == null) {
+			throw new IllegalArgumentException("Can not get the current Google account user");
+		}
+		log.info("Current User: " + userService.getCurrentUser());
+		String email = userService.getCurrentUser().getEmail();
+		log.info("Admin user email:" + email);
+		
 		UserTargetServiceConfig service = new UserTargetServiceConfig();
-		String email = String.valueOf(data.get("email"));
 		service.setServiceProviderId(ID);
 		service.setServiceAccessToken("");
 		service.setServiceTokenSecret("");
 		service.setServiceUserId(email);
 		service.setUserEmail(userEmail);
 		service.setServiceUserName(email);
-		service.setUserSiteUrl(null);
+		service.setUserSiteUrl(email);
 		MyPersistenceManagerFactory.addTargetServiceApp(userEmail, service);
 		return "";
 	}
@@ -107,7 +128,17 @@ public class TargetServiceProviderEmail implements ITargetServiceProvider {
 	public Map<String, Object> requestAuthorization(String baseUrl)
 			throws Exception {
 		Map<String, Object> data = new HashMap<String, Object>();
-		data.put("email", "yuyang226@gmail.com");
+		UserService userService = UserServiceFactory.getUserService();
+		
+		if (userService != null) {
+			com.google.appengine.api.users.User user = userService.getCurrentUser();
+			if (user != null) {
+				data.put("email", user.getEmail());
+			} else {
+				data.put("url", userService.createLoginURL(baseUrl));
+			}
+		}
+		
 		return data;
 	}
 

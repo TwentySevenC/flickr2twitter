@@ -175,7 +175,9 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 					"Invalid source service provider: " + globalAppConfig);
 		}
 		Map<String, Object> result = new HashMap<String, Object>();
-		
+		if (baseUrl.endsWith("/oauth")) {
+			baseUrl = StringUtils.left(baseUrl, baseUrl.length() - "/oauth".length());
+		}
 		String nextUrl = baseUrl + "/picasacallback.jsp";
 		String scope = SCOPE;
 		AuthSubSingleUseTokenRequestUrl authorizeUrl = new AuthSubSingleUseTokenRequestUrl();
