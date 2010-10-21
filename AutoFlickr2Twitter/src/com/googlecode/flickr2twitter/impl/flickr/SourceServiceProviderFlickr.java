@@ -98,7 +98,6 @@ public class SourceServiceProviderFlickr implements
 			extras.add(Extras.TAGS);
 		}
 
-		// pface.getPublicPhotos(userId, extras, 10, 1);
 		Date now = Calendar.getInstance(TimeZone.getTimeZone(TIMEZONE_CST), Locale.UK)
 				.getTime();
 		log.info("Current time: " + now);
@@ -116,10 +115,9 @@ public class SourceServiceProviderFlickr implements
 			if (obj instanceof Photo) {
 				Photo photo = (Photo) obj;
 				
-				log.fine("processing photo: " + photo.getTitle()
+				log.info("processing photo: " + photo.getTitle()
 						+ ", date uploaded: " + photo.getDatePosted());
-				if (photo.isPublicFlag()
-						&& photo.getDatePosted().after(past.getTime())) {
+				if (photo.isPublicFlag()) {
 					if (!filterTags.isEmpty() && containsTags(filterTags, photo.getTags()) == false) {
 						log.warning("Photo does not contains the required tags, contained tags are: " + photo.getTags());
 					} else {
@@ -128,6 +126,8 @@ public class SourceServiceProviderFlickr implements
 								+ ", GEO: " + photo.getGeoData());
 						photos.add(photo);
 					}
+				} else {
+					log.warning("private photo will not be posted: " + photo.getTitle());
 				}
 			}
 		}
