@@ -9,7 +9,6 @@
 <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
 
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<meta http-equiv="refresh" content="15">
 <title>Twitter the World - Authorize your Source and Target</title>
 </head>
 <body>
