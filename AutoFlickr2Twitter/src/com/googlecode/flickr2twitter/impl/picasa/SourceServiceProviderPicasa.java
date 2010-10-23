@@ -47,6 +47,9 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 	public static final String CONSUMER_KEY = "anonymous";
 	public static final String CONSUMER_SECRET = "anonymous";
 	
+	public static final String USER_ID_DEFAULT = "default";
+	public static final String URL_PICASAWEB = "http://picasaweb.google.com/";
+	public static final String URL_ALBUM = "http://picasaweb.google.com/data/feed/api/user/default?kind=album";
 	private static final String SCOPE = "http://picasaweb.google.com/data";
 	
 	/**
@@ -85,7 +88,7 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 			PicasaPhoto pPhoto = new PicasaPhoto(photo);
 			log.fine("processing photo: " + photo.getTitle().getPlainText()
 					+ ", date uploaded: " + pPhoto.getDatePosted());
-			
+			//TODO check whether the photo is private
 			if (pPhoto.getDatePosted().after(past.getTime())) {
 					log.info(photo.getTitle() + ", URL: " + pPhoto.getUrl()
 							+ ", date uploaded: " + pPhoto.getDatePosted()
@@ -114,7 +117,7 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 		
 		PicasawebService webService = new PicasawebService(HOSTED_DOMAIN);
 		webService.setAuthSubToken(token, null);
-		URL feedUrl = new URL("http://picasaweb.google.com/data/feed/api/user/default?kind=album");
+		URL feedUrl = new URL(URL_ALBUM);
 		UserFeed myUserFeed = webService.getFeed(feedUrl, UserFeed.class);
 		List<Person> persons = myUserFeed.getAuthors();
 		Person person = null;
@@ -122,8 +125,8 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 			person = persons.get(0);
 		}
 		
-		String userId = "default";
-		if (person.getUri() != null && person.getUri().startsWith("http://picasaweb.google.com/")) {
+		String userId = USER_ID_DEFAULT;
+		if (person.getUri() != null && person.getUri().startsWith(URL_PICASAWEB)) {
 			userId = StringUtils.substringAfterLast(person.getUri(), "/");
 		}
 		
@@ -148,7 +151,7 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 		
 		UserSourceServiceConfig serviceConfig = new UserSourceServiceConfig();
 		serviceConfig.setServiceUserId(userId);
-		serviceConfig.setServiceUserName(person != null ? person.getName() : "default");
+		serviceConfig.setServiceUserName(person != null ? person.getName() : USER_ID_DEFAULT);
 		serviceConfig.setServiceAccessToken(token);
 		serviceConfig.setServiceProviderId(ID);
 		serviceConfig.setUserEmail(userEmail);
@@ -203,7 +206,7 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 		result.setDescription("The Google's online photo storage service");
 		result.setSourceAppApiKey(CONSUMER_KEY);
 		result.setSourceAppSecret(CONSUMER_SECRET);
-		result.setAuthPagePath(null); // TODO set the default auth page path
+		result.setAuthPagePath("picasacallback.jsp");
 		result.setImagePath(null); // TODO set the default image path
 		return result;
 	}
