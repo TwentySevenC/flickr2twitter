@@ -11,10 +11,11 @@
 		<td>|&nbsp;<a href="/index.jsp">Index</a>&nbsp;</td>
 		<td>|&nbsp;<a href="/register.jsp">Register</a> &nbsp;</td>
 		<td>|&nbsp;<a href="/authorize.jsp">Authorize Source &amp; Target</a> &nbsp;</td>
-		<td>|&nbsp;<a href="/authorize.jsp">Link Source &amp; Target</a> &nbsp;</td>
+		<td>|&nbsp;<a href="/user_admin.jsp">Manage Your Account</a> &nbsp;</td>
 		<td>|&nbsp;<a href="/about.jsp">About &amp; Help</a>&nbsp;|</td>
 		<%
-			User user = (User) session.getAttribute(UserAccountServlet.PARA_SESSION_USER);
+			com.googlecode.flickr2twitter.datastore.model.User user = 
+				(com.googlecode.flickr2twitter.datastore.model.User) session.getAttribute(UserAccountServlet.PARA_SESSION_USER);
 			if (user != null) {
 		%>
 		<td>&nbsp;Welcome <b><%=user.getScreenName()%></b>&nbsp;</td>
