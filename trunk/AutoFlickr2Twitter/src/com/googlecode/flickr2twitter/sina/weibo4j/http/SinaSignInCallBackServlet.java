@@ -77,9 +77,10 @@ public class SinaSignInCallBackServlet extends HttpServlet {
 				try {
 					tps.readyAuthorization(email, data);
 				} catch (Exception e) {
-					resp.getWriter().println("<p>But error to save the access token." + e.getMessage());
+					resp.getWriter().println("But error to save the access token." + e.getMessage());
 					log.log(Level.WARNING, e.getMessage());
 				}
+				
 				return;
 			}
 		} catch (WeiboException e) {

@@ -1,5 +1,5 @@
 <%@ page language="java"
-	import="com.googlecode.flickr2twitter.datastore.*,com.googlecode.flickr2twitter.datastore.model.*,com.googlecode.flickr2twitter.servlet.*,java.util.*,com.googlecode.flickr2twitter.core.*,com.googlecode.flickr2twitter.model.*,com.googlecode.flickr2twitter.intf.*"
+	import="com.googlecode.flickr2twitter.datastore.*,com.googlecode.flickr2twitter.datastore.model.*,com.googlecode.flickr2twitter.servlet.*,java.util.*,com.googlecode.flickr2twitter.core.*,com.googlecode.flickr2twitter.model.*,com.googlecode.flickr2twitter.intf.*,com.googlecode.flickr2twitter.sina.weibo4j.*,com.googlecode.flickr2twitter.sina.weibo4j.http.*"
 	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 
@@ -98,6 +98,9 @@
 
 				GlobalTargetApplicationService targetApp = MyPersistenceManagerFactory
 						.getGlobalTargetAppService(targetProvider.getId());
+				if("sina".equalsIgnoreCase(targetApp.getAppName())) {
+					continue;
+				} 
 		%>
 		<tr>
 			<td><a
@@ -133,11 +136,32 @@
 		<%
 			}
 		%>
+		
+		<%
+			String email = user.getUserId().getEmail();
+		
+			System.setProperty("weibo4j.oauth.consumerKey", Weibo.CONSUMER_KEY);
+		    System.setProperty("weibo4j.oauth.consumerSecret", Weibo.CONSUMER_SECRET);
+		    Weibo weibo = new Weibo();
+		    
+			RequestToken resToken = weibo.getOAuthRequestToken();
+			
+			StringBuffer sb = new StringBuffer();
+			sb.append( "http://localhost:8888" ); //this line needs to changed.
+			sb.append( "/sinacallback?t=" );
+			sb.append( resToken.getToken() );
+			sb.append( "&s=" );
+			sb.append( resToken.getTokenSecret() );
+			sb.append( "&u=" );
+			sb.append( email );
+			String url = sb.toString();
+		%>
+		<form action="<%=resToken.getAuthorizationURL()%>" method="post" name="sinaForm">
+			<input type="hidden" name="oauth_callback" value="<%=url%>"/>
+		</form>
 		<tr>
-			<td><a href="/sinacall.jsp" target="_new">Authorize Sina
-			Account</a></td>
-			<td>Here we can add a button so user can test the authorize
-			result</td>
+			<td><a href="#" onclick="sinaForm.submit();">Authorize Sina Account</a></td>
+			<td>Please click the left side link to authorize sina</td>
 		</tr>
 
 	</table>
