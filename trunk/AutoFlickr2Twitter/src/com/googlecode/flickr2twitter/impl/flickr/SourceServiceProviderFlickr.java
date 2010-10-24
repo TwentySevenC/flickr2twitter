@@ -117,7 +117,7 @@ public class SourceServiceProviderFlickr implements
 				
 				log.info("processing photo: " + photo.getTitle()
 						+ ", date uploaded: " + photo.getDatePosted());
-				if (photo.isPublicFlag()) {
+				if (photo.isPublicFlag() && photo.getDatePosted().after(past.getTime())) {
 					if (!filterTags.isEmpty() && containsTags(filterTags, photo.getTags()) == false) {
 						log.warning("Photo does not contains the required tags, contained tags are: " + photo.getTags());
 					} else {
