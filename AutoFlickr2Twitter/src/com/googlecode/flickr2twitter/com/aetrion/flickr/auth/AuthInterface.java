@@ -11,13 +11,16 @@ import com.googlecode.flickr2twitter.com.aetrion.flickr.Transport;
 import com.googlecode.flickr2twitter.com.aetrion.flickr.people.User;
 import com.googlecode.flickr2twitter.com.aetrion.flickr.util.UrlUtilities;
 import com.googlecode.flickr2twitter.com.aetrion.flickr.util.XMLUtilities;
+import com.googlecode.flickr2twitter.com.twmacinta.util.MD5;
 
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -209,15 +212,27 @@ public class AuthInterface {
      * @param frob The frob returned from getFrob()
      * @return The URL
      * @throws MalformedURLException
+     * @throws UnsupportedEncodingException 
      */
-    public URL buildAuthenticationUrl(Permission permission, String frob) throws MalformedURLException {
+    public URL buildAuthenticationUrl(Permission permission, String frob, String callbackUrl) throws MalformedURLException, UnsupportedEncodingException {
         List<Parameter> parameters = new ArrayList<Parameter>();
         parameters.add(new Parameter("api_key", apiKey));
-        parameters.add(new Parameter("perms", permission.toString()));
         parameters.add(new Parameter("frob", frob));
-
+        parameters.add(new Parameter("perms", permission.toString()));
         // The parameters in the url must be signed
-        parameters.add(new Parameter("api_sig", AuthUtilities.getSignature(sharedSecret, parameters)));
+        
+        if (callbackUrl != null) {
+        	//more detail could be found at http://www.flickr.com/groups/api/discuss/72157601198885954/
+        	String enc = System.getProperty("file.encoding");
+        	callbackUrl = URLEncoder.encode(callbackUrl, enc);
+        	parameters.add(new Parameter("extra", callbackUrl));
+        	String token = sharedSecret + "api_key" + apiKey + "extra" + callbackUrl + "frob" + frob + "perms" + permission.toString();
+        	MD5 md5 = new MD5();
+        	md5.Update(token);
+      		parameters.add(new Parameter("api_sig", md5.asHex()));
+        } else {
+        	parameters.add(new Parameter("api_sig", AuthUtilities.getSignature(sharedSecret, parameters)));
+        }
 
         String host = "www.flickr.com";
         int port = transportAPI.getPort();

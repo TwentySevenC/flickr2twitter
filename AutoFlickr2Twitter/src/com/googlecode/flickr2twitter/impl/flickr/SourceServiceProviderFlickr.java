@@ -57,6 +57,7 @@ public class SourceServiceProviderFlickr implements
 	public static final String KEY_FILTER_TAGS = "filter_tags";
 	public static final String TAGS_DELIMITER = ",";
 	public static final String TIMEZONE_CST = "CST";
+	public static final String CALLBACK_URL = "flickrcallback.jsp";
 	private static final Logger log = Logger.getLogger(SourceServiceProviderFlickr.class.getName());
 
 	/**
@@ -282,11 +283,25 @@ public class SourceServiceProviderFlickr implements
 		AuthInterface authInterface = f.getAuthInterface();
 
 		String frob = authInterface.getFrob();
-
-		URL url = authInterface.buildAuthenticationUrl(Permission.READ, frob);
+		if (baseUrl.endsWith("/oauth")) {
+			baseUrl = StringUtils.left(baseUrl, baseUrl.length() - "/oauth".length());
+		}
+		String nextUrl = baseUrl + "/" + CALLBACK_URL;
+		URL url = authInterface.buildAuthenticationUrl(Permission.READ, frob, nextUrl);
 		log.info("frob: " + frob + ", Token URL: " + url.toExternalForm());
 		result.put(KEY_FROB, frob);
 		result.put("url", url.toExternalForm());
+		
+		/*String strURL = "http://www.flickr.com/services/auth/?" +
+		"api_key=" + globalAppConfig.getSourceAppApiKey() + "&frob=" + frob + "&perms=read" + "&extra=" + nextUrl;
+		 String token = globalAppConfig.getSourceAppSecret() + "api_key" + globalAppConfig.getSourceAppApiKey() + "extra" + nextUrl + "frob" + frob + "permsread";
+		 MD5 md5 = new MD5();
+		 md5.Update(token);
+
+		strURL += "&api_sig=" + md5.asHex();
+		log.info("ddd: " + strURL);
+		
+		result.put("url", strURL);*/
 		return result;
 	}
 
@@ -306,7 +321,7 @@ public class SourceServiceProviderFlickr implements
 				.getFlickrApiKey());
 		result.setSourceAppSecret(GlobalDefaultConfiguration.getInstance()
 				.getFlickrSecret());
-		result.setAuthPagePath("flickrcallback.jsp"); // TODO set the default auth page path
+		result.setAuthPagePath(CALLBACK_URL);
 		result.setImagePath(null); // TODO set the default image path
 		return result;
 	}
