@@ -15,6 +15,7 @@ import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
 
 import com.google.appengine.api.datastore.Email;
+import com.google.appengine.api.datastore.Key;
 import com.googlecode.flickr2twitter.core.GlobalDefaultConfiguration;
 import com.googlecode.flickr2twitter.datastore.model.GlobalServiceConfiguration;
 import com.googlecode.flickr2twitter.datastore.model.GlobalSourceApplicationService;
@@ -178,6 +179,24 @@ public final class MyPersistenceManagerFactory {
 		} finally {
 			pm.close();
 		}
+	}
+	
+	public static void updateUserPassword(Key key, String newPassword) {
+		PersistenceManagerFactory pmf = MyPersistenceManagerFactory
+				.getInstance();
+		PersistenceManager pm = pmf.getPersistenceManager();
+		User user = pm.getObjectById(User.class, key);
+		user.setPassword(newPassword);
+		pm.close();
+	}
+
+	public static void updateUserDisplayName(Key key, String newDisplayName) {
+		PersistenceManagerFactory pmf = MyPersistenceManagerFactory
+				.getInstance();
+		PersistenceManager pm = pmf.getPersistenceManager();
+		User user = pm.getObjectById(User.class, key);
+		user.setScreenName(newDisplayName);
+		pm.close();
 	}
 
 	public static User getUser(String userEmail) {
