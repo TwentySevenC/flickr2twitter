@@ -306,7 +306,7 @@ public class SourceServiceProviderFlickr implements
 				.getFlickrApiKey());
 		result.setSourceAppSecret(GlobalDefaultConfiguration.getInstance()
 				.getFlickrSecret());
-		result.setAuthPagePath(null); // TODO set the default auth page path
+		result.setAuthPagePath("flickrcallback.jsp"); // TODO set the default auth page path
 		result.setImagePath(null); // TODO set the default image path
 		return result;
 	}

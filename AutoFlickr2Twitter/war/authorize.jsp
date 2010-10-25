@@ -52,7 +52,7 @@
 				if (currentData == null) {
 						out
 								.print(" <-Please click the link on the left side. It will lead you to the offical authorize page. After authorization, please refresh this page and click the Confirm Authorize link. ");
-					} else {
+					} else if (sourceApp.getAuthPagePath() == null) {
 			%> <a
 				href="/oauth?<%=OAuthServlet.PARA_OPT%>=<%=OAuthServlet.OPT_AUTH_SOURCE_CONFIRM%>&<%=OAuthServlet.PARA_PROVIDER_ID%>=<%=currentProviderID%>">Confirm
 			Authorize</a> <%
@@ -110,14 +110,13 @@
 			<td>
 			<%
 				if (currentData == null) {
-						out
-								.print(" <-Please click the link on the left side. It will lead you to the offical authorize page. After authorization, please refresh this page and click the Confirm Authorize link. ");
-					} else {
+						out.print(" <-Please click the link on the left side. It will lead you to the offical authorize page. After authorization, please refresh this page and click the Confirm Authorize link. ");
+				} else if (targetApp.getAuthPagePath() == null) {
 			%> <a
 				href="/oauth?<%=OAuthServlet.PARA_OPT%>=<%=OAuthServlet.OPT_AUTH_TARGET_CONFIRM%>&<%=OAuthServlet.PARA_PROVIDER_ID%>=<%=currentProviderID%>">Confirm
 			Authorize</a> <%
- 	}
- %>
+			 	}
+			 %>
 			<h4>Already Authorized Accounts:</h4>
 			<ul>
 				<%
