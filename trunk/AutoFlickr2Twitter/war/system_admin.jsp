@@ -1,5 +1,6 @@
 <%@ page language="java"
 	import="com.googlecode.flickr2twitter.datastore.*,
+	com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory.Permission,
 	com.googlecode.flickr2twitter.datastore.model.*,
 	com.googlecode.flickr2twitter.servlet.*,
 	java.util.*,
@@ -23,8 +24,7 @@
 %>
 <%@ include file="/header.jsp"%>
 <%
-	String adminEmail = user.getUserId().getEmail();
-	if (systemAdmin.equals(adminEmail) == false) {
+	if (Permission.ADMIN.equals(user.getPermission()) == false) {
 		// note admin, return;
 		return;
 	}
