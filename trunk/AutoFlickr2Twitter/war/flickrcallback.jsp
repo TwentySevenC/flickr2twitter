@@ -1,16 +1,18 @@
 <%@ page language="java"
-	import="com.googlecode.flickr2twitter.datastore.*,com.googlecode.flickr2twitter.datastore.model.*,com.googlecode.flickr2twitter.servlet.*,java.util.*"
+	import="java.util.logging.*,com.googlecode.flickr2twitter.datastore.*,com.googlecode.flickr2twitter.datastore.model.*,com.googlecode.flickr2twitter.servlet.*,java.util.*"
 	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 
 <%
 	String currentProviderID = null;
 	currentProviderID = "flickr";
+	Logger log = Logger.getLogger("flickerredirect.jsp");
 	User user = (User) session
 			.getAttribute(UserAccountServlet.PARA_SESSION_USER);
 	Map<String, Object> currentData = (Map<String, Object>) session
 			.getAttribute(currentProviderID);
 	String frob = request.getParameter("frob");
+	log.info("Flickr OAuth Frob: " + frob);
 	if (frob != null) {
 		currentData.put("frob", frob);
 	}
