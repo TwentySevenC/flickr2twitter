@@ -1,5 +1,6 @@
 
-<%@ page language="java" import="com.googlecode.flickr2twitter.datastore.*,com.googlecode.flickr2twitter.datastore.model.*,com.googlecode.flickr2twitter.servlet.*,com.googlecode.flickr2twitter.core.*"
+<%@ page language="java"
+	import="com.googlecode.flickr2twitter.datastore.*,com.googlecode.flickr2twitter.datastore.model.*,com.googlecode.flickr2twitter.servlet.*,com.googlecode.flickr2twitter.core.*"
 	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <h1>Twitter the world system</h1>
@@ -13,20 +14,20 @@
 	<tr>
 		<td>|&nbsp;<a href="/index.jsp">Index</a>&nbsp;</td>
 		<td>|&nbsp;<a href="/register.jsp">Register</a> &nbsp;</td>
-		<td>|&nbsp;<a href="/authorize.jsp">Authorize Source &amp; Target</a> &nbsp;</td>
-		<td>|&nbsp;<a href="/user_admin.jsp">Manage Your Account</a> &nbsp;</td>
+		<td>|&nbsp;<a href="/authorize.jsp">Authorize Source &amp;
+		Target</a> &nbsp;</td>
+		<td>|&nbsp;<a href="/user_admin.jsp">Manage Your Account</a>
+		&nbsp;</td>
 		<%
-			String systemAdmin = GlobalDefaultConfiguration.getInstance()
-					.getProperties()
-					.getProperty(GlobalDefaultConfiguration.KEY_ADMIN_EMAIL);
-			if (user != null && systemAdmin.equals(user.getUserId().getEmail()) == true) {
+			if (user != null
+					&& com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory.Permission.ADMIN.name().equals(user.getPermission()) == true) {
 		%>
 		<td>|&nbsp;<a href="/system_admin.jsp">System Admin</a> &nbsp;</td>
 		<%
 			}
 		%>
 		<td>|&nbsp;<a href="/about.jsp">About &amp; Help</a>&nbsp;|</td>
-		
+
 		<%
 			if (user != null) {
 		%>
@@ -53,7 +54,7 @@
 			.getAttribute("checkLogin"));
 	if (user == null && checkLogin == true) {
 %>
-<h2>Login </h2>
+<h2>Login</h2>
 <form action="/userOperation" method="post">
 <table>
 
@@ -63,19 +64,22 @@
 	</tr>
 	<tr>
 		<td>Password:</td>
-		<td><input type="password" name="<%=UserAccountServlet.PARA_PASSWORD%>"></input><input
-			type="hidden" name="<%=UserAccountServlet.PARA_OPT%>" value="<%=UserAccountServlet.OPT_LOGIN%>"></input></td>
+		<td><input type="password"
+			name="<%=UserAccountServlet.PARA_PASSWORD%>"></input><input
+			type="hidden" name="<%=UserAccountServlet.PARA_OPT%>"
+			value="<%=UserAccountServlet.OPT_LOGIN%>"></input></td>
 
 	</tr>
 	<tr>
 		<td><input type="submit" value="Login" /></td>
-		<td>or click <a href="/register.jsp">here</a> to create your account for free!</td>
+		<td>or click <a href="/register.jsp">here</a> to create your
+		account for free!</td>
 	</tr>
 
 </table>
 </form>
-<%@ include file="/foot.jsp" %> 
+<%@ include file="/foot.jsp"%>
 <%
- 	return;
- 	}
- %>
+	return;
+	}
+%>
