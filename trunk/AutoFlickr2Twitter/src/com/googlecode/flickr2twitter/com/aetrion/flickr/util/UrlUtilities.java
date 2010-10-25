@@ -75,6 +75,7 @@ public class UrlUtilities {
             buffer.append("&api_sig=");
             buffer.append(AuthUtilities.getSignature(sharedSecret, parameters));
         } */
+        
 
         return new URL(buffer.toString());
     }
