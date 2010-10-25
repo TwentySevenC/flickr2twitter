@@ -39,7 +39,7 @@ import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
 public class TargetServiceProviderTwitter implements ITargetServiceProvider {
 	public static final String ID = "twitter";
 	public static final String DISPLAY_NAME = "Twitter";
-	public static final String CALLBACK_URL = "twitterback.jsp";
+	public static final String CALLBACK_URL = "twittercallback.jsp";
 
 	private static final Logger log = Logger.getLogger(TargetServiceProviderTwitter.class
 			.getName());
@@ -49,6 +49,7 @@ public class TargetServiceProviderTwitter implements ITargetServiceProvider {
 	 */
 	public TargetServiceProviderTwitter() {
 		super();
+		System.setProperty("twitter4j.debug", Boolean.TRUE.toString());
 	}
 
 	/*
@@ -137,7 +138,7 @@ public class TargetServiceProviderTwitter implements ITargetServiceProvider {
 	public String readyAuthorization(String userEmail, Map<String, Object> data)
 			throws Exception {
 		if (data == null || data.containsKey("token") == false 
-				|| data.containsKey("secret") == false) {
+				|| data.containsKey("secret") == false || data.containsKey("oauth_verifier") == false) {
 			throw new IllegalArgumentException("Invalid data: " + data);
 		}
 		StringBuffer buf = new StringBuffer();
@@ -149,9 +150,10 @@ public class TargetServiceProviderTwitter implements ITargetServiceProvider {
 
 		String token = String.valueOf(data.get("token"));
 		String secret = String.valueOf(data.get("secret"));
+		String oauthVerifier = String.valueOf(data.get("oauth_verifier"));
 		RequestToken requestToken = new RequestToken(token, secret);
+		AccessToken accessToken = twitter.getOAuthAccessToken(requestToken, oauthVerifier);
 		
-		AccessToken accessToken = twitter.getOAuthAccessToken(requestToken);
 		buf.append(" User Id: " + accessToken.getUserId());
 		buf.append(" User Screen Name: " + accessToken.getScreenName());
 		buf.append(" Access Token: " + accessToken.getToken());
@@ -195,8 +197,8 @@ public class TargetServiceProviderTwitter implements ITargetServiceProvider {
 			if (baseUrl.endsWith("/oauth")) {
 				baseUrl = StringUtils.left(baseUrl, baseUrl.length() - "/oauth".length());
 			}
-			//String callbackUrl = baseUrl + "/" + CALLBACK_URL;
-			RequestToken requestToken = twitter.getOAuthRequestToken();
+			String callbackUrl = baseUrl + "/" + CALLBACK_URL;
+			RequestToken requestToken = twitter.getOAuthRequestToken(callbackUrl);
 			log.info("Authentication URL: " + requestToken.getAuthenticationURL());
 			log.info("Authorization URL: " + requestToken.getAuthorizationURL());
 			result.put("url", requestToken.getAuthorizationURL());

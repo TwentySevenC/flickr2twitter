@@ -12,13 +12,13 @@
 	log.info(String.valueOf(request.getParameterMap()));
 	String token = request.getParameter("oauth_token");
 	String oauth_verifier = request.getParameter("oauth_verifier");
-	log.info("Twitter Access Token: " + token);
+	log.info("Twitter Access Token: " + token + "; OAuth Verifier: " + oauth_verifier);
 	if (currentData == null || user == null || token == null) {
 		session.setAttribute("message","Authorize not done. Please login first.");
 		response.sendRedirect("/index.jsp");
 	} else {
 		currentData.put("token", token);
-		currentData.put("callbackurl", request.getRequestURI());
+		currentData.put("oauth_verifier", oauth_verifier);
 		try {
 			String retMsg = ServiceFactory.getTargetServiceProvider(currentProviderID)
 						.readyAuthorization(user.getUserId().getEmail(), currentData);
