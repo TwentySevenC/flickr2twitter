@@ -1,10 +1,13 @@
 
-<%@ page language="java" import="com.googlecode.flickr2twitter.datastore.*, 
-								 com.googlecode.flickr2twitter.datastore.model.*,
-								 com.googlecode.flickr2twitter.servlet.*"
+<%@ page language="java" import="com.googlecode.flickr2twitter.datastore.*,com.googlecode.flickr2twitter.datastore.model.*,com.googlecode.flickr2twitter.servlet.*,com.googlecode.flickr2twitter.core.*"
 	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<h1>Cost Record System</h1>
+<h1>Twitter the world system</h1>
+
+<%
+	com.googlecode.flickr2twitter.datastore.model.User user = (com.googlecode.flickr2twitter.datastore.model.User) session
+			.getAttribute(UserAccountServlet.PARA_SESSION_USER);
+%>
 
 <table>
 	<tr>
@@ -12,10 +15,19 @@
 		<td>|&nbsp;<a href="/register.jsp">Register</a> &nbsp;</td>
 		<td>|&nbsp;<a href="/authorize.jsp">Authorize Source &amp; Target</a> &nbsp;</td>
 		<td>|&nbsp;<a href="/user_admin.jsp">Manage Your Account</a> &nbsp;</td>
-		<td>|&nbsp;<a href="/about.jsp">About &amp; Help</a>&nbsp;|</td>
 		<%
-			com.googlecode.flickr2twitter.datastore.model.User user = 
-				(com.googlecode.flickr2twitter.datastore.model.User) session.getAttribute(UserAccountServlet.PARA_SESSION_USER);
+			String systemAdmin = GlobalDefaultConfiguration.getInstance()
+					.getProperties()
+					.getProperty(GlobalDefaultConfiguration.KEY_ADMIN_EMAIL);
+			if (user != null && systemAdmin.equals(user.getUserId().getEmail()) == true) {
+		%>
+		<td>|&nbsp;<a href="/system_admin.jsp">System Admin</a> &nbsp;</td>
+		<%
+			}
+		%>
+		<td>|&nbsp;<a href="/about.jsp">About &amp; Help</a>&nbsp;|</td>
+		
+		<%
 			if (user != null) {
 		%>
 		<td>&nbsp;Welcome <b><%=user.getScreenName()%></b>&nbsp;</td>
@@ -27,6 +39,7 @@
 <%
 	String message = (String) session.getAttribute("message");
 	if (message != null && message.trim().length() > 0) {
+		message = message.replace("\r", "<br/>");
 %>
 <h2>Message Board</h2>
 <div style="background-color: #EEEEEE;"><%=message%></div>
@@ -36,8 +49,9 @@
 %>
 
 <%
-boolean checkLogin = Boolean.TRUE.equals(request.getAttribute("checkLogin"));
-if (user == null && checkLogin == true) {
+	boolean checkLogin = Boolean.TRUE.equals(request
+			.getAttribute("checkLogin"));
+	if (user == null && checkLogin == true) {
 %>
 <h2>Login </h2>
 <form action="/userOperation" method="post">
@@ -62,6 +76,6 @@ if (user == null && checkLogin == true) {
 </form>
 <%@ include file="/foot.jsp" %> 
 <%
-		return;
-	}
-%>
+ 	return;
+ 	}
+ %>

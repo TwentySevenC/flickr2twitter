@@ -67,6 +67,15 @@
     <url-pattern>/oauth</url-pattern>
   </servlet-mapping>
   
+  <servlet>
+    <servlet-name>userPasswordMigration</servlet-name>
+    <servlet-class>com.googlecode.flickr2twitter.servlet.UserPasswordMigration</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>userPasswordMigration</servlet-name>
+    <url-pattern>/userPasswordMigration</url-pattern>
+  </servlet-mapping>
+  
   
   <!-- 
   <servlet>
