@@ -30,6 +30,7 @@ import com.googlecode.flickr2twitter.model.IItem;
 import com.googlecode.flickr2twitter.model.IItemList;
 import com.googlecode.flickr2twitter.model.IPhoto;
 import com.googlecode.flickr2twitter.model.IShortUrl;
+import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Toby Yu(yuyang226@gmail.com)
@@ -38,6 +39,7 @@ import com.googlecode.flickr2twitter.model.IShortUrl;
 public class TargetServiceProviderTwitter implements ITargetServiceProvider {
 	public static final String ID = "twitter";
 	public static final String DISPLAY_NAME = "Twitter";
+	public static final String CALLBACK_URL = "twitterback.jsp";
 
 	private static final Logger log = Logger.getLogger(TargetServiceProviderTwitter.class
 			.getName());
@@ -134,7 +136,8 @@ public class TargetServiceProviderTwitter implements ITargetServiceProvider {
 	@Override
 	public String readyAuthorization(String userEmail, Map<String, Object> data)
 			throws Exception {
-		if (data == null || data.containsKey("token") == false) {
+		if (data == null || data.containsKey("token") == false 
+				|| data.containsKey("secret") == false) {
 			throw new IllegalArgumentException("Invalid data: " + data);
 		}
 		StringBuffer buf = new StringBuffer();
@@ -147,6 +150,7 @@ public class TargetServiceProviderTwitter implements ITargetServiceProvider {
 		String token = String.valueOf(data.get("token"));
 		String secret = String.valueOf(data.get("secret"));
 		RequestToken requestToken = new RequestToken(token, secret);
+		
 		AccessToken accessToken = twitter.getOAuthAccessToken(requestToken);
 		buf.append(" User Id: " + accessToken.getUserId());
 		buf.append(" User Screen Name: " + accessToken.getScreenName());
@@ -188,9 +192,13 @@ public class TargetServiceProviderTwitter implements ITargetServiceProvider {
 			Twitter twitter = new TwitterFactory().getInstance();
 			twitter.setOAuthConsumer(globalAppConfig.getTargetAppConsumerId(),
 					globalAppConfig.getTargetAppConsumerSecret());
+			if (baseUrl.endsWith("/oauth")) {
+				baseUrl = StringUtils.left(baseUrl, baseUrl.length() - "/oauth".length());
+			}
+			//String callbackUrl = baseUrl + "/" + CALLBACK_URL;
 			RequestToken requestToken = twitter.getOAuthRequestToken();
-			log.info("Open the following URL and grant access to your account:");
-			log.info(requestToken.getAuthorizationURL());
+			log.info("Authentication URL: " + requestToken.getAuthenticationURL());
+			log.info("Authorization URL: " + requestToken.getAuthorizationURL());
 			result.put("url", requestToken.getAuthorizationURL());
 			result.put("token", requestToken.getToken());
 			result.put("secret", requestToken.getTokenSecret());
@@ -216,7 +224,7 @@ public class TargetServiceProviderTwitter implements ITargetServiceProvider {
 				.getTwitterConsumerId());
 		result.setTargetAppConsumerSecret(GlobalDefaultConfiguration
 				.getInstance().getTwitterConsumerSecret());
-		result.setAuthPagePath(null); // TODO set the default auth page path
+		result.setAuthPagePath(CALLBACK_URL); // TODO set the default auth page path
 		result.setImagePath(null); // TODO set the default image path
 		return result;
 	}
