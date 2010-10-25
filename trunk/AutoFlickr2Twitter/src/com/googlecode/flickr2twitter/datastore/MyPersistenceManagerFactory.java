@@ -3,6 +3,7 @@
  */
 package com.googlecode.flickr2twitter.datastore;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -164,10 +165,16 @@ public final class MyPersistenceManagerFactory {
 				.getInstance();
 		PersistenceManager pm = pmf.getPersistenceManager();
 		try {
-			user = new User(new Email(userEmail), password, screenName);
+			String encryptionPassword = MessageDigestUtil
+					.getSHAPassword(password);
+			user = new User(new Email(userEmail), encryptionPassword, screenName);
 			user.setPermission(permission.name());
 			pm.makePersistent(user);
 			return user;
+		} catch (NoSuchAlgorithmException e) {
+			log.warning("Got NoSuchAlgorithmException. Unable to create user!"
+					+ e.getCause());
+			return null;
 		} finally {
 			pm.close();
 		}
@@ -189,21 +196,24 @@ public final class MyPersistenceManagerFactory {
 		}
 		return null;
 	}
-	
+
 	public static User getLoginUser(String userEmail, String password) {
 		PersistenceManagerFactory pmf = MyPersistenceManagerFactory
 				.getInstance();
 		PersistenceManager pm = pmf.getPersistenceManager();
 		try {
+			String encryptionPassword =MessageDigestUtil.getSHAPassword(password);
 			Query query = pm.newQuery(User.class);
 			query.setFilter("userId == userEmailAddress && password == userPassword");
 			query.declareParameters("String userEmailAddress, String userPassword");
-			List<?> data = (List<?>) query.execute(userEmail, password);
+			List<?> data = (List<?>) query.execute(userEmail, encryptionPassword);
 			if (data != null && !data.isEmpty()) {
 				User u = (User) data.get(0);
 				log.log(Level.INFO, u.toString());
 				return u;
 			}
+		} catch (NoSuchAlgorithmException e) {
+			log.warning("Unable to login because of NoSuchAlgorithmException. WTF???->" + e.getMessage());
 		} finally {
 			pm.close();
 		}
@@ -234,7 +244,8 @@ public final class MyPersistenceManagerFactory {
 		return users;
 	}
 
-	public static List<UserSourceServiceConfig> getUserSourceServices(String userEmail) {
+	public static List<UserSourceServiceConfig> getUserSourceServices(
+			String userEmail) {
 		return getUserSourceServices(getUser(userEmail));
 	}
 
@@ -263,7 +274,8 @@ public final class MyPersistenceManagerFactory {
 		return user.getSourceServices();
 	}
 
-	public static List<UserTargetServiceConfig> getUserTargetServices(String userEmail) {
+	public static List<UserTargetServiceConfig> getUserTargetServices(
+			String userEmail) {
 		return getUserTargetServices(getUser(userEmail));
 	}
 
@@ -305,7 +317,8 @@ public final class MyPersistenceManagerFactory {
 			} else {
 				conf = new GlobalServiceConfiguration();
 				conf.setKey("1");
-				conf.setMinUploadTime(GlobalDefaultConfiguration.getInstance().getInterval());
+				conf.setMinUploadTime(GlobalDefaultConfiguration.getInstance()
+						.getInterval());
 				pm.makePersistent(conf);
 			}
 		} finally {
