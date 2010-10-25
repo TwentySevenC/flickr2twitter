@@ -291,17 +291,6 @@ public class SourceServiceProviderFlickr implements
 		log.info("frob: " + frob + ", Token URL: " + url.toExternalForm());
 		result.put(KEY_FROB, frob);
 		result.put("url", url.toExternalForm());
-		
-		/*String strURL = "http://www.flickr.com/services/auth/?" +
-		"api_key=" + globalAppConfig.getSourceAppApiKey() + "&frob=" + frob + "&perms=read" + "&extra=" + nextUrl;
-		 String token = globalAppConfig.getSourceAppSecret() + "api_key" + globalAppConfig.getSourceAppApiKey() + "extra" + nextUrl + "frob" + frob + "permsread";
-		 MD5 md5 = new MD5();
-		 md5.Update(token);
-
-		strURL += "&api_sig=" + md5.asHex();
-		log.info("ddd: " + strURL);
-		
-		result.put("url", strURL);*/
 		return result;
 	}
 
