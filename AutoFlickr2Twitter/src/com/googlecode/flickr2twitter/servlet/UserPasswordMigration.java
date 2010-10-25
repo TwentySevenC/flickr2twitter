@@ -12,18 +12,32 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.googlecode.flickr2twitter.datastore.MessageDigestUtil;
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
+import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory.Permission;
 import com.googlecode.flickr2twitter.datastore.model.User;
 
 public class UserPasswordMigration extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger log = Logger.getLogger(OAuthServlet.class
-			.getName());
+	private static final Logger log = Logger
+			.getLogger(UserPasswordMigration.class.getName());
 
 	protected void service(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		log.warning("Starting to user migration...");
+
+		User userSession = (User) req.getSession().getAttribute(
+				UserAccountServlet.PARA_SESSION_USER);
+		if (Permission.ADMIN.name().equals(userSession.getPermission()) == false) {
+			req.getSession()
+					.setAttribute(
+							"message",
+							"U must be kidding me! Only admin is allowd to do this. "
+									+ "U knows too much, boy. Be a lamp and follow the rules of this system :-)");
+			resp.sendRedirect("/index.jsp");
+			return;
+		}
+
 		StringBuffer msg = new StringBuffer();
 		List<User> allUsers = MyPersistenceManagerFactory.getAllUsers();
 
