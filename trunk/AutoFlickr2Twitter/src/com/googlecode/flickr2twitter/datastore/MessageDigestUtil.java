@@ -3,6 +3,10 @@ package com.googlecode.flickr2twitter.datastore;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * @author Mark Zang(deepnighttwo@gmail.com)
+ *
+ */
 public class MessageDigestUtil {
 
 	/**

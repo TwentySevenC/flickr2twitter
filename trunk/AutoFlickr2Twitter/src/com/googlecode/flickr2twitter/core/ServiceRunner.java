@@ -57,6 +57,8 @@ public class ServiceRunner {
 					ServiceFactory.getSourceServiceProvider(source.getServiceProviderId());
 				if (sourceProvider == null) {
 					log.warning("Invalid source service provider configured: " + source.getServiceProviderId());
+				} else if (source.isEnabled() == false){ 
+					log.info("skip the disabled source service provider: " + source.getServiceProviderId());
 				} else {
 					try {
 						IItemList<IItem> items = new ItemList(
@@ -80,6 +82,8 @@ public class ServiceRunner {
 						MyPersistenceManagerFactory.getGlobalTargetAppService(target.getServiceProviderId());
 					if (targetProvider == null || globalAppConfig == null) {
 						log.warning("Invalid target service provider configured: " + target.getServiceProviderId());
+					}  else if (target.isEnabled() == false){ 
+						log.info("skip the disabled target service provider: " + target.getServiceProviderId());
 					} else {
 						try {
 							targetProvider.postUpdate(globalAppConfig, target, itemLists);
