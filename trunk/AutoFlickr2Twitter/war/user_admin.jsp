@@ -35,7 +35,7 @@
 %>
 		<tr>
 			<td><li/></td>
-			<td><%=src.getServiceProviderId()%></td>
+			<td><%=src.getServiceProviderId()%> <a href="<%=src.getUserSiteUrl()%>"><%=src.getServiceUserName()%></a></td>
 			<td><a href=""><%=src.isEnabled()?"Disable":"Enable"%></td>
 		</tr>
 <%
@@ -50,7 +50,7 @@
 %>
 	<tr>
 		<td><li/></td>
-		<td><%=tgt.getServiceProviderId()%></td>
+		<td><%=tgt.getServiceProviderId()%> <a href="<%=tgt.getUserSiteUrl()%>"><%=tgt.getServiceUserName()%></a></td>
 		<td><a href=""><%=tgt.isEnabled()?"Disable":"Enable"%></td>
 	</tr>
 <%
