@@ -16,7 +16,7 @@
 		}
 		
 		String url = baseUrl + "?frob=" + frob;
-		
+		log.info("Redirecting to->" + url);
 		response.sendRedirect(url);
 	}
 %>
