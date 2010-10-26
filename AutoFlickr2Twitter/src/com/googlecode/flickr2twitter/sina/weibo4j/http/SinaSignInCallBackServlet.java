@@ -28,30 +28,31 @@ public class SinaSignInCallBackServlet extends HttpServlet {
 			throws ServletException, IOException {
 		
 //		//get user information from session
-//		User currentUser = (User) req.getSession().getAttribute(UserAccountServlet.PARA_SESSION_USER);
-		String email = req.getParameter("u");
-		if( email == null ) {
+		User currentUser = (User) req.getSession().getAttribute(UserAccountServlet.PARA_SESSION_USER);
+		
+		if( currentUser == null ) {
 			resp.getWriter().println("Use not signed in, please sign in first.");
 			return;
 		}
-		
-
+		String email = currentUser.getUserId().getEmail();
 
 		// Get the verifier;
 		String verifier = req.getParameter("oauth_verifier");
-		log.log(Level.INFO, "oauth_verifier = " + verifier);
+		String oauthToken = req.getParameter("oauth_token");
+		log.info("SINA oauth_token = " + oauthToken + ", oauth_verifier = " + verifier);
 
 		// Request token and secret
-		String requestToken = req.getParameter("t"); //token
-		String requestTokenSecret = req.getParameter("s"); //secret
+		Map<String, Object> currentData = (Map<String, Object>) req.getSession()
+		.getAttribute(TargetServiceProviderSina.ID);
+		if (currentData.containsKey("token") == false || currentData.containsKey("secret") == false) {
+			resp.getWriter().println("Error to get request token from cookie.");
+			return;
+		}
+		String requestToken = String.valueOf(currentData.get("token")); //req.getParameter("t"); //token
+		String requestTokenSecret = String.valueOf(currentData.get("secret")); //req.getParameter("s"); //secret
 
 		if (verifier == null) {
 			resp.getWriter().println("Error to get the verifier.");
-			return;
-		}
-
-		if (requestTokenSecret == null || requestToken == null) {
-			resp.getWriter().println("Error to get request token from cookie.");
 			return;
 		}
 
@@ -74,8 +75,10 @@ public class SinaSignInCallBackServlet extends HttpServlet {
 				Map<String,Object> data = new HashMap<String,Object>();
 				data.put("token",accessToken.getToken());
 				data.put("secret", accessToken.getTokenSecret());
+				data.put("userId", accessToken.getUserId());
 				try {
 					tps.readyAuthorization(email, data);
+					resp.sendRedirect("/authorize.jsp");
 				} catch (Exception e) {
 					resp.getWriter().println("But error to save the access token." + e.getMessage());
 					log.log(Level.WARNING, e.getMessage());
@@ -94,7 +97,4 @@ public class SinaSignInCallBackServlet extends HttpServlet {
 			throws ServletException, IOException {
 		doGet(req,resp);
 	}
-	
-	
-
 }
