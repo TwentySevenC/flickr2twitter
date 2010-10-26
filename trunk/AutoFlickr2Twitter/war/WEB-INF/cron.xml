@@ -3,6 +3,6 @@
   <cron>
     <url>/autoflickr2twitter/recheck</url>
     <description>Run the service with the specified time interval</description>
-    <schedule>every 15 minutes</schedule>
+    <schedule>every 30 minutes</schedule>
   </cron>
 </cronentries>
