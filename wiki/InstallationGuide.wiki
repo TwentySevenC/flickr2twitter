@@ -24,7 +24,7 @@ This program requires you to setup OAuth token with your Flickr and Twitter acco
 == Supported OAuth Callback Services ==
 
 === Source Service Providers ===
-Flickr, Picasa
+<a href="http://www.flickr.com">Flickr</a>, <a href="http://picasaweb.google.com/">Picasa</a>
 
 === Target Service Providers ===
-Twitter, Sina, eMail
+<a href="http://twitter.com">Twitter</a>, <a href="http://t.sina.com.cn/">Sina</a>, eMail
