@@ -35,7 +35,6 @@ import com.googlecode.flickr2twitter.com.aetrion.flickr.photos.PhotosInterface;
 import com.googlecode.flickr2twitter.com.aetrion.flickr.tags.Tag;
 import com.googlecode.flickr2twitter.core.GlobalDefaultConfiguration;
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
-import com.googlecode.flickr2twitter.datastore.model.ConfigProperty;
 import com.googlecode.flickr2twitter.datastore.model.GlobalServiceConfiguration;
 import com.googlecode.flickr2twitter.datastore.model.GlobalSourceApplicationService;
 import com.googlecode.flickr2twitter.datastore.model.User;
@@ -79,17 +78,15 @@ public class SourceServiceProviderFlickr implements
 		List<IItem> photos = new ArrayList<IItem>();
 		// PeopleInterface pface = f.getPeopleInterface();
 		List<String> filterTags = new ArrayList<String>();
-		if (sourceService.getAddtionalParameters() != null) {
-			for (ConfigProperty config : sourceService.getAddtionalParameters()) {
-				if (KEY_FILTER_TAGS.equals(config.getKey())) {
-					if(config.getValue() != null && config.getValue().trim().length() > 0) {
-						String value = config.getValue().trim();
-						filterTags.addAll(Arrays.asList(StringUtils.split(value, TAGS_DELIMITER)));
-					}
-					break;
-				}
+		Map<String, String> additionalParams = sourceService.getAdditionalParameters();
+		if (additionalParams.containsKey(KEY_FILTER_TAGS)) {
+			String filterTrags = additionalParams.get(KEY_FILTER_TAGS);
+			if (filterTrags != null) {
+				filterTags.addAll(Arrays.asList(StringUtils.split(
+						filterTrags.trim(), TAGS_DELIMITER)));
 			}
 		}
+		
 		PhotosInterface photosFace = f.getPhotosInterface();
 		Set<String> extras = new HashSet<String>(2);
 		extras.add(Extras.DATE_UPLOAD);
@@ -250,7 +247,7 @@ public class SourceServiceProviderFlickr implements
 			serviceConfig.setUserSiteUrl(flickrUser.getPhotosurl());
 		}
 		
-		serviceConfig.addAddtionalParameter(new ConfigProperty(KEY_FILTER_TAGS, ""));
+		serviceConfig.addAddtionalParameter(KEY_FILTER_TAGS, "");
 		
 		MyPersistenceManagerFactory.addSourceServiceApp(userEmail, serviceConfig);
 
