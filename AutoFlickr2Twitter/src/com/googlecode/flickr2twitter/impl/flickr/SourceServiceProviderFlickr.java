@@ -103,7 +103,7 @@ public class SourceServiceProviderFlickr implements
 				Locale.UK);
 		long newTime = now.getTime() - interval;
 		past.setTimeInMillis(newTime);
-		PhotoList list = photosFace.recentlyUpdated(past.getTime(), extras, 20,
+		PhotoList list = photosFace.recentlyUpdated(past.getTime(), extras, 100,
 				1);
 		
 		log.info("Trying to find photos uploaded for user " + userId
