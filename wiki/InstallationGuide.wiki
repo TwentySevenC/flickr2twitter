@@ -21,16 +21,10 @@ This program requires you to setup OAuth token with your Flickr and Twitter acco
  * Login with your chosen user
  * Navigate to page _Authorize Source & Target_ and now you can authorize this application to access your Flickr/Twitter or whatever online servers you want to interact with.
 
-== Authorize App to Access Your Flickr Account ==
+== Supported OAuth Callback Services ==
 
-== Authorize App to Access Your Twitter Account ==
+=== Source Service Providers ===
+Flickr, Picasa
 
-== Authorize App to Access Your Sina Weibo Account ==
-1, sign in first; <br/>
-2, Click ' Authorize Source & Target ' at the top of the page;<br/>
-3, Click 'Authorize Sina Account' at the bottom of the shown page;<br/>
-4, You will be lead to another page currently with only one button there;<br/>
-5, Click it, in the sina authorization page, authorized, then done!<br/>
-
-<br/>
-You can add more than one sina weibo accounts.
+=== Target Service Providers ===
+Twitter, Sina, eMail
