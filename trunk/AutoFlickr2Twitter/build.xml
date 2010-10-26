@@ -15,7 +15,7 @@
 		<delete file="${archive_name}.war" />
 	</target>
 
-	<target name="zip">
+	<target name="zip" depends="clean">
 		<zip destfile="${archive_name}.zip" basedir="${folder-to-zip}" excludes=".svn, **/local_db.bin, **/datastore-indexes-auto.xml" />
 	</target>
 
@@ -36,5 +36,5 @@
 		        summary="Release ${full_version}"
 		        labels="Featured, Type-Package, OpSys-All" />
 	</target>
-
+	<antcall target="clean"></antcall>
 </project>
