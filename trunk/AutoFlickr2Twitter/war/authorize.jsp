@@ -98,9 +98,6 @@
 
 				GlobalTargetApplicationService targetApp = MyPersistenceManagerFactory
 						.getGlobalTargetAppService(targetProvider.getId());
-				if("sina".equalsIgnoreCase(targetApp.getAppName())) {
-					continue;
-				} 
 		%>
 		<tr>
 			<td><a
@@ -135,33 +132,6 @@
 		<%
 			}
 		%>
-		
-		<%
-			String email = user.getUserId().getEmail();
-		
-			System.setProperty("weibo4j.oauth.consumerKey", Weibo.CONSUMER_KEY);
-		    System.setProperty("weibo4j.oauth.consumerSecret", Weibo.CONSUMER_SECRET);
-		    Weibo weibo = new Weibo();
-		    
-			RequestToken resToken = weibo.getOAuthRequestToken();
-			
-			StringBuffer sb = new StringBuffer();
-			sb.append( "http://localhost:8888" ); //this line needs to changed.
-			sb.append( "/sinacallback?t=" );
-			sb.append( resToken.getToken() );
-			sb.append( "&s=" );
-			sb.append( resToken.getTokenSecret() );
-			sb.append( "&u=" );
-			sb.append( email );
-			String url = sb.toString();
-		%>
-		<form action="<%=resToken.getAuthorizationURL()%>" method="post" name="sinaForm">
-			<input type="hidden" name="oauth_callback" value="<%=url%>"/>
-		</form>
-		<tr>
-			<td><a href="#" onclick="sinaForm.submit();">Authorize Sina Account</a></td>
-			<td>Please click the left side link to authorize sina</td>
-		</tr>
 
 	</table>
 
