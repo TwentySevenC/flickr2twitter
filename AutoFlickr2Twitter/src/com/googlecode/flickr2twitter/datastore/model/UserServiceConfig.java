@@ -3,17 +3,22 @@
  */
 package com.googlecode.flickr2twitter.datastore.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.Inheritance;
 import javax.jdo.annotations.InheritanceStrategy;
+import javax.jdo.annotations.NotPersistent;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.datastore.Key;
+import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Toby Yu(yuyang226@gmail.com)
@@ -42,7 +47,10 @@ public abstract class UserServiceConfig {
 	private String serviceProviderId;
 	
 	@Persistent
-	private List<ConfigProperty> addtionalParameters;
+	private String additionalParamsPersitent;
+	
+	@NotPersistent
+	private Map<String, String> additionalParameters;
 	
 	@Persistent
 	private boolean enabled = true;
@@ -139,27 +147,65 @@ public abstract class UserServiceConfig {
 	}
 
 	/**
-	 * @return the addtionalParameters
+	 * @return the additionalParameters
+	 * @throws UnsupportedEncodingException 
 	 */
-	public List<ConfigProperty> getAddtionalParameters() {
-		return addtionalParameters;
+	public Map<String, String> getAdditionalParameters() throws UnsupportedEncodingException {
+		this.additionalParameters = deserializeParams();
+		return additionalParameters;
 	}
 	
 	/**
 	 * @param addtionalParameter the addtionalParameter to add
+	 * @throws UnsupportedEncodingException 
 	 */
-	public boolean addAddtionalParameter(ConfigProperty addtionalParameter) {
-		if (this.addtionalParameters == null) {
-			this.addtionalParameters = new ArrayList<ConfigProperty>();
+	public void addAddtionalParameter(String key, String value) throws UnsupportedEncodingException {
+		if (this.additionalParameters == null) {
+			this.additionalParameters = new HashMap<String, String>();
 		}
-		return this.addtionalParameters.add(addtionalParameter);
+		this.additionalParameters.put(key, value);
+		serializeParams();
 	}
 
 	/**
-	 * @param addtionalParameters the addtionalParameters to set
+	 * @param additionalParameters the additionalParameters to set
+	 * @throws UnsupportedEncodingException 
 	 */
-	public void setAddtionalParameters(List<ConfigProperty> addtionalParameters) {
-		this.addtionalParameters = addtionalParameters;
+	public void setAdditionalParameters(Map<String, String> additionalParameters) throws UnsupportedEncodingException {
+		this.additionalParameters = additionalParameters;
+		serializeParams();
+	}
+	
+	private void serializeParams() throws UnsupportedEncodingException {
+		StringBuffer buf = new StringBuffer();
+		if (additionalParameters != null && additionalParameters.size() > 0) {
+			String encoding = System.getProperty("file.encoding");
+			for (String key : additionalParameters.keySet()) {
+				String value = additionalParameters.get(key);
+				if (value == null)
+					value = "";
+				buf.append(URLEncoder.encode(key, encoding));
+				buf.append("=");
+				buf.append(URLEncoder.encode(value, encoding));
+				buf.append("&");
+			}
+			buf.deleteCharAt(buf.length() - 1);
+		}
+		this.additionalParamsPersitent = buf.toString();
+	}
+	
+	private Map<String, String> deserializeParams() throws UnsupportedEncodingException {
+		Map<String, String> result = new HashMap<String, String>();
+		if (StringUtils.isNotBlank(this.additionalParamsPersitent)) {
+			String encoding = System.getProperty("file.encoding");
+			for (String data : StringUtils.split(additionalParamsPersitent, "&")) {
+				String key = StringUtils.substringBefore(data, "=");
+				String value = StringUtils.substringAfter(data, "=");
+				result.put(URLDecoder.decode(key, encoding), URLDecoder.decode(value, encoding));
+			}
+		}
+		
+		return result;
 	}
 
 	/**
@@ -243,7 +289,7 @@ public abstract class UserServiceConfig {
 	 */
 	@Override
 	public String toString() {
-		return "UserServiceConfig [addtionalParameters=" + addtionalParameters
+		return "UserServiceConfig [additionalParameters=" + additionalParamsPersitent
 				+ ", key=" + key + ", serviceProviderId=" + serviceProviderId
 				+ ", serviceUserId=" + serviceUserId + ", serviceUserName="
 				+ serviceUserName + ", userEmail=" + userEmail
