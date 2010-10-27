@@ -1,7 +1,6 @@
 package com.googlecode.flickr2twitter.servlet;
 
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -10,7 +9,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.googlecode.flickr2twitter.datastore.MessageDigestUtil;
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory.Permission;
 import com.googlecode.flickr2twitter.datastore.model.User;
@@ -54,21 +52,21 @@ public class UserPasswordMigration extends HttpServlet {
 				log.warning(ignoreMsg);
 				continue;
 			}
-			String passwordSHA = null;
-			try {
-				passwordSHA = MessageDigestUtil.getSHAPassword(password);
-			} catch (NoSuchAlgorithmException e) {
-				String failMsg = "Fails to generated SHA for "
-						+ user.getScreenName() + "("
-						+ user.getUserId().getEmail() + "). Error message:"
-						+ e.getLocalizedMessage() + "\r\n";
-				log.warning(failMsg);
-				msg.append(failMsg);
-				e.printStackTrace();
-				continue;
-			}
+			// String passwordSHA = null;
+			// try {
+			// passwordSHA = MessageDigestUtil.getSHAPassword(password);
+			// } catch (NoSuchAlgorithmException e) {
+			// String failMsg = "Fails to generated SHA for "
+			// + user.getScreenName() + "("
+			// + user.getUserId().getEmail() + "). Error message:"
+			// + e.getLocalizedMessage() + "\r\n";
+			// log.warning(failMsg);
+			// msg.append(failMsg);
+			// e.printStackTrace();
+			// continue;
+			// }
 			MyPersistenceManagerFactory.updateUserPassword(user.getKey(),
-					passwordSHA);
+					password);
 			String sucessMsg = "Password migration for user "
 					+ user.getScreenName() + "(" + user.getUserId().getEmail()
 					+ ") is done successfully!\r\n";
