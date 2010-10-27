@@ -28,7 +28,7 @@
 <hr width="80%" align="left"/>
 <b>Still under construction</b>
 
-<p>Your source service list:</p>
+<h2>Your source service list:</h2>
 <table>
 <%
 	for( UserSourceServiceConfig src : sourceSvcs ) {
@@ -43,7 +43,7 @@
 %>
 </table>
 <hr width="80%" align="left"/>
-<p>Your target service list:</p>
+<h2>Your target service list:</h2>
 <table>
 <%
 	for( UserTargetServiceConfig tgt : targetSvcs ) {
@@ -57,5 +57,45 @@
 	}
 %>
 </table>
+
+<h2>Change Display Name</h2>
+<form action="/userOperation" method="post">
+Current display name is <%=user.getScreenName()%>.
+<table>
+	<tr>
+		<td>New Display Name:<input type="text" name="<%=UserAccountServlet.PARA_SCREEN_NAME%>"></td>
+		<td><input type="hidden" name="<%=UserAccountServlet.PARA_OPT%>" value="<%=UserAccountServlet.OPT_Change_Display_Name%>"></input></td>
+	</tr>
+	<tr>
+		<td><input type="submit" value="Change Display Name" /></td>
+	</tr>
+
+</table>
+</form>
+
+<h2>Change Password</h2>
+<form action="/userOperation" method="post">
+<table>
+
+	<tr>
+		<td>Current Password:</td>
+		<td><input type="password" name="<%=UserAccountServlet.PARA_PASSWORD%>"></input></td>
+	</tr>
+	<tr>
+		<td>New Password:</td>
+		<td><input type="password" name="<%=UserAccountServlet.PARA_PASSWORD_1%>"></input></td>
+	</tr>
+	<tr>
+		<td>Confirm New Password:</td>
+		<td><input type="password" name="<%=UserAccountServlet.PARA_PASSWORD_2%>"></input>
+		<input type="hidden" name="<%=UserAccountServlet.PARA_OPT%>" value="<%=UserAccountServlet.OPT_Change_Password%>"></input>
+	</td>
+	</tr>
+	<tr>
+		<td><input type="submit" value="Change Password" /></td>
+	</tr>
+
+</table>
+</form>
 </body>
 </html>

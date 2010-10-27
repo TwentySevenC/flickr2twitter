@@ -168,7 +168,8 @@ public final class MyPersistenceManagerFactory {
 		try {
 			String encryptionPassword = MessageDigestUtil
 					.getSHAPassword(password);
-			user = new User(new Email(userEmail), encryptionPassword, screenName);
+			user = new User(new Email(userEmail), encryptionPassword,
+					screenName);
 			user.setPermission(permission.name());
 			pm.makePersistent(user);
 			return user;
@@ -180,23 +181,36 @@ public final class MyPersistenceManagerFactory {
 			pm.close();
 		}
 	}
-	
-	public static void updateUserPassword(Key key, String newPassword) {
+
+	public static User updateUserPassword(Key key, String newPassword) {
 		PersistenceManagerFactory pmf = MyPersistenceManagerFactory
 				.getInstance();
 		PersistenceManager pm = pmf.getPersistenceManager();
-		User user = pm.getObjectById(User.class, key);
-		user.setPassword(newPassword);
-		pm.close();
+		try {
+			User user = pm.getObjectById(User.class, key);
+			String passwordE = MessageDigestUtil.getSHAPassword(newPassword);
+			user.setPassword(passwordE);
+			return user;
+		} catch (NoSuchAlgorithmException e) {
+			log.warning("Got NoSuchAlgorithmException. Unable to change password!"
+					+ e.getCause());
+			return null;
+		} finally {
+			pm.close();
+		}
 	}
 
-	public static void updateUserDisplayName(Key key, String newDisplayName) {
+	public static User updateUserDisplayName(Key key, String newDisplayName) {
 		PersistenceManagerFactory pmf = MyPersistenceManagerFactory
 				.getInstance();
 		PersistenceManager pm = pmf.getPersistenceManager();
-		User user = pm.getObjectById(User.class, key);
-		user.setScreenName(newDisplayName);
-		pm.close();
+		try {
+			User user = pm.getObjectById(User.class, key);
+			user.setScreenName(newDisplayName);
+			return user;
+		} finally {
+			pm.close();
+		}
 	}
 
 	public static User getUser(String userEmail) {
@@ -221,18 +235,21 @@ public final class MyPersistenceManagerFactory {
 				.getInstance();
 		PersistenceManager pm = pmf.getPersistenceManager();
 		try {
-			String encryptionPassword =MessageDigestUtil.getSHAPassword(password);
+			String encryptionPassword = MessageDigestUtil
+					.getSHAPassword(password);
 			Query query = pm.newQuery(User.class);
 			query.setFilter("userId == userEmailAddress && password == userPassword");
 			query.declareParameters("String userEmailAddress, String userPassword");
-			List<?> data = (List<?>) query.execute(userEmail, encryptionPassword);
+			List<?> data = (List<?>) query.execute(userEmail,
+					encryptionPassword);
 			if (data != null && !data.isEmpty()) {
 				User u = (User) data.get(0);
 				log.log(Level.INFO, u.toString());
 				return u;
 			}
 		} catch (NoSuchAlgorithmException e) {
-			log.warning("Unable to login because of NoSuchAlgorithmException. WTF???->" + e.getMessage());
+			log.warning("Unable to login because of NoSuchAlgorithmException. WTF???->"
+					+ e.getMessage());
 		} finally {
 			pm.close();
 		}
