@@ -23,6 +23,7 @@ import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
 import com.googlecode.flickr2twitter.sina.weibo4j.User;
 import com.googlecode.flickr2twitter.sina.weibo4j.Weibo;
 import com.googlecode.flickr2twitter.sina.weibo4j.http.RequestToken;
+import com.googlecode.flickr2twitter.urlshorteners.BitLyUtils;
 
 /**
  * @author Toby Yu(yuyang226@gmail.com)
@@ -97,12 +98,13 @@ public class TargetServiceProviderSina implements ITargetServiceProvider {
 				if (item instanceof IPhoto) {
 					IPhoto photo = (IPhoto) item;
 					message = "My new photo: " + photo.getTitle();
+					String url = photo.getUrl();
 					if (photo instanceof IShortUrl) {
-						message += " " + ((IShortUrl) photo).getShortUrl();
-					} else {
-						message += " " + photo.getUrl();
+						url = ((IShortUrl) photo).getShortUrl();
+					} else if (photo.getUrl().length() > 15){
+						url = BitLyUtils.shortenUrl(photo.getUrl());
 					}
-
+					message += " " + url;
 				}
 				if (message != null) {
 					try {
