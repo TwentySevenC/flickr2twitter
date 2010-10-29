@@ -49,12 +49,12 @@
   </servlet-mapping>
   
   <servlet>
-    <servlet-name>userPasswordMigration</servlet-name>
-    <servlet-class>com.googlecode.flickr2twitter.servlet.UserPasswordMigration</servlet-class>
+    <servlet-name>openIdServlet</servlet-name>
+    <servlet-class>com.googlecode.flickr2twitter.servlet.OpenIdServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>userPasswordMigration</servlet-name>
-    <url-pattern>/userPasswordMigration</url-pattern>
+    <servlet-name>openIdServlet</servlet-name>
+    <url-pattern>/openid</url-pattern>
   </servlet-mapping>
   
   <!-- Default page to serve -->
