@@ -76,8 +76,7 @@ public class OpenIdServlet extends HttpServlet {
 				user = MyPersistenceManagerFactory.createNewUser(userEmail, "openid", authentication.getFullname());
 			}
 			request.getSession().setAttribute(UserAccountServlet.PARA_SESSION_USER, user);
-			response.sendRedirect("/index.jsp");
-			//showAuthentication(response.getWriter(), authentication);
+			response.sendRedirect("/authorize.jsp");
 			return;
 		}
 		if (op.equals(ID_GOOGLE) || op.equals(ID_YAHOO)) {

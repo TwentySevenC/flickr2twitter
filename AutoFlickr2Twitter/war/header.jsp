@@ -98,7 +98,7 @@
 	</tr>
 </table>
 </form>
-<%@ include file="/foot.jsp"%>
+<%@ include file="/footer.jsp"%>
 <%
 	return;
 	}

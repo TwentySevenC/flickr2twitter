@@ -25,11 +25,10 @@
 <%@ include file="/header.jsp"%>
 <%
 	if (Permission.ADMIN.equals(user.getPermission()) == false) {
-		// note admin, return;
+		// not admin, return;
 		return;
 	}
 %>
-<a href="/userPasswordMigration">Migrate to New Password</a>
-<%@ include file="/foot.jsp"%>
+<%@ include file="/footer.jsp"%>
 </body>
 </html>
