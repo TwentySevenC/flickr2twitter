@@ -38,8 +38,8 @@ public class OpenIdServlet extends HttpServlet {
 	public static final String ATTR_ALIAS = "openid_alias";
 	public static final String ATTR_OP = "op";
 	public static final String ATTR_OPENID_RESPONSE_NONCE = "openid.response_nonce";
-	public static final String ID_GOOGLE = "google";
-	public static final String ID_YAHOO = "yahoo";
+	public static final String ID_GOOGLE = "Google";
+	public static final String ID_YAHOO = "Yahoo";
 
     private OpenIdManager manager;
 
@@ -81,7 +81,7 @@ public class OpenIdServlet extends HttpServlet {
 			return;
 		}
 		if (op.equals(ID_GOOGLE) || op.equals(ID_YAHOO)) {
-			log.info("redirect to Google or Yahoo sign on page");
+			log.info("redirect to " + op + " sign on page");
 			Endpoint endpoint = manager.lookupEndpoint(op);
 			Association association = manager.lookupAssociation(endpoint);
 			request.getSession().setAttribute(ATTR_MAC, association.getRawMacKey());

@@ -1,5 +1,5 @@
 <%@ page language="java"
-	import="com.googlecode.flickr2twitter.datastore.*,com.googlecode.flickr2twitter.datastore.model.*,com.googlecode.flickr2twitter.servlet.*,java.util.*,com.googlecode.flickr2twitter.core.*,com.googlecode.flickr2twitter.model.*,com.googlecode.flickr2twitter.intf.*"
+	import="com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory.Permission,com.googlecode.flickr2twitter.datastore.*,com.googlecode.flickr2twitter.datastore.model.*,com.googlecode.flickr2twitter.servlet.*,java.util.*,com.googlecode.flickr2twitter.core.*,com.googlecode.flickr2twitter.model.*,com.googlecode.flickr2twitter.intf.*"
 	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 
@@ -57,6 +57,9 @@
 	}
 %>
 </table>
+<%
+	if (Permission.ADMIN.name().equals(user.getPermission()) == true) {
+%>
 
 <h2>Change Display Name</h2>
 <form action="/userOperation" method="post">
@@ -97,5 +100,8 @@ Current display name is <%=user.getScreenName()%>.
 
 </table>
 </form>
+<%
+	}
+%>
 </body>
 </html>

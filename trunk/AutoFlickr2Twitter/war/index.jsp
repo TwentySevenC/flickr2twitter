@@ -32,9 +32,12 @@
 	</tr>
 	<tr>
 		<td><input type="submit" value="Login" /></td>
-		<td>or sign in with your Google account <a href="/openid?op=Google"><img height="12px" width="12px" src="https://s.yimg.com/lq/i/reg/google2.gif">Google</a></td>
+		<td>or sign in with Open ID account</td>
 	</tr>
-
+	<tr>
+		<td valign="top"><a href="/openid?op=Google" ><img border="0" src="http://openid.net/images/get-logos/google.png" alt="Google"></a></td>
+		<td valign="top"><a href="/openid?op=Yahoo" ><img border="0" src="http://openid.net/wordpress-content/uploads/2009/11/yahoo.png" alt="Yahoo"></td>
+	</tr>
 </table>
 </form>
 
