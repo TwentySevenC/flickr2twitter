@@ -71,9 +71,9 @@ public class TargetServiceProviderSina implements ITargetServiceProvider {
 			UserTargetServiceConfig targetConfig, List<IItemList<IItem>> items)
 			throws Exception {
 		// api key and secret
-		System.setProperty("weibo4j.oauth.consumerKey", targetConfig.getServiceAccessToken());
+		System.setProperty("weibo4j.oauth.consumerKey", globalAppConfig.getTargetAppConsumerId());
 		System.setProperty("weibo4j.oauth.consumerSecret",
-				targetConfig.getServiceTokenSecret());
+				globalAppConfig.getTargetAppConsumerSecret());
 
 		Weibo weibo = new Weibo();
 
