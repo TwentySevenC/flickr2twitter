@@ -17,9 +17,12 @@ public interface ISourceServiceProvider<T> extends IServiceAuthorizer, IServiceP
 	
 	/**
 	 * Get the list of latest items
+	 * @param currentTime the time in long with UTC timezone
 	 * @return
 	 * @throws Exception
 	 */
-	public List<T> getLatestItems(GlobalServiceConfiguration globalConfig, UserSourceServiceConfig sourceService) throws Exception;
+	public List<T> getLatestItems(GlobalServiceConfiguration globalConfig, 
+			UserSourceServiceConfig sourceService, 
+			long currentTime) throws Exception;
 
 }
