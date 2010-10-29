@@ -36,7 +36,7 @@
 	</tr>
 	<tr>
 		<td valign="top"><a href="/openid?op=Google" ><img border="0" src="http://openid.net/images/get-logos/google.png" alt="Google"></a></td>
-		<td valign="top"><a href="/openid?op=Yahoo" ><img border="0" src="http://openid.net/wordpress-content/uploads/2009/11/yahoo.png" alt="Yahoo"></td>
+		<td valign="top"><a href="/openid?op=Yahoo" ><img border="0" src="http://openid.net/wordpress-content/uploads/2009/11/yahoo.png" alt="Yahoo"></a></td>
 	</tr>
 </table>
 </form>
