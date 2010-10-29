@@ -229,20 +229,37 @@ public final class MyPersistenceManagerFactory {
 		}
 		return null;
 	}
-
+	
 	public static User getLoginUser(String userEmail, String password) {
+		return getLoginUser(userEmail, password, false);
+	}
+	
+	public static User getOpenIdLoginUser(String userEmail) {
+		return getLoginUser(userEmail, null, true);
+	}
+
+	public static User getLoginUser(String userEmail, String password, boolean openId) {
 		PersistenceManagerFactory pmf = MyPersistenceManagerFactory
 				.getInstance();
 		PersistenceManager pm = pmf.getPersistenceManager();
 		try {
-			String encryptionPassword = MessageDigestUtil
-					.getSHAPassword(password);
-			Query query = pm.newQuery(User.class);
-			query.setFilter("userId == userEmailAddress && password == userPassword");
-			query.declareParameters("String userEmailAddress, String userPassword");
-			List<?> data = (List<?>) query.execute(userEmail,
-					encryptionPassword);
-			if (data != null && !data.isEmpty()) {
+			List<?> data = null;
+			if (openId == true) {
+				Query query = pm.newQuery(User.class);
+				query.setFilter("userId == userEmailAddress");
+				query.declareParameters("String userEmailAddress");
+				data = (List<?>) query.execute(userEmail);
+			} else {
+				String encryptionPassword = MessageDigestUtil
+				.getSHAPassword(password);
+				Query query = pm.newQuery(User.class);
+				query.setFilter("userId == userEmailAddress && password == userPassword");
+				query.declareParameters("String userEmailAddress, String userPassword");
+				data = (List<?>) query.execute(userEmail,
+						encryptionPassword);
+			}
+			
+			if (data != null && data.isEmpty() == false) {
 				User u = (User) data.get(0);
 				log.log(Level.INFO, u.toString());
 				return u;

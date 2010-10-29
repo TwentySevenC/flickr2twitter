@@ -32,7 +32,6 @@
 <table>
 	<tr>
 		<td>|&nbsp;<a href="/index.jsp">Index</a>&nbsp;</td>
-		<td>|&nbsp;<a href="/register.jsp">Register</a> &nbsp;</td>
 		<td>|&nbsp;<a href="/authorize.jsp">Authorize Source &amp;
 		Target</a> &nbsp;</td>
 		<td>|&nbsp;<a href="/user_admin.jsp">Manage Your Account</a>
@@ -91,8 +90,7 @@
 	</tr>
 	<tr>
 		<td><input type="submit" value="Login" /></td>
-		<td>or click <a href="/register.jsp">here</a> to create your
-		account for free!</td>
+		<td>or sign in with your Google account <a id="gBtn" href="/openid?op=Google" class="secondaryCta"><img height="12px" width="12px" src="https://s.yimg.com/lq/i/reg/google2.gif">Google</a></td>
 	</tr>
 
 </table>
