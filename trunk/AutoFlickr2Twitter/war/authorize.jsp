@@ -136,6 +136,6 @@
 	</table>
 
 </ul>
-<%@ include file="/foot.jsp"%>
+<%@ include file="/footer.jsp"%>
 </body>
 </html>

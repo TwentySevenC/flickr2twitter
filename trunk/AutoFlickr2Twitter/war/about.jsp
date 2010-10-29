@@ -11,6 +11,6 @@
 <p>
 Please visit our <a href="http://code.google.com/p/flickr2twitter/">project site</a> and <a href="http://groups.google.com/group/flickr2twitter">Project discussion group</a>.
 </p>
-<%@ include file="/foot.jsp"%>
+<%@ include file="/footer.jsp"%>
 </body>
 </html>
