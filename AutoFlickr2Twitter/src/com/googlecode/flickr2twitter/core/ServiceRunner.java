@@ -3,21 +3,20 @@
  */
 package com.googlecode.flickr2twitter.core;
 
-import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.logging.Logger;
 
+import com.google.appengine.api.labs.taskqueue.Queue;
+import com.google.appengine.api.labs.taskqueue.QueueFactory;
+import com.google.appengine.api.labs.taskqueue.TaskOptions.Builder;
+import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.googlecode.flickr2twitter.datastore.model.GlobalServiceConfiguration;
-import com.googlecode.flickr2twitter.datastore.model.GlobalTargetApplicationService;
 import com.googlecode.flickr2twitter.datastore.model.User;
-import com.googlecode.flickr2twitter.datastore.model.UserSourceServiceConfig;
-import com.googlecode.flickr2twitter.datastore.model.UserTargetServiceConfig;
-import com.googlecode.flickr2twitter.intf.ISourceServiceProvider;
-import com.googlecode.flickr2twitter.intf.ITargetServiceProvider;
-import com.googlecode.flickr2twitter.model.IItem;
-import com.googlecode.flickr2twitter.model.IItemList;
-import com.googlecode.flickr2twitter.model.ItemList;
+import com.googlecode.flickr2twitter.servlet.ServiceWorkerServlet;
 
 /**
  * @author Toby Yu(yuyang226@gmail.com)
@@ -25,6 +24,10 @@ import com.googlecode.flickr2twitter.model.ItemList;
  */
 public class ServiceRunner {
 	private static final Logger log = Logger.getLogger(ServiceRunner.class.getName());
+	public static final String TIMEZONE_UTC = "UTC";
+	public static final String KEY_USER = "user";
+	public static final String KEY_TIMESTAMP = "timestamp";
+	public static final String KEY_INTERNVAL = "interval";
 	
 	/**
 	 * 
@@ -34,13 +37,13 @@ public class ServiceRunner {
 	}
 
 	public static void execute() {
-		GlobalServiceConfiguration globalConfig = MyPersistenceManagerFactory.getGlobalConfiguration();
 		List<User> users = MyPersistenceManagerFactory.getAllUsers();
 		if (users.isEmpty()) {
 			log.info("No user configured, skip the execution");
 			return;
 		}
 		
+		GlobalServiceConfiguration globalConfig = MyPersistenceManagerFactory.getGlobalConfiguration();
 		for (User user : users) {
 			if (user.getSourceServices() == null || user.getSourceServices().isEmpty()) {
 				log.warning("No source services configured for the user: " + user);
@@ -49,50 +52,14 @@ public class ServiceRunner {
 				log.warning("No target services configured for the user: " + user);
 				continue;
 			}
-			log.info("Retrieving latest updates for user: " + user);
-			final List<IItemList<IItem>> itemLists = new ArrayList<IItemList<IItem>>();
-			boolean isEmpty = true;
-			for (UserSourceServiceConfig source : user.getSourceServices()) {
-				ISourceServiceProvider<IItem> sourceProvider = 
-					ServiceFactory.getSourceServiceProvider(source.getServiceProviderId());
-				if (sourceProvider == null) {
-					log.warning("Invalid source service provider configured: " + source.getServiceProviderId());
-				} else if (source.isEnabled() == false){ 
-					log.info("skip the disabled source service provider: " + source.getServiceProviderId());
-				} else {
-					try {
-						IItemList<IItem> items = new ItemList(
-								MyPersistenceManagerFactory.getGlobalSourceAppService(sourceProvider.getId()).getAppName());
-						items.setItems(sourceProvider.getLatestItems(globalConfig, source));
-						itemLists.add(items);
-						if (items.getItems().isEmpty() == false)
-							isEmpty = false;
-					} catch (Exception e) {
-						log.throwing(ServiceRunner.class.getName(), "", e);
-					}
-				}
-			}
-			if (isEmpty) {
-				log.info("No recent updates found for user: " + user);
-			} else {
-				for (UserTargetServiceConfig target : user.getTargetServices()) {
-					ITargetServiceProvider targetProvider = 
-						ServiceFactory.getTargetServiceProvider(target.getServiceProviderId());
-					GlobalTargetApplicationService globalAppConfig = 
-						MyPersistenceManagerFactory.getGlobalTargetAppService(target.getServiceProviderId());
-					if (targetProvider == null || globalAppConfig == null) {
-						log.warning("Invalid target service provider configured: " + target.getServiceProviderId());
-					}  else if (target.isEnabled() == false){ 
-						log.info("skip the disabled target service provider: " + target.getServiceProviderId());
-					} else {
-						try {
-							targetProvider.postUpdate(globalAppConfig, target, itemLists);
-						} catch (Exception e) {
-							log.throwing(ServiceRunner.class.getName(), "", e);
-						}
-					}
-				}
-			}
+			Date now = Calendar.getInstance(TimeZone.getTimeZone(TIMEZONE_UTC)).getTime();
+			log.info("Current time: " + now);
+			Queue queue = QueueFactory.getQueue(ServiceWorkerServlet.QUEUE_NAME_WORKER);
+		    queue.add(Builder.url("/tasks/worker")
+		    		.param(KEY_USER, user.getUserId().getEmail())
+		    		.param(KEY_TIMESTAMP, String.valueOf(now.getTime()))
+		    		.param(KEY_INTERNVAL, String.valueOf(globalConfig.getMinUploadTime()))
+		    		.method(Method.POST));
 		}
     }
 	

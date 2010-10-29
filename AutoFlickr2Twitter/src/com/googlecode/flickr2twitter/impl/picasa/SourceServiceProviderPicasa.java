@@ -6,10 +6,8 @@ package com.googlecode.flickr2twitter.impl.picasa;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.logging.Logger;
@@ -20,6 +18,7 @@ import com.google.gdata.data.Person;
 import com.google.gdata.data.photos.AlbumFeed;
 import com.google.gdata.data.photos.PhotoEntry;
 import com.google.gdata.data.photos.UserFeed;
+import com.googlecode.flickr2twitter.core.ServiceRunner;
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.googlecode.flickr2twitter.datastore.model.GlobalApplicationConfig;
 import com.googlecode.flickr2twitter.datastore.model.GlobalServiceConfiguration;
@@ -39,7 +38,7 @@ import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
 public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhoto> {
 	public static final String ID = "picasa";
 	public static final String DISPLAY_NAME = "Picasa Web Album";
-	public static final String TIMEZONE_UTC = "UTC";
+	
 	public static final String KEY_TOKEN = "token";
 	private static final Logger log = Logger.getLogger(SourceServiceProviderPicasa.class.getName());
 	
@@ -64,18 +63,15 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 	 */
 	@Override
 	public List<IPhoto> getLatestItems(GlobalServiceConfiguration globalConfig,
-			UserSourceServiceConfig sourceService) throws Exception {
+			UserSourceServiceConfig sourceService, 
+			long currentTime) throws Exception {
 		PicasawebService webService = new PicasawebService(HOSTED_DOMAIN);
 		String sessionToken = sourceService.getServiceAccessToken();
 		webService.setAuthSubToken(sessionToken, null);
 		URL feedUrl = new URL("http://picasaweb.google.com/data/feed/api/user/default?kind=photo&max-results=25");
 
-		Date now = Calendar.getInstance(TimeZone.getTimeZone(TIMEZONE_UTC), Locale.UK)
-		.getTime();
-		log.info("Current time: " + now);
-		Calendar past = Calendar.getInstance(TimeZone.getTimeZone(TIMEZONE_UTC),
-				Locale.UK);
-		long newTime = now.getTime() - globalConfig.getMinUploadTime();
+		Calendar past = Calendar.getInstance(TimeZone.getTimeZone(ServiceRunner.TIMEZONE_UTC));
+		long newTime = currentTime - globalConfig.getMinUploadTime();
 		past.setTimeInMillis(newTime);
 
 		AlbumFeed feed = webService.getFeed(feedUrl, AlbumFeed.class);

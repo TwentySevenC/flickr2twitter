@@ -9,11 +9,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
@@ -56,6 +55,8 @@ public class SourceServiceProviderFlickr implements
 	public static final String KEY_FILTER_TAGS = "filter_tags";
 	public static final String TAGS_DELIMITER = ",";
 	public static final String TIMEZONE_CST = "CST";
+	public static final String TIMEZONE_GMT = "GMT";
+	
 	public static final String CALLBACK_URL = "flickrcallback.jsp";
 	private static final Logger log = Logger.getLogger(SourceServiceProviderFlickr.class.getName());
 
@@ -67,7 +68,7 @@ public class SourceServiceProviderFlickr implements
 	}
 
 	private List<IItem> showRecentPhotos(Flickr f, UserSourceServiceConfig sourceService, 
-			long interval) throws IOException, SAXException, FlickrException {
+			long interval, long currentTime) throws IOException, SAXException, FlickrException {
 		String userId = sourceService.getServiceUserId();
 		String token = sourceService.getServiceAccessToken();
 		RequestContext requestContext = RequestContext.getRequestContext();
@@ -76,7 +77,6 @@ public class SourceServiceProviderFlickr implements
 		auth.setToken(token);
 		requestContext.setAuth(auth);
 		List<IItem> photos = new ArrayList<IItem>();
-		// PeopleInterface pface = f.getPeopleInterface();
 		List<String> filterTags = new ArrayList<String>();
 		Map<String, String> additionalParams = sourceService.getAdditionalParameters();
 		if (additionalParams.containsKey(KEY_FILTER_TAGS)) {
@@ -95,13 +95,12 @@ public class SourceServiceProviderFlickr implements
 		if (filterTags.isEmpty() == false) {
 			extras.add(Extras.TAGS);
 		}
-
-		Date now = Calendar.getInstance(TimeZone.getTimeZone(TIMEZONE_CST), Locale.UK)
-				.getTime();
-		log.info("Current time: " + now);
-		Calendar past = Calendar.getInstance(TimeZone.getTimeZone(TIMEZONE_CST),
-				Locale.UK);
-		long newTime = now.getTime() - interval;
+		
+		Calendar cstTime = Calendar.getInstance(TimeZone.getTimeZone(TIMEZONE_GMT));
+		cstTime.setTimeInMillis(currentTime);
+		log.info("Converted current time: " + cstTime.getTime());
+		Calendar past = Calendar.getInstance(TimeZone.getTimeZone(TIMEZONE_GMT));
+		long newTime = cstTime.getTime().getTime() - interval;
 		past.setTimeInMillis(newTime);
 		PhotoList list = photosFace.recentlyUpdated(past.getTime(), extras, 100,
 				1);
@@ -170,7 +169,8 @@ public class SourceServiceProviderFlickr implements
 	 */
 	@Override
 	public List<IItem> getLatestItems(GlobalServiceConfiguration globalConfig,
-			UserSourceServiceConfig sourceService) throws Exception {
+			UserSourceServiceConfig sourceService, 
+			long currentTime) throws Exception {
 		GlobalSourceApplicationService globalAppConfig = MyPersistenceManagerFactory
 				.getGlobalSourceAppService(ID);
 		if (globalAppConfig == null
@@ -186,7 +186,7 @@ public class SourceServiceProviderFlickr implements
 		Flickr.debugRequest = false;
 		Flickr.debugStream = false;
 		return showRecentPhotos(f, sourceService,
-				globalConfig.getMinUploadTime());
+				globalConfig.getMinUploadTime(), currentTime);
 	}
 
 	/*
@@ -312,5 +312,28 @@ public class SourceServiceProviderFlickr implements
 		result.setImagePath(null); // TODO set the default image path
 		return result;
 	}
+	
+	public static void main(String[] args) {
+		// Create a calendar object and set it time based on the local
+		// time zone
+		Calendar localTime = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		localTime.setTimeInMillis(System.currentTimeMillis());
+
+		int hour = localTime.get(Calendar.HOUR);
+		int minute = localTime.get(Calendar.MINUTE);
+		int second = localTime.get(Calendar.SECOND);
+
+		// Print the local time
+		System.out.printf("Local time  : %02d:%02d:%02d\n", hour, minute, second);
+		// Create a calendar object for representing a Germany time zone. Then we
+		// wet the time of the calendar with the value of the local time
+		Calendar germanyTime = new GregorianCalendar(TimeZone.getTimeZone("CST"));
+		germanyTime.setTimeInMillis(localTime.getTimeInMillis());
+		hour = germanyTime.get(Calendar.HOUR);
+		minute = germanyTime.get(Calendar.MINUTE);
+		second = germanyTime.get(Calendar.SECOND);
+		// Print the local time in Germany time zone
+		System.out.printf("Germany time: %02d:%02d:%02d\n", hour, minute, second);
+		}
 
 }

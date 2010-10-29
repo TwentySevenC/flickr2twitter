@@ -57,6 +57,24 @@
     <url-pattern>/openid</url-pattern>
   </servlet-mapping>
   
+   <servlet>
+    <servlet-name>workerServlet</servlet-name>
+    <servlet-class>com.googlecode.flickr2twitter.servlet.ServiceWorkerServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>workerServlet</servlet-name>
+    <url-pattern>/tasks/worker</url-pattern>
+  </servlet-mapping>
+  
+   <security-constraint>
+        <web-resource-collection>
+            <url-pattern>/tasks/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>admin</role-name>
+        </auth-constraint>
+    </security-constraint>
+    
   <!-- Default page to serve -->
   <welcome-file-list>
     <welcome-file>index.jsp</welcome-file>
