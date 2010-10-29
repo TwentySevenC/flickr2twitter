@@ -1,4 +1,4 @@
-#labels installation,guide
+#labels installation,guide,Featured
 This page introduces how to setup this program on your GAE server.
 
 = Introduction =
