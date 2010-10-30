@@ -60,7 +60,7 @@ public class OpenIdServlet extends HttpServlet {
 		manager.setRealm(StringUtils.substringBeforeLast(baseurl, "/"));
         manager.setReturnTo(baseurl);
 		String op = request.getParameter(ATTR_OP);
-		if (op==null) {
+		if (op == null) {
 			log.info("check sign on result from Google or Yahoo");
 			checkNonce(request.getParameter(ATTR_OPENID_RESPONSE_NONCE));
 			// get authentication:

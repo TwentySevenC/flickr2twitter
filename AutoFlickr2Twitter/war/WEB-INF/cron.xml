@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cronentries>
   <cron>
-    <url>/autoflickr2twitter/recheck</url>
+    <url>/tasks/recheck</url>
     <description>Run the service with the specified time interval</description>
     <schedule>every 30 minutes</schedule>
   </cron>

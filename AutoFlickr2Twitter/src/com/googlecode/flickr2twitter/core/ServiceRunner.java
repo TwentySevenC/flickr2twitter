@@ -44,6 +44,8 @@ public class ServiceRunner {
 		}
 		
 		GlobalServiceConfiguration globalConfig = MyPersistenceManagerFactory.getGlobalConfiguration();
+		Date now = Calendar.getInstance(TimeZone.getTimeZone(TIMEZONE_UTC)).getTime();
+		log.info("Current time: " + now);
 		for (User user : users) {
 			if (user.getSourceServices() == null || user.getSourceServices().isEmpty()) {
 				log.warning("No source services configured for the user: " + user);
@@ -52,8 +54,6 @@ public class ServiceRunner {
 				log.warning("No target services configured for the user: " + user);
 				continue;
 			}
-			Date now = Calendar.getInstance(TimeZone.getTimeZone(TIMEZONE_UTC)).getTime();
-			log.info("Current time: " + now);
 			Queue queue = QueueFactory.getQueue(ServiceWorkerServlet.QUEUE_NAME_WORKER);
 		    queue.add(Builder.url("/tasks/worker")
 		    		.param(KEY_USER, user.getUserId().getEmail())
