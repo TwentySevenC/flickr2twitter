@@ -208,7 +208,7 @@ public class SourceServiceProviderYoutube implements ISourceServiceProvider<IVid
 		result.setSourceAppApiKey(DEVELOPER_KEY);
 		result.setSourceAppSecret(CONSUMER_SECRET);
 		result.setAuthPagePath(CALLBACK_URL);
-		result.setImagePath(null); // TODO set the default image path
+		result.setImagePath("/images/youtube-logo_resized.jpeg"); // TODO set the default image path
 		return result;
 	}
 
