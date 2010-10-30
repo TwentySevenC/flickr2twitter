@@ -16,4 +16,4 @@ Thanks guojia. Thanks Google!
 <a href="http://picasaweb.google.com/"><img border="0" src="http://picasa.google.com/images/logo.jpg"></a>
 <a href="http://www.gmail.com"><img border="0" src="http://upload.wikimedia.org/wikipedia/en/0/0a/Gmail_logo.png"></a>
 <a href="http://t.sina.com.cn/"><img border="0" src="http://www.s2forum.org/wikipic/logo/LOGO_64x64.png"></a>
-<a href="http://openid.net/"><img border="0" height="60" width="150" src="http://wiki.openid.net/f/openid-logo-wordmark.png"></a>
+<a href="http://openid.net/"><img border="0" src="/images/openid-logo-wordmark-resized.png"></a>
