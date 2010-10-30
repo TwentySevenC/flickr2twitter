@@ -6,6 +6,7 @@ package com.googlecode.flickr2twitter.intf;
 import java.util.List;
 
 import com.googlecode.flickr2twitter.datastore.model.GlobalServiceConfiguration;
+import com.googlecode.flickr2twitter.datastore.model.GlobalSourceApplicationService;
 import com.googlecode.flickr2twitter.datastore.model.UserSourceServiceConfig;
 
 /**
@@ -13,6 +14,7 @@ import com.googlecode.flickr2twitter.datastore.model.UserSourceServiceConfig;
  *
  */
 public interface ISourceServiceProvider<T> extends IServiceAuthorizer, IServiceProvider{
+	public static final String KEY_TOKEN = "token";
 	
 	
 	/**
@@ -22,6 +24,7 @@ public interface ISourceServiceProvider<T> extends IServiceAuthorizer, IServiceP
 	 * @throws Exception
 	 */
 	public List<T> getLatestItems(GlobalServiceConfiguration globalConfig, 
+			GlobalSourceApplicationService globalSvcConfig, 
 			UserSourceServiceConfig sourceService, 
 			long currentTime) throws Exception;
 

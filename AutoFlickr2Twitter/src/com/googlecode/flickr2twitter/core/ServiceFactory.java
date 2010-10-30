@@ -18,6 +18,7 @@ import com.googlecode.flickr2twitter.impl.flickr.SourceServiceProviderFlickr;
 import com.googlecode.flickr2twitter.impl.picasa.SourceServiceProviderPicasa;
 import com.googlecode.flickr2twitter.impl.sina.TargetServiceProviderSina;
 import com.googlecode.flickr2twitter.impl.twitter.TargetServiceProviderTwitter;
+import com.googlecode.flickr2twitter.impl.youtube.SourceServiceProviderYoutube;
 import com.googlecode.flickr2twitter.intf.IServiceProvider;
 import com.googlecode.flickr2twitter.intf.ISourceServiceProvider;
 import com.googlecode.flickr2twitter.intf.ITargetServiceProvider;
@@ -37,7 +38,7 @@ public class ServiceFactory {
 	private static final Collection<ITargetServiceProvider> TARGET_PROVIDERS_List;
 
 	private static final Class<?>[] PROVIDER_CLASSES = {
-			SourceServiceProviderFlickr.class, SourceServiceProviderPicasa.class, 
+			SourceServiceProviderFlickr.class, SourceServiceProviderPicasa.class, SourceServiceProviderYoutube.class,
 			TargetServiceProviderTwitter.class, TargetServiceProviderSina.class, TargetServiceProviderEmail.class };
 
 	static {

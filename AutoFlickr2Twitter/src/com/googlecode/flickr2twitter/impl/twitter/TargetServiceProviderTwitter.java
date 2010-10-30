@@ -28,6 +28,7 @@ import com.googlecode.flickr2twitter.intf.ITargetServiceProvider;
 import com.googlecode.flickr2twitter.model.IGeoItem;
 import com.googlecode.flickr2twitter.model.IItem;
 import com.googlecode.flickr2twitter.model.IItemList;
+import com.googlecode.flickr2twitter.model.IMedia;
 import com.googlecode.flickr2twitter.model.IPhoto;
 import com.googlecode.flickr2twitter.model.IShortUrl;
 import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
@@ -110,6 +111,16 @@ public class TargetServiceProviderTwitter implements ITargetServiceProvider {
 							url = ((IShortUrl) photo).getShortUrl();
 						} else if (photo.getUrl().length() > 15){
 							url = BitLyUtils.shortenUrl(photo.getUrl());
+						}
+						message += " " + url;
+					} else if (item instanceof IMedia) {
+						IMedia media = (IMedia) item;
+						message = "My new post: " + media.getTitle();
+						String url = media.getUrl();
+						if (media instanceof IShortUrl) {
+							url = ((IShortUrl) media).getShortUrl();
+						} else if (media.getUrl().length() > 15){
+							url = BitLyUtils.shortenUrl(media.getUrl());
 						}
 						message += " " + url;
 					}

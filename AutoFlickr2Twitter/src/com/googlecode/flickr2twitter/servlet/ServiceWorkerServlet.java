@@ -17,6 +17,7 @@ import com.googlecode.flickr2twitter.core.ServiceFactory;
 import com.googlecode.flickr2twitter.core.ServiceRunner;
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.googlecode.flickr2twitter.datastore.model.GlobalServiceConfiguration;
+import com.googlecode.flickr2twitter.datastore.model.GlobalSourceApplicationService;
 import com.googlecode.flickr2twitter.datastore.model.GlobalTargetApplicationService;
 import com.googlecode.flickr2twitter.datastore.model.UserSourceServiceConfig;
 import com.googlecode.flickr2twitter.datastore.model.UserTargetServiceConfig;
@@ -88,15 +89,16 @@ public final class ServiceWorkerServlet extends HttpServlet {
 		for (UserSourceServiceConfig source : MyPersistenceManagerFactory.getUserSourceServices(userEmail)) {
 			ISourceServiceProvider<IItem> sourceProvider = 
 				ServiceFactory.getSourceServiceProvider(source.getServiceProviderId());
+			GlobalSourceApplicationService globalSvcConfig = 
+				MyPersistenceManagerFactory.getGlobalSourceAppService(sourceProvider.getId());
 			if (sourceProvider == null) {
 				log.warning("Invalid source service provider configured: " + source.getServiceProviderId());
 			} else if (source.isEnabled() == false){ 
 				log.info("skip the disabled source service provider: " + source.getServiceProviderId());
 			} else {
 				try {
-					IItemList<IItem> items = new ItemList(
-							MyPersistenceManagerFactory.getGlobalSourceAppService(sourceProvider.getId()).getAppName());
-					items.setItems(sourceProvider.getLatestItems(globalConfig, source, currentTime));
+					IItemList<IItem> items = new ItemList(globalSvcConfig.getAppName());
+					items.setItems(sourceProvider.getLatestItems(globalConfig, globalSvcConfig, source, currentTime));
 					itemLists.add(items);
 					if (items.getItems().isEmpty() == false)
 						isEmpty = false;
