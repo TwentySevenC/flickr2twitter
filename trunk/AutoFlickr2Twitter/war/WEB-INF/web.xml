@@ -18,7 +18,7 @@
   
   <servlet-mapping>
     <servlet-name>recheckServlet</servlet-name>
-    <url-pattern>/autoflickr2twitter/recheck</url-pattern>
+    <url-pattern>/tasks/recheck</url-pattern>
   </servlet-mapping>
   
   <servlet>
