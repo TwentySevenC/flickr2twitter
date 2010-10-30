@@ -17,6 +17,7 @@ import com.googlecode.flickr2twitter.intf.ITargetServiceProvider;
 import com.googlecode.flickr2twitter.model.IGeoItem;
 import com.googlecode.flickr2twitter.model.IItem;
 import com.googlecode.flickr2twitter.model.IItemList;
+import com.googlecode.flickr2twitter.model.IMedia;
 import com.googlecode.flickr2twitter.model.IPhoto;
 import com.googlecode.flickr2twitter.model.IShortUrl;
 import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
@@ -106,6 +107,10 @@ public class TargetServiceProviderSina implements ITargetServiceProvider {
 						url = BitLyUtils.shortenUrl(photo.getUrl());
 					}*/
 					message += " " + url;
+				} else if (item instanceof IMedia) {
+					IMedia media = (IMedia) item;
+					message = "My new post: " + media.getTitle();
+					message += " " + media.getUrl();
 				}
 				if (message != null) {
 					try {

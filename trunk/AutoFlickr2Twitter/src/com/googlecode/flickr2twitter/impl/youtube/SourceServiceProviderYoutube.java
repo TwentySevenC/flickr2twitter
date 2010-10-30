@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.googlecode.flickr2twitter.impl.picasa;
+package com.googlecode.flickr2twitter.impl.youtube;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -13,11 +13,10 @@ import java.util.TimeZone;
 import java.util.logging.Logger;
 
 import com.google.api.client.googleapis.auth.authsub.AuthSubSingleUseTokenRequestUrl;
-import com.google.gdata.client.photos.PicasawebService;
-import com.google.gdata.data.Person;
-import com.google.gdata.data.photos.AlbumFeed;
-import com.google.gdata.data.photos.PhotoEntry;
-import com.google.gdata.data.photos.UserFeed;
+import com.google.gdata.client.youtube.YouTubeService;
+import com.google.gdata.data.youtube.UserProfileEntry;
+import com.google.gdata.data.youtube.VideoEntry;
+import com.google.gdata.data.youtube.VideoFeed;
 import com.googlecode.flickr2twitter.core.ServiceRunner;
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.googlecode.flickr2twitter.datastore.model.GlobalApplicationConfig;
@@ -26,37 +25,37 @@ import com.googlecode.flickr2twitter.datastore.model.GlobalSourceApplicationServ
 import com.googlecode.flickr2twitter.datastore.model.User;
 import com.googlecode.flickr2twitter.datastore.model.UserSourceServiceConfig;
 import com.googlecode.flickr2twitter.exceptions.TokenAlreadyRegisteredException;
-import com.googlecode.flickr2twitter.impl.picasa.model.PicasaPhoto;
+import com.googlecode.flickr2twitter.impl.youtube.model.YoutubeVideo;
 import com.googlecode.flickr2twitter.intf.ISourceServiceProvider;
-import com.googlecode.flickr2twitter.model.IPhoto;
+import com.googlecode.flickr2twitter.model.IVideo;
 import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Toby Yu(yuyang226@gmail.com)
  *
  */
-public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhoto> {
-	public static final String ID = "picasa";
-	public static final String DISPLAY_NAME = "Picasa Web Album";
+public class SourceServiceProviderYoutube implements ISourceServiceProvider<IVideo> {
+	public static final String ID = "youtube";
+	public static final String DISPLAY_NAME = "Youtube";
 	
-	public static final String KEY_TOKEN = "token";
-	private static final Logger log = Logger.getLogger(SourceServiceProviderPicasa.class.getName());
+	private static final Logger log = Logger.getLogger(SourceServiceProviderYoutube.class.getName());
 	
 	public static final String HOSTED_DOMAIN = "flickr2twitter.googlecode.com";
 	public static final String CONSUMER_KEY = "anonymous";
 	public static final String CONSUMER_SECRET = "anonymous";
+	public static final String DEVELOPER_KEY = "AI39si6wIdMuEtAq17ijpj4kZYjPgIb8YxIqycgPndFSkVD_56i80mrfSt0RvnWcbgTZ9GvGFLwBTCc1_ASa5HSwiauftNVY1A";
 	
 	public static final String USER_ID_DEFAULT = "default";
-	public static final String URL_PICASAWEB = "http://picasaweb.google.com/";
-	public static final String URL_ALBUM = "http://picasaweb.google.com/data/feed/api/user/default?kind=album";
-	public static final String URL_ACTIVITIES = "http://picasaweb.google.com/data/feed/api/user/default?kind=photo&max-results=25";
-	private static final String SCOPE = "http://picasaweb.google.com/data";
-	public static final String CALLBACK_URL = "picasacallback.jsp";
+	public static final String URL_YOUTUBE = "http://www.youtube.com/";
+	public static final String URL_USER = "http://gdata.youtube.com/feeds/api/users/default";
+	public static final String URL_ACTIVITIES = "http://gdata.youtube.com/feeds/api/users/default/uploads";
+	private static final String SCOPE = "http://gdata.youtube.com";
+	public static final String CALLBACK_URL = "youtubecallback.jsp";
 	
 	/**
 	 * 
 	 */
-	public SourceServiceProviderPicasa() {
+	public SourceServiceProviderYoutube() {
 		super();
 	}
 
@@ -64,39 +63,42 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 	 * @see com.googlecode.flickr2twitter.intf.ISourceServiceProvider#getLatestItems(com.googlecode.flickr2twitter.datastore.model.GlobalServiceConfiguration, com.googlecode.flickr2twitter.datastore.model.UserSourceServiceConfig)
 	 */
 	@Override
-	public List<IPhoto> getLatestItems(GlobalServiceConfiguration globalConfig,
+	public List<IVideo> getLatestItems(GlobalServiceConfiguration globalConfig,
 			GlobalSourceApplicationService globalSvcConfig, 
 			UserSourceServiceConfig sourceService, 
 			long currentTime) throws Exception {
-		PicasawebService webService = new PicasawebService(HOSTED_DOMAIN);
+		YouTubeService youtubeService = new YouTubeService(HOSTED_DOMAIN, 
+				globalSvcConfig.getSourceAppApiKey());
 		String sessionToken = sourceService.getServiceAccessToken();
-		webService.setAuthSubToken(sessionToken, null);
-		URL feedUrl = new URL(URL_ACTIVITIES);
-
+		youtubeService.setAuthSubToken(sessionToken);
+		
 		Calendar past = Calendar.getInstance(TimeZone.getTimeZone(ServiceRunner.TIMEZONE_UTC));
 		long newTime = currentTime - globalConfig.getMinUploadTime();
 		past.setTimeInMillis(newTime);
 
-		AlbumFeed feed = webService.getFeed(feedUrl, AlbumFeed.class);
-		log.info("Trying to find photos uploaded for user " + sourceService.getServiceUserId()
+		URL feedUrl = new URL(URL_ACTIVITIES);
+		VideoFeed videoFeed = youtubeService.getFeed(feedUrl, VideoFeed.class);
+
+		log.info("Retrieve recent activities for youtube user " + sourceService.getServiceUserId());
+		List<IVideo> videos = new ArrayList<IVideo>();
+		log.info("Trying to find videos uploaded for user " + sourceService.getServiceUserId()
 				+ " after " + past.getTime().toString() + " from "
-				+ feed.getPhotoEntries().size() + " new photos");
-		List<IPhoto> photos = new ArrayList<IPhoto>();
-		
-		for(PhotoEntry photo : feed.getPhotoEntries()) {
-			PicasaPhoto pPhoto = new PicasaPhoto(photo);
-			log.fine("processing photo: " + photo.getTitle().getPlainText()
-					+ ", date uploaded: " + pPhoto.getDatePosted());
+				+ videoFeed.getEntries().size() + " new posts");
+		for (VideoEntry entry : videoFeed.getEntries()) {
+			YoutubeVideo video = new YoutubeVideo(entry);
+			log.fine("processing photo: " + video.getTitle()
+					+ ", date uploaded: " + video.getDatePosted());
 			//TODO check whether the photo is private
-			if (pPhoto.getDatePosted().after(past.getTime())) {
-				
-					log.info(photo.getTitle() + ", URL: " + pPhoto.getUrl()
-							+ ", date uploaded: " + pPhoto.getDatePosted()
-							+ ", GEO: " + pPhoto.getGeoData());
-					photos.add(pPhoto);
+			if (
+					//entry.isDraft() == false && 
+					video.getDatePosted().after(past.getTime())) {
+				log.info(video.getTitle() + ", URL: " + video.getUrl()
+						+ ", date uploaded: " + video.getDatePosted());
+				videos.add(video);
 			}
 		}
-		return photos;
+
+		return videos;
 	}
 
 	/* (non-Javadoc)
@@ -113,23 +115,25 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 			throw new IllegalArgumentException(
 					"Can not find the specified user: " + userEmail);
 		}
-		String token = String.valueOf(data.get("token"));
+		String token = String.valueOf(data.get(KEY_TOKEN));
 		
-		PicasawebService webService = new PicasawebService(HOSTED_DOMAIN);
-		webService.setAuthSubToken(token, null);
-		URL feedUrl = new URL(URL_ALBUM);
-		UserFeed myUserFeed = webService.getFeed(feedUrl, UserFeed.class);
-		List<Person> persons = myUserFeed.getAuthors();
-		Person person = null;
-		if (persons.isEmpty() == false) {
-			person = persons.get(0);
+		YouTubeService youtubeService = new YouTubeService(HOSTED_DOMAIN);
+		youtubeService.setAuthSubToken(token, null);
+		URL profileUrl = new URL(URL_USER);
+		UserProfileEntry profileEntry = youtubeService.getEntry(profileUrl, UserProfileEntry.class);
+		
+		String userId = profileEntry.getUsername();
+		String fullName = "";
+		if (profileEntry.getLastName() != null) {
+			fullName = profileEntry.getLastName();
 		}
-		
-		String userId = USER_ID_DEFAULT;
-		if (person.getUri() != null && person.getUri().startsWith(URL_PICASAWEB)) {
-			userId = StringUtils.substringAfterLast(person.getUri(), "/");
+		if (profileEntry.getFirstName() != null) {
+			fullName += profileEntry.getFirstName();
 		}
-		
+		if (StringUtils.isBlank(fullName)) {
+			fullName = userId;
+		}
+		String userSite = profileEntry.getHtmlLink().getHref();
 		StringBuffer buf = new StringBuffer();
 		buf.append("Authentication success\n");
 		// This token can be used until the user revokes it.
@@ -137,9 +141,9 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 		buf.append("\n");
 		buf.append("UserId: " + userId);
 		buf.append("\n");
-		buf.append("Realname: " + person.getName());
+		buf.append("Realname: " + profileEntry.getLastName());
 		buf.append("\n");
-		buf.append("User Site: " + person.getUri());
+		buf.append("User Site: " + userSite);
 		
 		for (UserSourceServiceConfig service : MyPersistenceManagerFactory
 				.getUserSourceServices(user)) {
@@ -148,17 +152,13 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 			}
 		}
 		
-		
 		UserSourceServiceConfig serviceConfig = new UserSourceServiceConfig();
 		serviceConfig.setServiceUserId(userId);
-		serviceConfig.setServiceUserName(person != null ? person.getName() : USER_ID_DEFAULT);
+		serviceConfig.setServiceUserName(fullName);
 		serviceConfig.setServiceAccessToken(token);
 		serviceConfig.setServiceProviderId(ID);
 		serviceConfig.setUserEmail(userEmail);
-		
-		if (person != null) {
-			serviceConfig.setUserSiteUrl(person.getUri());
-		}
+		serviceConfig.setUserSiteUrl(userSite);
 		
 		MyPersistenceManagerFactory.addSourceServiceApp(userEmail, serviceConfig);
 
@@ -188,9 +188,10 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 		authorizeUrl.nextUrl = nextUrl;
 		authorizeUrl.scope = scope;
 		authorizeUrl.session = 1;
+		//authorizeUrl.secure = 1;
 		String authorizationUrl = authorizeUrl.build();
 		
-		log.info("Picasa Authorization URL: " + authorizationUrl);
+		log.info("Youtube Authorization URL: " + authorizationUrl);
 		result.put("url", authorizationUrl);
 		return result;
 	}
@@ -203,8 +204,8 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 		GlobalSourceApplicationService result = new GlobalSourceApplicationService();
 		result.setAppName(DISPLAY_NAME);
 		result.setProviderId(ID);
-		result.setDescription("The Google's online photo storage service");
-		result.setSourceAppApiKey(CONSUMER_KEY);
+		result.setDescription("The Google's online video-sharing service");
+		result.setSourceAppApiKey(DEVELOPER_KEY);
 		result.setSourceAppSecret(CONSUMER_SECRET);
 		result.setAuthPagePath(CALLBACK_URL);
 		result.setImagePath(null); // TODO set the default image path

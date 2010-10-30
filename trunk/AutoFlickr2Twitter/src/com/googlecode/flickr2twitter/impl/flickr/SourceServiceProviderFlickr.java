@@ -169,18 +169,17 @@ public class SourceServiceProviderFlickr implements
 	 */
 	@Override
 	public List<IItem> getLatestItems(GlobalServiceConfiguration globalConfig,
+			GlobalSourceApplicationService globalSvcConfig, 
 			UserSourceServiceConfig sourceService, 
 			long currentTime) throws Exception {
-		GlobalSourceApplicationService globalAppConfig = MyPersistenceManagerFactory
-				.getGlobalSourceAppService(ID);
-		if (globalAppConfig == null
-				|| ID.equalsIgnoreCase(globalAppConfig.getProviderId()) == false) {
+		if (globalSvcConfig == null
+				|| ID.equalsIgnoreCase(globalSvcConfig.getProviderId()) == false) {
 			throw new IllegalArgumentException(
-					"Invalid source service provider: " + globalAppConfig);
+					"Invalid source service provider: " + globalSvcConfig);
 		}
 		REST transport = new REST();
-		Flickr f = new Flickr(globalAppConfig.getSourceAppApiKey(),
-				globalAppConfig.getSourceAppSecret(), transport);
+		Flickr f = new Flickr(globalSvcConfig.getSourceAppApiKey(),
+				globalSvcConfig.getSourceAppSecret(), transport);
 		transport.setAllowCache(false);
 
 		Flickr.debugRequest = false;
