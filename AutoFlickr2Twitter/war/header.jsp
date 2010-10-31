@@ -1,5 +1,5 @@
 <%@ page language="java"
-	import="com.googlecode.flickr2twitter.datastore.*,com.googlecode.flickr2twitter.datastore.model.*,com.googlecode.flickr2twitter.servlet.*,com.googlecode.flickr2twitter.core.*"
+	import="com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory,com.googlecode.flickr2twitter.datastore.*,com.googlecode.flickr2twitter.datastore.model.*,com.googlecode.flickr2twitter.servlet.*,com.googlecode.flickr2twitter.core.*"
 	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <script type="text/javascript">
 
@@ -32,6 +32,14 @@
 		</div>
 		<ul>
 			<li><a href="index.jsp">Home</a></li>
+			<% if (signedIn == true && MyPersistenceManagerFactory
+					.Permission.ADMIN.name().equals(user.getPermission())) {
+				//only admin user could see the register page
+				%>
+				<li><a href="register.jsp">Register</a></li>
+			<%	
+			}
+			%>
 			<li><a href="authorize.jsp">Authorize Source & Target</a></li>
 			<li><a href="user_admin.jsp">Manage Accounts</a></li>
 			<li><a href="about.jsp">Help</a></li>
