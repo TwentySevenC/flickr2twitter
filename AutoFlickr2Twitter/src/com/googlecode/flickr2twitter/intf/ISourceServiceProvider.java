@@ -13,7 +13,8 @@ import com.googlecode.flickr2twitter.datastore.model.UserSourceServiceConfig;
  * @author Toby Yu(yuyang226@gmail.com)
  *
  */
-public interface ISourceServiceProvider<T> extends IServiceAuthorizer, IServiceProvider{
+public interface ISourceServiceProvider<T> extends IServiceAuthorizer, 
+IServiceProvider<GlobalSourceApplicationService>{
 	public static final String KEY_TOKEN = "token";
 	
 	

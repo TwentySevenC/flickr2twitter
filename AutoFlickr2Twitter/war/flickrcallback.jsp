@@ -41,7 +41,6 @@
 			log.warning(msg);
 			session.setAttribute("message", msg);
 		}
-		String url = "/authorize.jsp";
-		response.sendRedirect(url);
+		response.sendRedirect(SourceServiceProviderFlickr.POST_AUTH_PAGE);
 	}
 %>

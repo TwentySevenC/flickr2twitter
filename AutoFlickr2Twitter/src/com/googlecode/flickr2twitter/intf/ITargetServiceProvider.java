@@ -14,7 +14,8 @@ import com.googlecode.flickr2twitter.model.IItemList;
  * @author Toby Yu(yuyang226@gmail.com)
  *
  */
-public interface ITargetServiceProvider extends IServiceAuthorizer, IServiceProvider {
+public interface ITargetServiceProvider extends IServiceAuthorizer, 
+IServiceProvider<GlobalTargetApplicationService> {
 	
 	/**
 	 * Post an update for a new item

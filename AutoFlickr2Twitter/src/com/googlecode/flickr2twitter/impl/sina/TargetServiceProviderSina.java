@@ -17,9 +17,9 @@ import com.googlecode.flickr2twitter.intf.ITargetServiceProvider;
 import com.googlecode.flickr2twitter.model.IGeoItem;
 import com.googlecode.flickr2twitter.model.IItem;
 import com.googlecode.flickr2twitter.model.IItemList;
-import com.googlecode.flickr2twitter.model.IMedia;
 import com.googlecode.flickr2twitter.model.IPhoto;
 import com.googlecode.flickr2twitter.model.IShortUrl;
+import com.googlecode.flickr2twitter.model.IVideo;
 import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
 import com.googlecode.flickr2twitter.sina.weibo4j.User;
 import com.googlecode.flickr2twitter.sina.weibo4j.Weibo;
@@ -107,10 +107,12 @@ public class TargetServiceProviderSina implements ITargetServiceProvider {
 						url = BitLyUtils.shortenUrl(photo.getUrl());
 					}*/
 					message += " " + url;
-				} else if (item instanceof IMedia) {
-					IMedia media = (IMedia) item;
-					message = "My new post: " + media.getTitle();
+				} else if (item instanceof IVideo) {
+					IVideo media = (IVideo) item;
+					message = "My new video: " + media.getTitle();
 					message += " " + media.getUrl();
+				} else {
+					message = item.getTitle();
 				}
 				if (message != null) {
 					try {

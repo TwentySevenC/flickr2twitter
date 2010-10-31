@@ -36,7 +36,6 @@
 		} catch (Exception e) {
 			log.warning(e.toString());
 		}
-		String url = "/authorize.jsp";
-		response.sendRedirect(url);
+		response.sendRedirect(SourceServiceProviderYoutube.POST_AUTH_PAGE);
 	}
 %>
