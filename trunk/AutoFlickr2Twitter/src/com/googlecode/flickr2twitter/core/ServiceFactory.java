@@ -13,10 +13,10 @@ import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
-import com.googlecode.flickr2twitter.impl.email.TargetServiceProviderEmail;
 import com.googlecode.flickr2twitter.impl.flickr.SourceServiceProviderFlickr;
 import com.googlecode.flickr2twitter.impl.picasa.SourceServiceProviderPicasa;
 import com.googlecode.flickr2twitter.impl.sina.TargetServiceProviderSina;
+import com.googlecode.flickr2twitter.impl.twitter.SourceServiceProviderTwitter;
 import com.googlecode.flickr2twitter.impl.twitter.TargetServiceProviderTwitter;
 import com.googlecode.flickr2twitter.impl.youtube.SourceServiceProviderYoutube;
 import com.googlecode.flickr2twitter.intf.IServiceProvider;
@@ -38,8 +38,8 @@ public class ServiceFactory {
 	private static final Collection<ITargetServiceProvider> TARGET_PROVIDERS_List;
 
 	private static final Class<?>[] PROVIDER_CLASSES = {
-			SourceServiceProviderFlickr.class, SourceServiceProviderPicasa.class, SourceServiceProviderYoutube.class,
-			TargetServiceProviderTwitter.class, TargetServiceProviderSina.class, TargetServiceProviderEmail.class };
+			SourceServiceProviderFlickr.class, SourceServiceProviderPicasa.class, SourceServiceProviderTwitter.class, SourceServiceProviderYoutube.class,
+			TargetServiceProviderTwitter.class, TargetServiceProviderSina.class};
 
 	static {
 		Map<String, ISourceServiceProvider<IItem>> sourceData = new HashMap<String, ISourceServiceProvider<IItem>>(
@@ -52,10 +52,10 @@ public class ServiceFactory {
 					.getInstance();
 			PersistenceManager pm = pmf.getPersistenceManager();
 			try {
-				IServiceProvider provider = (IServiceProvider) _class
+				IServiceProvider<?> provider = (IServiceProvider<?>) _class
 						.newInstance();
 
-				if (provider instanceof ISourceServiceProvider) {
+				if (provider instanceof ISourceServiceProvider<?>) {
 					ISourceServiceProvider<IItem> srcProvider = (ISourceServiceProvider<IItem>) provider;
 					sourceData.put(provider.getId(), srcProvider);
 					if (MyPersistenceManagerFactory

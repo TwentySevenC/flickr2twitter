@@ -10,6 +10,8 @@ import java.util.Map;
  *
  */
 public interface IServiceAuthorizer {
+	public static final String POST_AUTH_PAGE = "/user_admin.jsp";
+	
 	/**
 	 * Request for authorizing the user's source service
 	 * @return

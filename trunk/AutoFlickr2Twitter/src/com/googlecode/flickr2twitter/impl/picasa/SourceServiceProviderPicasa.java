@@ -20,7 +20,6 @@ import com.google.gdata.data.photos.PhotoEntry;
 import com.google.gdata.data.photos.UserFeed;
 import com.googlecode.flickr2twitter.core.ServiceRunner;
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
-import com.googlecode.flickr2twitter.datastore.model.GlobalApplicationConfig;
 import com.googlecode.flickr2twitter.datastore.model.GlobalServiceConfiguration;
 import com.googlecode.flickr2twitter.datastore.model.GlobalSourceApplicationService;
 import com.googlecode.flickr2twitter.datastore.model.User;
@@ -199,7 +198,7 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 	 * @see com.googlecode.flickr2twitter.intf.IServiceProvider#createDefaultGlobalApplicationConfig()
 	 */
 	@Override
-	public GlobalApplicationConfig createDefaultGlobalApplicationConfig() {
+	public GlobalSourceApplicationService createDefaultGlobalApplicationConfig() {
 		GlobalSourceApplicationService result = new GlobalSourceApplicationService();
 		result.setAppName(DISPLAY_NAME);
 		result.setProviderId(ID);

@@ -13,9 +13,9 @@ import com.google.appengine.api.mail.MailService.Message;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
-import com.googlecode.flickr2twitter.datastore.model.GlobalApplicationConfig;
 import com.googlecode.flickr2twitter.datastore.model.GlobalTargetApplicationService;
 import com.googlecode.flickr2twitter.datastore.model.UserTargetServiceConfig;
+import com.googlecode.flickr2twitter.intf.IServiceProvider;
 import com.googlecode.flickr2twitter.intf.ITargetServiceProvider;
 import com.googlecode.flickr2twitter.model.IItem;
 import com.googlecode.flickr2twitter.model.IItemList;
@@ -26,7 +26,8 @@ import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
  * @author Toby Yu(yuyang226@gmail.com)
  *
  */
-public class TargetServiceProviderEmail implements ITargetServiceProvider {
+public class TargetServiceProviderEmail implements ITargetServiceProvider, 
+IServiceProvider<GlobalTargetApplicationService> {
 	public static final String ID = "email";
 	public static final String DISPLAY_NAME = "Email";
 	public static final String TIMEZONE_CST = "CST";
@@ -146,7 +147,7 @@ public class TargetServiceProviderEmail implements ITargetServiceProvider {
 	 * @see com.googlecode.flickr2twitter.intf.IServiceProvider#createDefaultGlobalApplicationConfig()
 	 */
 	@Override
-	public GlobalApplicationConfig createDefaultGlobalApplicationConfig() {
+	public GlobalTargetApplicationService createDefaultGlobalApplicationConfig() {
 		GlobalTargetApplicationService result = new GlobalTargetApplicationService();
 		result.setAppName(DISPLAY_NAME);
 		result.setProviderId(ID);

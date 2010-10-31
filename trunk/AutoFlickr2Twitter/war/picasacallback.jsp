@@ -34,8 +34,6 @@
 		} catch (Exception e) {
 			log.warning(e.toString());
 		}
-		//String url = "/oauth?"+OAuthServlet.PARA_OPT+"="+OAuthServlet.OPT_AUTH_SOURCE_CONFIRM+"&"+OAuthServlet.PARA_PROVIDER_ID+"="+currentProviderID;
-		String url = "/authorize.jsp";
-		response.sendRedirect(url);
+		response.sendRedirect(SourceServiceProviderPicasa.POST_AUTH_PAGE);
 	}
 %>

@@ -10,7 +10,7 @@
 			.getAttribute(currentProviderID);
 	Logger log = Logger.getLogger(AbstractServiceProviderTwitter.CALLBACK_URL);
 	log.info(String.valueOf(request.getParameterMap()));
-	boolean isSource = false;
+	boolean isSource = true;
 	String token = request.getParameter(AbstractServiceProviderTwitter.KEY_TOKEN);
 	String oauth_verifier = request.getParameter(AbstractServiceProviderTwitter.KEY_OAUTH_VERIFIER);
 	log.info("Twitter Access Token: " + token + "; OAuth Verifier: " + oauth_verifier);

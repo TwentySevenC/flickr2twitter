@@ -3,9 +3,7 @@
  */
 package com.googlecode.flickr2twitter.impl.twitter;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -18,7 +16,6 @@ import twitter4j.conf.PropertyConfiguration;
 import twitter4j.http.AccessToken;
 import twitter4j.http.Authorization;
 import twitter4j.http.OAuthAuthorization;
-import twitter4j.http.RequestToken;
 
 import com.googlecode.flickr2twitter.core.GlobalDefaultConfiguration;
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
@@ -31,17 +28,15 @@ import com.googlecode.flickr2twitter.model.IItemList;
 import com.googlecode.flickr2twitter.model.IMedia;
 import com.googlecode.flickr2twitter.model.IPhoto;
 import com.googlecode.flickr2twitter.model.IShortUrl;
-import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
 import com.googlecode.flickr2twitter.urlshorteners.BitLyUtils;
 
 /**
  * @author Toby Yu(yuyang226@gmail.com)
  * 
  */
-public class TargetServiceProviderTwitter implements ITargetServiceProvider {
-	public static final String ID = "twitter";
-	public static final String DISPLAY_NAME = "Twitter";
-	public static final String CALLBACK_URL = "twittercallback.jsp";
+public class TargetServiceProviderTwitter extends AbstractServiceProviderTwitter
+<GlobalTargetApplicationService, UserTargetServiceConfig> 
+implements ITargetServiceProvider {
 
 	private static final Logger log = Logger.getLogger(TargetServiceProviderTwitter.class
 			.getName());
@@ -51,19 +46,6 @@ public class TargetServiceProviderTwitter implements ITargetServiceProvider {
 	 */
 	public TargetServiceProviderTwitter() {
 		super();
-		System.setProperty("twitter4j.debug", Boolean.TRUE.toString());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * com.googlecode.flickr2twitter.intf.ITargetServiceProvider#getId
-	 * ()
-	 */
-	@Override
-	public String getId() {
-		return ID;
 	}
 
 	/*
@@ -144,88 +126,6 @@ public class TargetServiceProviderTwitter implements ITargetServiceProvider {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see com.googlecode.flickr2twitter.intf.IServiceAuthorizer#
-	 * readyAuthorization(java.lang.String, java.util.Map)
-	 */
-	@Override
-	public String readyAuthorization(String userEmail, Map<String, Object> data)
-			throws Exception {
-		if (data == null || data.containsKey("token") == false 
-				|| data.containsKey("secret") == false || data.containsKey("oauth_verifier") == false) {
-			throw new IllegalArgumentException("Invalid data: " + data);
-		}
-		StringBuffer buf = new StringBuffer();
-		GlobalTargetApplicationService globalAppConfig = MyPersistenceManagerFactory
-				.getGlobalTargetAppService(ID);
-		Twitter twitter = new TwitterFactory().getOAuthAuthorizedInstance(
-				globalAppConfig.getTargetAppConsumerId(),
-				globalAppConfig.getTargetAppConsumerSecret());
-
-		String token = String.valueOf(data.get("token"));
-		String secret = String.valueOf(data.get("secret"));
-		String oauthVerifier = String.valueOf(data.get("oauth_verifier"));
-		RequestToken requestToken = new RequestToken(token, secret);
-		AccessToken accessToken = twitter.getOAuthAccessToken(requestToken, oauthVerifier);
-		
-		buf.append(" User Id: " + accessToken.getUserId());
-		buf.append(" User Screen Name: " + accessToken.getScreenName());
-		buf.append(" Access Token: " + accessToken.getToken());
-		buf.append(" Token Secret: " + accessToken.getTokenSecret());
-
-		for (UserTargetServiceConfig service : MyPersistenceManagerFactory
-				.getUserTargetServices(userEmail)) {
-			if (accessToken.getToken().equals(service.getServiceAccessToken())) {
-				throw new IllegalArgumentException("Token already registered: "
-						+ accessToken.getToken());
-			}
-		}
-		UserTargetServiceConfig service = new UserTargetServiceConfig();
-		service.setServiceProviderId(ID);
-		service.setServiceAccessToken(accessToken.getToken());
-		service.setServiceTokenSecret(accessToken.getTokenSecret());
-		service.setServiceUserId(String.valueOf(accessToken.getUserId()));
-		service.setUserEmail(userEmail);
-		service.setServiceUserName(accessToken.getScreenName());
-		service.setUserSiteUrl("http://twitter.com/"
-				+ accessToken.getScreenName());
-		MyPersistenceManagerFactory.addTargetServiceApp(userEmail, service);
-		return buf.toString();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.googlecode.flickr2twitter.intf.IServiceAuthorizer#
-	 * requestAuthorization()
-	 */
-	@Override
-	public Map<String, Object> requestAuthorization(String baseUrl) throws Exception {
-		Map<String, Object> result = new HashMap<String, Object>();
-		try {
-			GlobalTargetApplicationService globalAppConfig = MyPersistenceManagerFactory
-					.getGlobalTargetAppService(ID);
-			Twitter twitter = new TwitterFactory().getInstance();
-			twitter.setOAuthConsumer(globalAppConfig.getTargetAppConsumerId(),
-					globalAppConfig.getTargetAppConsumerSecret());
-			if (baseUrl.endsWith("/oauth")) {
-				baseUrl = StringUtils.left(baseUrl, baseUrl.length() - "/oauth".length());
-			}
-			String callbackUrl = baseUrl + "/" + CALLBACK_URL;
-			RequestToken requestToken = twitter.getOAuthRequestToken(callbackUrl);
-			log.info("Authentication URL: " + requestToken.getAuthenticationURL());
-			log.info("Authorization URL: " + requestToken.getAuthorizationURL());
-			result.put("url", requestToken.getAuthorizationURL());
-			result.put("token", requestToken.getToken());
-			result.put("secret", requestToken.getTokenSecret());
-		} catch (TwitterException e) {
-			throw e;
-		}
-		return result;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see com.googlecode.flickr2twitter.intf.IServiceProvider#
 	 * createDefaultGlobalApplicationConfig()
 	 */
@@ -239,8 +139,33 @@ public class TargetServiceProviderTwitter implements ITargetServiceProvider {
 				.getTwitterConsumerId());
 		result.setTargetAppConsumerSecret(GlobalDefaultConfiguration
 				.getInstance().getTwitterConsumerSecret());
-		result.setAuthPagePath(CALLBACK_URL); // TODO set the default auth page path
+		result.setAuthPagePath(CALLBACK_URL + "?" + KEY_SOURCE + "=" + Boolean.FALSE);
 		result.setImagePath(null); // TODO set the default image path
 		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.googlecode.flickr2twitter.impl.twitter.AbstractServiceProviderTwitter#createNewUserServiceConfig()
+	 */
+	@Override
+	protected UserTargetServiceConfig createNewUserServiceConfig() {
+		return new UserTargetServiceConfig();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.googlecode.flickr2twitter.impl.twitter.AbstractServiceProviderTwitter#getGlobalApplicationConfig()
+	 */
+	@Override
+	protected GlobalTargetApplicationService getGlobalApplicationConfig() {
+		return MyPersistenceManagerFactory.getGlobalTargetAppService(ID);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.googlecode.flickr2twitter.impl.twitter.AbstractServiceProviderTwitter#getUserServiceConfigs(java.lang.String)
+	 */
+	@Override
+	protected List<UserTargetServiceConfig> getUserServiceConfigs(
+			String userEmail) {
+		return MyPersistenceManagerFactory.getUserTargetServices(userEmail);
 	}
 }
