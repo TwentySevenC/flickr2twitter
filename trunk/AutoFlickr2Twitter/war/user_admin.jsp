@@ -14,8 +14,9 @@
 	<%@ include file="header.jsp"%>
 	
 	<%
-		if(!signedIn) {
+		if(signedIn == false || user == null) {
 			response.sendRedirect("index.jsp");
+			return;
 		}
 		
 		List<UserSourceServiceConfig> sourceSvcs = MyPersistenceManagerFactory
