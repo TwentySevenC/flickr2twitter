@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -40,7 +39,7 @@ import com.googlecode.flickr2twitter.datastore.model.User;
 import com.googlecode.flickr2twitter.datastore.model.UserSourceServiceConfig;
 import com.googlecode.flickr2twitter.exceptions.TokenAlreadyRegisteredException;
 import com.googlecode.flickr2twitter.intf.ISourceServiceProvider;
-import com.googlecode.flickr2twitter.model.IItem;
+import com.googlecode.flickr2twitter.model.IPhoto;
 import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
 
 /**
@@ -48,7 +47,7 @@ import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
  * 
  */
 public class SourceServiceProviderFlickr implements
-		ISourceServiceProvider<IItem> {
+		ISourceServiceProvider<IPhoto> {
 	public static final String ID = "flickr";
 	public static final String DISPLAY_NAME = "Flickr";
 	public static final String KEY_FROB = "frob";
@@ -67,7 +66,7 @@ public class SourceServiceProviderFlickr implements
 		super();
 	}
 
-	private List<IItem> showRecentPhotos(Flickr f, UserSourceServiceConfig sourceService, 
+	private List<IPhoto> showRecentPhotos(Flickr f, UserSourceServiceConfig sourceService, 
 			long interval, long currentTime) throws IOException, SAXException, FlickrException {
 		String userId = sourceService.getServiceUserId();
 		String token = sourceService.getServiceAccessToken();
@@ -76,7 +75,7 @@ public class SourceServiceProviderFlickr implements
 		auth.setPermission(Permission.READ);
 		auth.setToken(token);
 		requestContext.setAuth(auth);
-		List<IItem> photos = new ArrayList<IItem>();
+		List<IPhoto> photos = new ArrayList<IPhoto>();
 		List<String> filterTags = new ArrayList<String>();
 		Map<String, String> additionalParams = sourceService.getAdditionalParameters();
 		if (additionalParams.containsKey(KEY_FILTER_TAGS)) {
@@ -168,7 +167,7 @@ public class SourceServiceProviderFlickr implements
 	 * getLatestItems()
 	 */
 	@Override
-	public List<IItem> getLatestItems(GlobalServiceConfiguration globalConfig,
+	public List<IPhoto> getLatestItems(GlobalServiceConfiguration globalConfig,
 			GlobalSourceApplicationService globalSvcConfig, 
 			UserSourceServiceConfig sourceService, 
 			long currentTime) throws Exception {
@@ -311,28 +310,5 @@ public class SourceServiceProviderFlickr implements
 		result.setImagePath(null); // TODO set the default image path
 		return result;
 	}
-	
-	public static void main(String[] args) {
-		// Create a calendar object and set it time based on the local
-		// time zone
-		Calendar localTime = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-		localTime.setTimeInMillis(System.currentTimeMillis());
-
-		int hour = localTime.get(Calendar.HOUR);
-		int minute = localTime.get(Calendar.MINUTE);
-		int second = localTime.get(Calendar.SECOND);
-
-		// Print the local time
-		System.out.printf("Local time  : %02d:%02d:%02d\n", hour, minute, second);
-		// Create a calendar object for representing a Germany time zone. Then we
-		// wet the time of the calendar with the value of the local time
-		Calendar germanyTime = new GregorianCalendar(TimeZone.getTimeZone("CST"));
-		germanyTime.setTimeInMillis(localTime.getTimeInMillis());
-		hour = germanyTime.get(Calendar.HOUR);
-		minute = germanyTime.get(Calendar.MINUTE);
-		second = germanyTime.get(Calendar.SECOND);
-		// Print the local time in Germany time zone
-		System.out.printf("Germany time: %02d:%02d:%02d\n", hour, minute, second);
-		}
 
 }
