@@ -36,7 +36,9 @@
 			for( UserSourceServiceConfig src : sourceSvcs ) {
 		%>
 			<tr>
-				<td width="30%" <%if(odd) {%>bgcolor="#CDCDCD"<%}else{%>bgcolor="AEAEAE"<%}%>><a target="_new" href="<%=src.getUserSiteUrl()%>"><%=src.getServiceProviderId().toUpperCase()%></a></td>
+				<td width="60%" <%if(odd) {%>bgcolor="#CDCDCD"<%}else{%>bgcolor="AEAEAE"<%}%>>
+					<a target="_new" href="<%=src.getUserSiteUrl()%>"><%=src.getServiceUserName()%>@<%=src.getServiceProviderId().toUpperCase()%></a>
+				</td>
 				<td <%if(odd) {%>bgcolor="#CDCDCD"<%}else{%>bgcolor="AEAEAE"<%}%>><a href=""><%=src.isEnabled()?"Disable":"Enable"%></td>
 			</tr>
 		<%
@@ -51,7 +53,9 @@
 			for( UserTargetServiceConfig tgt : targetSvcs ) {
 		%>
 			<tr>
-				<td width="30%" <%if(odd) {%>bgcolor="#CDCDCD"<%}else{%>bgcolor="AEAEAE"<%}%>><a target="_new" href="<%=tgt.getUserSiteUrl()%>"><%=tgt.getServiceProviderId().toUpperCase()%></a></td>
+				<td width="60%" <%if(odd) {%>bgcolor="#CDCDCD"<%}else{%>bgcolor="AEAEAE"<%}%>>
+					<a target="_new" href="<%=tgt.getUserSiteUrl()%>"><%=tgt.getServiceUserName()%>@<%=tgt.getServiceProviderId().toUpperCase()%></a>
+				</td>
 				<td <%if(odd) {%>bgcolor="#CDCDCD"<%}else{%>bgcolor="AEAEAE"<%}%>><a href=""><%=tgt.isEnabled()?"Disable":"Enable"%></td>
 			</tr>
 		<%
