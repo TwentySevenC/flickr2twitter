@@ -16,6 +16,7 @@ import com.googlecode.flickr2twitter.datastore.model.UserSourceServiceConfig;
 public interface ISourceServiceProvider<T> extends IServiceAuthorizer, 
 IServiceProvider<GlobalSourceApplicationService>{
 	public static final String KEY_TOKEN = "token";
+	public static final String KEY_OAUTHTOKEN = "oauth_token";
 	
 	
 	/**
