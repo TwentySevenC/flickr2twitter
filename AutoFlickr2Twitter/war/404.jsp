@@ -16,7 +16,7 @@
 		<div id="left">
 			<h1>Oops...</h1>
 			<p>Page Not Found</p>
-			<img src="/images/404.png" alt="center" />
+			<img src="/images/404.jpg" alt="center" />
 		</div>
 
 		<%@ include file="right.jsp"%>
