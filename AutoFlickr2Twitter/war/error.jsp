@@ -13,18 +13,12 @@
 <div id="container">
 	<%@ include file="header.jsp"%>
 	<div id="content">
-		
-		<div id="left">
-			<h1>Oops...</h1>
-			<p>Got the following error:</p>
-			<p>
-			<%= exception.toString() %>
-			</p>
-			<p><img src="/images/error.png" alt="center" ></img></p>
-			<p/>
-		</div>
-
-		<%@ include file="right.jsp"%>
+		<p><img src="/images/error.png" alt="center" ></img></p>
+		<h1>Oops...</h1>
+		<p>Got the following error:</p>
+		<p>
+		<%= ExceptionUtils.converToString(exception) %>
+		</p>
 	</div>
 	<%@ include file="footer.jsp"%>
 </div>
