@@ -107,7 +107,10 @@ h2{
 	width:428px;
 	margin-left:27px;
 	padding: 0px 10px 30px 0px;
+	margin-top: 10px;
+	margin-bottom: 10px;
 	display:inline;
+	border-right: solid 1px  #000;
 }
 #left a{color:#28556b;}
 #left a:hover{color:#c77e0c;}
@@ -120,7 +123,6 @@ h2{
 	padding: 0px 20px 20px 20px;
 	margin-top:10px;
 	margin-bottom:10px;
-	border-left: #000 1px solid;
 
 }
 #right a{
