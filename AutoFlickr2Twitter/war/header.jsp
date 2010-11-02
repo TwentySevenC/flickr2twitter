@@ -44,7 +44,7 @@
 			<li><a href="user_admin.jsp">Manage Accounts</a></li>
 			<li><a href="about.jsp">Help</a></li>
 			<% if (signedIn == true) { %>
-			<li><a href="logout.jsp" >Logout</a></li>
+			<li><a href="logout.jsp" >Logout <%=user.getScreenName() %></a></li>
 			<% } %>
 		</ul>
 </div>
