@@ -21,6 +21,7 @@ import com.googlecode.flickr2twitter.datastore.model.GlobalServiceConfiguration;
 import com.googlecode.flickr2twitter.datastore.model.GlobalSourceApplicationService;
 import com.googlecode.flickr2twitter.datastore.model.GlobalTargetApplicationService;
 import com.googlecode.flickr2twitter.datastore.model.User;
+import com.googlecode.flickr2twitter.datastore.model.UserServiceConfig;
 import com.googlecode.flickr2twitter.datastore.model.UserSourceServiceConfig;
 import com.googlecode.flickr2twitter.datastore.model.UserTargetServiceConfig;
 
@@ -97,6 +98,58 @@ public final class MyPersistenceManagerFactory {
 	public static User createNewUser(String userEmail, String password,
 			String screenName) {
 		return createNewUser(userEmail, password, screenName, Permission.NORMAL);
+	}
+
+	/**
+	 * @param user
+	 *            the login user
+	 * @param accessToken
+	 *            the access token of the service.
+	 * @param type
+	 *            0: Source service; 1: target service
+	 */
+	public static void enableDisableUserService(User user, String accessToken,
+			int type) throws Exception {
+		PersistenceManagerFactory pmf = MyPersistenceManagerFactory
+				.getInstance();
+		PersistenceManager pm = pmf.getPersistenceManager();
+		try {
+			javax.jdo.Query query = null;
+			if (type == 0) {
+				query = pm.newQuery(UserSourceServiceConfig.class);
+			} else {
+				query = pm.newQuery(UserTargetServiceConfig.class);
+			}
+			query.setFilter("serviceAccessToken == atoken");
+			query.declareParameters("String atoken");
+			List<UserServiceConfig> result = (List<UserServiceConfig>) query
+					.execute(accessToken);
+
+			if (result.isEmpty()) {
+				throw new Exception("Can not find this service.");
+			}
+			UserServiceConfig service = result.get(0);
+			service.setEnabled(!service.isEnabled());
+			pm.makePersistent(service);
+			if( type == 0 ) {
+				List<UserSourceServiceConfig> sources = user.getSourceServices();
+				for( UserSourceServiceConfig src : sources ) {
+					if( src.getServiceAccessToken().equals( accessToken )) {
+						src.setEnabled(!src.isEnabled());
+					}
+				}
+			} else {
+				List<UserTargetServiceConfig> targets = user.getTargetServices();
+				for( UserTargetServiceConfig tgt : targets ) {
+					if( tgt.getServiceAccessToken().equals( accessToken )) {
+						tgt.setEnabled(!tgt.isEnabled());
+					}
+				}
+			}
+			
+		} finally {
+			pm.close();
+		}
 	}
 
 	public static UserSourceServiceConfig addSourceServiceApp(String userEmail,
@@ -229,16 +282,17 @@ public final class MyPersistenceManagerFactory {
 		}
 		return null;
 	}
-	
+
 	public static User getLoginUser(String userEmail, String password) {
 		return getLoginUser(userEmail, password, false);
 	}
-	
+
 	public static User getOpenIdLoginUser(String userEmail) {
 		return getLoginUser(userEmail, null, true);
 	}
 
-	public static User getLoginUser(String userEmail, String password, boolean openId) {
+	public static User getLoginUser(String userEmail, String password,
+			boolean openId) {
 		PersistenceManagerFactory pmf = MyPersistenceManagerFactory
 				.getInstance();
 		PersistenceManager pm = pmf.getPersistenceManager();
@@ -251,14 +305,13 @@ public final class MyPersistenceManagerFactory {
 				data = (List<?>) query.execute(userEmail);
 			} else {
 				String encryptionPassword = MessageDigestUtil
-				.getSHAPassword(password);
+						.getSHAPassword(password);
 				Query query = pm.newQuery(User.class);
 				query.setFilter("userId == userEmailAddress && password == userPassword");
 				query.declareParameters("String userEmailAddress, String userPassword");
-				data = (List<?>) query.execute(userEmail,
-						encryptionPassword);
+				data = (List<?>) query.execute(userEmail, encryptionPassword);
 			}
-			
+
 			if (data != null && data.isEmpty() == false) {
 				User u = (User) data.get(0);
 				log.log(Level.INFO, u.toString());

@@ -31,7 +31,7 @@ public class SinaSignInCallBackServlet extends HttpServlet {
 		User currentUser = (User) req.getSession().getAttribute(UserAccountServlet.PARA_SESSION_USER);
 		
 		if( currentUser == null ) {
-			resp.getWriter().println("Use not signed in, please sign in first.");
+			resp.sendRedirect("index.jsp");
 			return;
 		}
 		String email = currentUser.getUserId().getEmail();
@@ -65,11 +65,8 @@ public class SinaSignInCallBackServlet extends HttpServlet {
 			AccessToken accessToken = weibo.getOAuthAccessToken(requestToken, requestTokenSecret,
 					verifier);
 			if (accessToken == null) {
-				resp.getWriter().println("Error to get access token.");
-				return;
+				throw new ServletException("Error to get access token.");
 			} else {
-				resp.getWriter().println("Authorization done.");
-				
 				//save the access token into db
 				TargetServiceProviderSina tps = new TargetServiceProviderSina();
 				Map<String,Object> data = new HashMap<String,Object>();
@@ -80,8 +77,8 @@ public class SinaSignInCallBackServlet extends HttpServlet {
 					tps.readyAuthorization(email, data);
 					resp.sendRedirect("/authorize.jsp");
 				} catch (Exception e) {
-					resp.getWriter().println("But error to save the access token." + e.getMessage());
 					log.log(Level.WARNING, e.getMessage());
+					throw new ServletException("You've already authorize sina.");
 				}
 				
 				return;
