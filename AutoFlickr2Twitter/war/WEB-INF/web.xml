@@ -65,6 +65,15 @@
 		<servlet-name>workerServlet</servlet-name>
 		<url-pattern>/tasks/worker</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>srctgtmgr</servlet-name>
+		<servlet-class>com.googlecode.flickr2twitter.servlet.UserSourceTargetMgrServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>srctgtmgr</servlet-name>
+		<url-pattern>/srctgtmgr</url-pattern>
+	</servlet-mapping>
 
 	<security-constraint>
 		<web-resource-collection>
