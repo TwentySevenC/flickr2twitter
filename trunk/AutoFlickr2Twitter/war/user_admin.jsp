@@ -40,7 +40,9 @@
 				<td width="60%" <%if(odd) {%>bgcolor="#CDCDCD"<%}else{%>bgcolor="AEAEAE"<%}%>>
 					<a target="_new" href="<%=src.getUserSiteUrl()%>"><%=src.getServiceUserName()%>@<%=src.getServiceProviderId().toUpperCase()%></a>
 				</td>
-				<td <%if(odd) {%>bgcolor="#CDCDCD"<%}else{%>bgcolor="AEAEAE"<%}%>><a href=""><%=src.isEnabled()?"Disable":"Enable"%></td>
+				<td <%if(odd) {%>bgcolor="#CDCDCD"<%}else{%>bgcolor="AEAEAE"<%}%>>
+					<a href="srctgtmgr?at=<%=src.getServiceAccessToken()%>&type=0"><%=src.isEnabled()?"Disable":"Enable"%>
+				</td>
 			</tr>
 		<%
 			odd = !odd;
@@ -57,7 +59,9 @@
 				<td width="60%" <%if(odd) {%>bgcolor="#CDCDCD"<%}else{%>bgcolor="AEAEAE"<%}%>>
 					<a target="_new" href="<%=tgt.getUserSiteUrl()%>"><%=tgt.getServiceUserName()%>@<%=tgt.getServiceProviderId().toUpperCase()%></a>
 				</td>
-				<td <%if(odd) {%>bgcolor="#CDCDCD"<%}else{%>bgcolor="AEAEAE"<%}%>><a href=""><%=tgt.isEnabled()?"Disable":"Enable"%></td>
+				<td <%if(odd) {%>bgcolor="#CDCDCD"<%}else{%>bgcolor="AEAEAE"<%}%>>
+					<a href="srctgtmgr?at=<%=tgt.getServiceAccessToken()%>&type=1"><%=tgt.isEnabled()?"Disable":"Enable"%>
+				</td>
 			</tr>
 		<%
 			odd = !odd;
