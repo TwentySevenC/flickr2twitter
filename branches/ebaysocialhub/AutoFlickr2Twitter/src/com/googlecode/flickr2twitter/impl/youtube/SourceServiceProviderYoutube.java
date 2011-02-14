@@ -25,6 +25,7 @@ import com.googlecode.flickr2twitter.datastore.model.User;
 import com.googlecode.flickr2twitter.datastore.model.UserSourceServiceConfig;
 import com.googlecode.flickr2twitter.exceptions.TokenAlreadyRegisteredException;
 import com.googlecode.flickr2twitter.impl.youtube.model.YoutubeVideo;
+import com.googlecode.flickr2twitter.intf.IServiceAuthorizer;
 import com.googlecode.flickr2twitter.intf.ISourceServiceProvider;
 import com.googlecode.flickr2twitter.model.IVideo;
 import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
@@ -33,7 +34,7 @@ import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
  * @author Toby Yu(yuyang226@gmail.com)
  *
  */
-public class SourceServiceProviderYoutube implements ISourceServiceProvider<IVideo> {
+public class SourceServiceProviderYoutube implements ISourceServiceProvider<IVideo>, IServiceAuthorizer {
 	public static final String ID = "youtube";
 	public static final String DISPLAY_NAME = "Youtube";
 	
