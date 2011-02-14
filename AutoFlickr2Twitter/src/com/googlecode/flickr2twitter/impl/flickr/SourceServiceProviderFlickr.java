@@ -38,6 +38,7 @@ import com.googlecode.flickr2twitter.datastore.model.GlobalSourceApplicationServ
 import com.googlecode.flickr2twitter.datastore.model.User;
 import com.googlecode.flickr2twitter.datastore.model.UserSourceServiceConfig;
 import com.googlecode.flickr2twitter.exceptions.TokenAlreadyRegisteredException;
+import com.googlecode.flickr2twitter.intf.IServiceAuthorizer;
 import com.googlecode.flickr2twitter.intf.ISourceServiceProvider;
 import com.googlecode.flickr2twitter.model.IPhoto;
 import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
@@ -47,7 +48,7 @@ import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
  * 
  */
 public class SourceServiceProviderFlickr implements
-		ISourceServiceProvider<IPhoto> {
+		ISourceServiceProvider<IPhoto>, IServiceAuthorizer {
 	public static final String ID = "flickr";
 	public static final String DISPLAY_NAME = "Flickr";
 	public static final String KEY_FROB = "frob";

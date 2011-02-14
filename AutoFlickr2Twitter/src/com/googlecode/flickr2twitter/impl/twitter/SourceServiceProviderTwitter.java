@@ -27,6 +27,7 @@ import com.googlecode.flickr2twitter.datastore.model.GlobalSourceApplicationServ
 import com.googlecode.flickr2twitter.datastore.model.UserSourceServiceConfig;
 import com.googlecode.flickr2twitter.impl.twitter.model.TwitterItem;
 import com.googlecode.flickr2twitter.intf.IAdminServiceProvider;
+import com.googlecode.flickr2twitter.intf.IServiceAuthorizer;
 import com.googlecode.flickr2twitter.intf.ISourceServiceProvider;
 import com.googlecode.flickr2twitter.model.IItem;
 
@@ -36,7 +37,7 @@ import com.googlecode.flickr2twitter.model.IItem;
  */
 public class SourceServiceProviderTwitter extends AbstractServiceProviderTwitter
 <GlobalSourceApplicationService, UserSourceServiceConfig> 
-implements ISourceServiceProvider<IItem>, IAdminServiceProvider {
+implements ISourceServiceProvider<IItem>, IAdminServiceProvider, IServiceAuthorizer {
 	private static final Logger log = Logger.getLogger(SourceServiceProviderTwitter.class
 			.getName());
 	/**
