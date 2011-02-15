@@ -25,7 +25,7 @@
 %>
 
 <div id="header">
-		<div id="logo_w1">Flickr2Twitter</div>
+		<div id="logo_w1">Social Hub</div>
 		<div id="logo_w2"></div>
 		<div id="header_text">
 			
