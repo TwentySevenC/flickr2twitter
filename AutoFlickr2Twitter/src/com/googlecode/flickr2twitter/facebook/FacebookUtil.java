@@ -1,6 +1,5 @@
 package com.googlecode.flickr2twitter.facebook;
 
-
 public class FacebookUtil {
 
 	public static final String APP_ID = "199812620030608";
@@ -10,6 +9,13 @@ public class FacebookUtil {
 	public static final String APP_SECRET = "a1ceccb82ffc5702e00b608c4b733620";
 
 	public static final String AUTH_URL = "https://www.facebook.com/dialog/oauth?client_id="
-			+ APP_ID + "&redirect_uri={}&&scope=status_update";
+			+ APP_ID + "&redirect_uri={0}&&scope=status_update";
+
+	public static final String TOKEN_URL = "https://graph.facebook.com/oauth/access_token?"
+			+ "client_id="
+			+ APP_ID
+			+ "&redirect_uri={0}&"
+			+ "client_secret="
+			+ APP_SECRET + "&" + "code={1}";
 
 }
