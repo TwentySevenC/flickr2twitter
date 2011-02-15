@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * @author Toby Yu(yuyang226@gmail.com)
@@ -65,7 +66,20 @@ public class GoogleOpenIDActivity extends Activity {
 		try {
 			super.onResume();
 			Uri uri = getIntent().getData();
-			if (uri != null && CALLBACK_URI.getHost().equals(uri.getHost())) {
+			if (uri != null && CALLBACK_URI.getScheme().equals(uri.getScheme())) {
+				
+				//byte[] mac_key = association.getRawMacKey();
+				//String alias = endpoint.getAlias();
+				Toast.makeText(GoogleOpenIDActivity.this, "Login Successful - " + uri.toString() ,Toast.LENGTH_LONG).show();
+				/*Authentication authentication = manager.getAuthentication(request, mac_key, alias);
+				response.setContentType("text/html; charset=UTF-8");
+				String userEmail = authentication.getEmail();
+				User user = MyPersistenceManagerFactory.getOpenIdLoginUser(userEmail);
+				if (user == null) {
+					//not a registered user
+					log.info("New open ID user, try to automatically register->" + userEmail);
+					user = MyPersistenceManagerFactory.createNewUser(userEmail, "openid", authentication.getFullname());
+				}*/
 				System.out.println(uri);
 			}
 		} catch (Exception e) {

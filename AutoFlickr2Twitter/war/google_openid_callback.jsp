@@ -4,5 +4,6 @@
 
 
 <%
-	response.sendRedirect("socialhub-openid://google");
+
+	response.sendRedirect("socialhub-openid://google?" + request.getPathInfo());
 %>
