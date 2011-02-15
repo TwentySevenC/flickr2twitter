@@ -65,7 +65,7 @@
 		<servlet-name>workerServlet</servlet-name>
 		<url-pattern>/tasks/worker</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>srctgtmgr</servlet-name>
 		<servlet-class>com.googlecode.flickr2twitter.servlet.UserSourceTargetMgrServlet</servlet-class>
@@ -88,12 +88,12 @@
 		<exception-type>java.lang.Exception</exception-type>
 		<location>/error.jsp</location>
 	</error-page>
-	
+
 	<error-page>
 		<error-code>404</error-code>
 		<location>/404.jsp</location>
 	</error-page>
-	
+
 	<error-page>
 		<error-code>500</error-code>
 		<location>/500.jsp</location>
@@ -103,5 +103,23 @@
 	<welcome-file-list>
 		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
+
+	<!-- Application class name -->
+	<context-param>
+		<param-name>org.restlet.application</param-name>
+		<param-value>com.googlecode.flickr2twitter.services.rest.SocialHubRestletApplication</param-value>
+	</context-param>
+
+	<!-- Restlet adapter -->
+	<servlet>
+		<servlet-name>RestletServlet</servlet-name>
+		<servlet-class>org.restlet.ext.servlet.ServerServlet</servlet-class>
+	</servlet>
+
+	<!-- Catch all requests -->
+	<servlet-mapping>
+		<servlet-name>RestletServlet</servlet-name>
+		<url-pattern>/rest/*</url-pattern>
+	</servlet-mapping>
 
 </web-app>
