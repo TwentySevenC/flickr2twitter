@@ -1,13 +1,23 @@
 package com.googlecode.flickr2twitter.impl.facebook;
 
 import java.net.URLEncoder;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import com.googlecode.flickr2twitter.com.aetrion.flickr.Flickr;
+import com.googlecode.flickr2twitter.com.aetrion.flickr.REST;
+import com.googlecode.flickr2twitter.com.aetrion.flickr.auth.Auth;
+import com.googlecode.flickr2twitter.com.aetrion.flickr.auth.AuthInterface;
+import com.googlecode.flickr2twitter.core.GlobalDefaultConfiguration;
+import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.googlecode.flickr2twitter.datastore.model.GlobalTargetApplicationService;
+import com.googlecode.flickr2twitter.datastore.model.User;
+import com.googlecode.flickr2twitter.datastore.model.UserSourceServiceConfig;
 import com.googlecode.flickr2twitter.datastore.model.UserTargetServiceConfig;
+import com.googlecode.flickr2twitter.exceptions.TokenAlreadyRegisteredException;
 import com.googlecode.flickr2twitter.facebook.FacebookUtil;
 import com.googlecode.flickr2twitter.intf.ITargetServiceProvider;
 import com.googlecode.flickr2twitter.model.IItem;
@@ -37,20 +47,57 @@ public class TargetServiceProviderFacebook implements ITargetServiceProvider {
 			baseUrl += "/";
 		}
 		String callbackURL = URLEncoder.encode(baseUrl + CALLBACK_URL, "UTF-8");
-		log.info("Facebook auth callback URL: " + FacebookUtil.AUTH_URL + callbackURL);
-		result.put("url", FacebookUtil.AUTH_URL + callbackURL);
+		String facebookautURL = MessageFormat.format(FacebookUtil.AUTH_URL, callbackURL);
+		log.info("Facebook auth URL: " + facebookautURL);
+		result.put("url", facebookautURL);
 		return result;
 	}
 
 	@Override
 	public String readyAuthorization(String userEmail, Map<String, Object> data)
 			throws Exception {
-		System.out.println(data.get(PARA_CODE));
-		System.out.println(userEmail);
-
-		log.info(data.get(PARA_CODE).toString());
-		log.info(userEmail);
+		if (data == null || data.containsKey(PARA_CODE) == false) {
+			throw new IllegalArgumentException("Invalid data: " + data);
+		}
+		User user = MyPersistenceManagerFactory.getUser(userEmail);
+		if (user == null) {
+			throw new IllegalArgumentException(
+					"Can not find the specified user: " + userEmail);
+		}
 		
+		String code = (String)data.get(PARA_CODE);
+		
+		StringBuffer buf = new StringBuffer();
+		buf.append("Facebook Authentication success\n");
+		// This token can be used until the user revokes it.
+		buf.append("Code: " + code);
+
+//		String userId = auth.getUser().getId();
+//		for (UserSourceServiceConfig service : MyPersistenceManagerFactory
+//				.getUserSourceServices(user)) {
+//			if (auth.getToken().equals(service.getServiceAccessToken())) {
+//				throw new TokenAlreadyRegisteredException(auth.getToken(), auth
+//						.getUser().getUsername());
+//			}
+//		}
+//		UserSourceServiceConfig serviceConfig = new UserSourceServiceConfig();
+//		serviceConfig.setServiceUserId(userId);
+//		serviceConfig.setServiceUserName(auth.getUser().getUsername());
+//		serviceConfig.setServiceAccessToken(auth.getToken());
+//		serviceConfig.setServiceProviderId(ID);
+//		serviceConfig.setUserEmail(userEmail);
+//		com.googlecode.flickr2twitter.com.aetrion.flickr.people.User flickrUser = 
+//			f.getPeopleInterface().getInfo(userId);
+//		if (flickrUser != null) {
+//			serviceConfig.setUserSiteUrl(flickrUser.getPhotosurl());
+//		}
+//		
+//		serviceConfig.addAddtionalParameter(KEY_FILTER_TAGS, "");
+//		
+//		MyPersistenceManagerFactory.addSourceServiceApp(userEmail, serviceConfig);
+//
+//		return buf.toString();
+//	
 		return null;
 	}
 

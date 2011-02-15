@@ -10,6 +10,6 @@ public class FacebookUtil {
 	public static final String APP_SECRET = "a1ceccb82ffc5702e00b608c4b733620";
 
 	public static final String AUTH_URL = "https://www.facebook.com/dialog/oauth?client_id="
-			+ APP_ID + "&redirect_uri=";
+			+ APP_ID + "&redirect_uri={}&&scope=status_update";
 
 }
