@@ -18,7 +18,7 @@
 				boolean isAdmin = MyPersistenceManagerFactory.Permission.ADMIN.name().equals(user.getPermission());
 		%>
 		<div id="left">
-			<h1>Authorize source and target accounts</h1>
+			<h1>Authorize/Configure source and target accounts</h1>
 			<ul>
 			<li>Source</li>
 					<%
@@ -37,13 +37,20 @@
 							currentProviderID = sourceProvider.getId();
 							GlobalSourceApplicationService sourceApp = MyPersistenceManagerFactory
 									.getGlobalSourceAppService(sourceProvider.getId());
-					%>
-					<p/>
-					<a href="/oauth?<%=OAuthServlet.PARA_OPT%>=<%=OAuthServlet.OPT_AUTH_SOURCE%>&<%=OAuthServlet.PARA_PROVIDER_ID%>=<%=currentProviderID%>"
-						target="_new">Authorize <%=sourceApp.getAppName()%> Account </a>
-					<%
+						%>
+						<p/>
+						<% if (sourceProvider instanceof IServiceAuthorizer) {%>
+						<a href="/oauth?<%=OAuthServlet.PARA_OPT%>=<%=OAuthServlet.OPT_AUTH_SOURCE%>&<%=OAuthServlet.PARA_PROVIDER_ID%>=<%=currentProviderID%>"
+							target="_new">Authorize <%=sourceApp.getAppName()%> Account </a>
+						<% } else if (sourceProvider instanceof IConfigurableService) {
+							IConfigurableService configService = (IConfigurableService)sourceProvider;
+						%>
+						<a href="<%=configService.getConfigPagePath()%>"
+							target="_new">Configure <%=sourceApp.getAppName()%> Account </a>
+						<%
+							}
 						}
-					%>
+						%>
 			<li>Target</li>
 					<%
 						Collection<ITargetServiceProvider> targets = ServiceFactory

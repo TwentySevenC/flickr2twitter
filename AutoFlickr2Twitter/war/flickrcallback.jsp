@@ -1,5 +1,5 @@
 <%@ page language="java"
-	import="com.googlecode.flickr2twitter.impl.flickr.*,com.googlecode.flickr2twitter.exceptions.*,com.googlecode.flickr2twitter.core.*,java.util.logging.*,com.googlecode.flickr2twitter.datastore.*,com.googlecode.flickr2twitter.datastore.model.*,com.googlecode.flickr2twitter.servlet.*,java.util.*"
+	import="com.googlecode.flickr2twitter.intf.*,com.googlecode.flickr2twitter.impl.flickr.*,com.googlecode.flickr2twitter.exceptions.*,com.googlecode.flickr2twitter.core.*,java.util.logging.*,com.googlecode.flickr2twitter.datastore.*,com.googlecode.flickr2twitter.datastore.model.*,com.googlecode.flickr2twitter.servlet.*,java.util.*"
 	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 
@@ -24,8 +24,8 @@
 	} else {
 		String msg = null;
 		try {
-			String retMsg = ServiceFactory.getSourceServiceProvider(
-					currentProviderID).readyAuthorization(
+			String retMsg = ((IServiceAuthorizer)ServiceFactory.getSourceServiceProvider(
+					currentProviderID)).readyAuthorization(
 					user.getUserId().getEmail(), currentData);
 			log.info(retMsg);
 		} catch (TokenAlreadyRegisteredException ex) {
