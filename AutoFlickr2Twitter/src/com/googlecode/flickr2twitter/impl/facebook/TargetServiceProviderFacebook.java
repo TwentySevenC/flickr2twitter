@@ -7,17 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import com.googlecode.flickr2twitter.com.aetrion.flickr.Flickr;
-import com.googlecode.flickr2twitter.com.aetrion.flickr.REST;
-import com.googlecode.flickr2twitter.com.aetrion.flickr.auth.Auth;
-import com.googlecode.flickr2twitter.com.aetrion.flickr.auth.AuthInterface;
-import com.googlecode.flickr2twitter.core.GlobalDefaultConfiguration;
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.googlecode.flickr2twitter.datastore.model.GlobalTargetApplicationService;
 import com.googlecode.flickr2twitter.datastore.model.User;
-import com.googlecode.flickr2twitter.datastore.model.UserSourceServiceConfig;
 import com.googlecode.flickr2twitter.datastore.model.UserTargetServiceConfig;
-import com.googlecode.flickr2twitter.exceptions.TokenAlreadyRegisteredException;
 import com.googlecode.flickr2twitter.facebook.FacebookUtil;
 import com.googlecode.flickr2twitter.intf.ITargetServiceProvider;
 import com.googlecode.flickr2twitter.model.IItem;
