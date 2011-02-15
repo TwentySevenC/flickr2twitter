@@ -35,6 +35,8 @@ import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.restlet.Request;
+import org.restlet.resource.ClientResource;
 
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -58,6 +60,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.googlecode.flickr2twitter.services.rest.models.IUserResource;
+import com.googlecode.flickr2twitter.services.rest.models.UserModel;
 
 public class SocialHub extends ListActivity implements OnClickListener {
 	public static final String TAG = "SocialHub";
@@ -161,6 +166,19 @@ public class SocialHub extends ListActivity implements OnClickListener {
 	public void onClick(View v) {
 		if(mCB.equals(v)) {
 			if(mCB.isChecked()) {
+				// Initialize the resource proxy.
+				try {
+					ClientResource cr = new ClientResource("http://ebaysocialhub.appspot.com/rest/user");
+					IUserResource resource = cr.wrap(IUserResource.class);
+
+					// Get the remote contact
+					UserModel user = resource.retrieve("yuyang226@gmail.com");
+					System.out.println(user);
+				} catch (Exception e) {
+					e.printStackTrace();
+					Log.e(TAG, e.toString(), e);
+					return;
+				}
 				Intent i = new Intent(this, OAUTH.class);
 				startActivity(i);
 			} else {
