@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link href="stylesheets/style.css" rel="stylesheet" type="text/css" />
-<title>Flickr2Twitter</title>
+<title>SocialHub</title>
 </head>
 
 <body>
@@ -12,7 +12,7 @@
 	<%@ include file="header.jsp"%>
 	<div id="content">
 		<div id="left">
-		<h1>About flickr2twitter</h1>
+		<h1>About eBay Social Hub</h1>
 		<p>
 		<img src="images/help.jpg"/><br/>
 		Please visit our <a href="http://code.google.com/p/flickr2twitter/">project site</a> and <a href="http://groups.google.com/group/flickr2twitter">Project discussion group</a>.

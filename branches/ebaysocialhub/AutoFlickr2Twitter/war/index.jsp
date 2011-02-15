@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link href="stylesheets/style.css" rel="stylesheet" type="text/css" />
-<title>Flickr2Twitter</title>
+<title>SocialHub</title>
 </head>
 
 <body>
@@ -15,7 +15,7 @@
 			if(!signedIn) {
 		%>
 		<div id="left">
-			<h1>Welcome to flickr2twitter</h1>
+			<h1>Welcome to SocialHub</h1>
 			<p>You need to sign in first, if you don't have an account here yet, you can use your google or yahoo account to sign in directly.</p>
 			<p/>
 			<form action="/userOperation" method="post" name="frmSign">
@@ -47,7 +47,7 @@
 		} else { //user already signed in.
 		%>
 		<div id="left">
-			<h1>Welcome to flickr2twitter, <%=user.getScreenName()%>.</h1>
+			<h1>Welcome to SocialHub, <%=user.getScreenName()%>.</h1>
 			<p>Now you can authorize your source and target account if you have not done so, or you can manage your accounts.</p>
 			<p/>
 			<p/>

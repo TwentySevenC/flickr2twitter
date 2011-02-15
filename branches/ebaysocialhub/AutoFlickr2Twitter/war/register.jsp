@@ -9,7 +9,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <link href="stylesheets/style.css" rel="stylesheet" type="text/css" />
-<title>Twitter the World - Register New User</title>
+<title>SocialHub - Register New User</title>
 </head>
 
 <body>
