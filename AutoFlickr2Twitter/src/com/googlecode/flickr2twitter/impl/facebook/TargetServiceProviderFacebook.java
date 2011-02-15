@@ -19,8 +19,8 @@ public class TargetServiceProviderFacebook implements ITargetServiceProvider {
 	private static final Logger log = Logger
 			.getLogger(TargetServiceProviderFacebook.class.getName());
 
-	public static final String ID = "eBaySocialHub";
-	public static final String DISPLAY_NAME = "eBaySocialHub";
+	public static final String ID = "Facebook";
+	public static final String DISPLAY_NAME = "Facebook";
 	public static final String CALLBACK_URL = "facebookcallback.jsp";
 	public static final String PARA_CODE = "code";
 
@@ -48,6 +48,9 @@ public class TargetServiceProviderFacebook implements ITargetServiceProvider {
 		System.out.println(data.get(PARA_CODE));
 		System.out.println(userEmail);
 
+		log.info(data.get(PARA_CODE).toString());
+		log.info(userEmail);
+		
 		return null;
 	}
 
