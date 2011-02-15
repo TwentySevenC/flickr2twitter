@@ -4,7 +4,7 @@
 package com.googlecode.flickr2twitter.services.rest;
 
 import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
+import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 import org.restlet.resource.ServerResource;
 
@@ -27,7 +27,7 @@ public class UserServerResource extends ServerResource implements IUserResource 
 		super();
 	}
 
-	@Get
+	@Post
 	public UserModel retrieve(String userEmail) {
 		User user = MyPersistenceManagerFactory.getUser(userEmail);
 		if (user != null) {
@@ -46,10 +46,41 @@ public class UserServerResource extends ServerResource implements IUserResource 
 		return false;
 	}
 
-	@Delete
-	public void remove() {
-		// TODO Auto-generated method stub
-		
+	/* (non-Javadoc)
+	 * @see com.googlecode.flickr2twitter.services.rest.models.IUserResource#login(java.lang.String, java.lang.String)
+	 */
+	@Post
+	public UserModel login(String userEmail, String password) {
+		User user = MyPersistenceManagerFactory.getLoginUser(userEmail, password);
+		if (user != null) {
+			return new UserModel(user.getUserId().getEmail(), 
+					user.getPassword(), user.getPermission(), user.getScreenName());
+		}
+		return null;
 	}
+	
+	/* (non-Javadoc)
+	 * @see com.googlecode.flickr2twitter.services.rest.models.IUserResource#openidLogin(java.lang.String, java.lang.String)
+	 */
+	@Post
+	public UserModel openidLogin(String userEmail, String password) {
+		User user = MyPersistenceManagerFactory.getLoginUser(userEmail, password, true);
+		if (user != null) {
+			return new UserModel(user.getUserId().getEmail(), 
+					user.getPassword(), user.getPermission(), user.getScreenName());
+		}
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.googlecode.flickr2twitter.services.rest.models.IUserResource#remove(com.googlecode.flickr2twitter.services.rest.models.UserModel)
+	 */
+	@Delete
+	public boolean remove(UserModel user) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	
 
 }

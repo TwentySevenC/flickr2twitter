@@ -16,11 +16,17 @@ public interface IUserResource {
 
 	@Post
 	public UserModel retrieve(String userEmail);
+	
+	@Post
+	public UserModel login(String userEmail, String password);
+	
+	@Post
+	public UserModel openidLogin(String userEmail, String password);
 
 	@Put
 	public boolean registerNewUser(UserModel user);
 
 	@Delete
-	public void remove();
+	public boolean remove(UserModel user);
 
 }
