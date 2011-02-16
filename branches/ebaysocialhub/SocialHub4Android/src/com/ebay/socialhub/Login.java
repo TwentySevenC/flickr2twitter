@@ -101,7 +101,8 @@ public class Login extends Activity {
 				@Override
 				public void onClick(View v) {
 					Intent i = new Intent(Login.this, GoogleOpenIDActivity.class);
-					startActivityForResult(i, REQUEST_CODE);
+					i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					startActivity(i);
 				}
 			});
 			
@@ -126,7 +127,7 @@ public class Login extends Activity {
 		super.onResume();
 	}
 
-	@Override
+	/*@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
 			if (data.hasExtra(GoogleOpenIDActivity.KEY_USER_EMAIL)) {
@@ -134,7 +135,7 @@ public class Login extends Activity {
 				new GetCredentialsTask().execute(userEmail);
 			}
 		}
-	}
+	}*/
 
 	
 	/* (non-Javadoc)
