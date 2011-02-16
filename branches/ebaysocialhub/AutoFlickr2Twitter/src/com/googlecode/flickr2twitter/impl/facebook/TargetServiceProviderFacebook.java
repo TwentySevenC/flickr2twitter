@@ -49,21 +49,24 @@ public class TargetServiceProviderFacebook implements ITargetServiceProvider {
 	@Override
 	public String readyAuthorization(String userEmail, Map<String, Object> data)
 			throws Exception {
-		if (data == null || data.containsKey(PARA_CODE) == false) {
-			throw new IllegalArgumentException("Invalid data: " + data);
-		}
-		User user = MyPersistenceManagerFactory.getUser(userEmail);
-		if (user == null) {
-			throw new IllegalArgumentException(
-					"Can not find the specified user: " + userEmail);
-		}
+//		if (data == null || data.containsKey(PARA_CODE) == false) {
+//			throw new IllegalArgumentException("Invalid data: " + data);
+//		}
+//		User user = MyPersistenceManagerFactory.getUser(userEmail);
+//		if (user == null) {
+//			throw new IllegalArgumentException(
+//					"Can not find the specified user: " + userEmail);
+//		}
+//		
+//		String code = (String)data.get(PARA_CODE);
+//		
+//		StringBuffer buf = new StringBuffer();
+//		buf.append("Facebook Authentication success\n");
+//		// This token can be used until the user revokes it.
+//		buf.append("Code: " + code);
 		
-		String code = (String)data.get(PARA_CODE);
 		
-		StringBuffer buf = new StringBuffer();
-		buf.append("Facebook Authentication success\n");
-		// This token can be used until the user revokes it.
-		buf.append("Code: " + code);
+		//----------------------
 
 //		String userId = auth.getUser().getId();
 //		for (UserSourceServiceConfig service : MyPersistenceManagerFactory

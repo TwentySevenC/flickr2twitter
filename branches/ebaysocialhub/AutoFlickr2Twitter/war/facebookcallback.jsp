@@ -1,5 +1,5 @@
 <%@ page language="java"
-	import="com.googlecode.flickr2twitter.impl.facebook.*,com.googlecode.flickr2twitter.intf.*,com.googlecode.flickr2twitter.exceptions.*,com.googlecode.flickr2twitter.core.*,java.util.logging.*,com.google.gdata.client.http.AuthSubUtil,com.googlecode.flickr2twitter.datastore.*,com.googlecode.flickr2twitter.datastore.model.*,com.googlecode.flickr2twitter.servlet.*,java.util.*"
+	import="java.net.*,java.text.*,com.googlecode.flickr2twitter.facebook.*,com.googlecode.flickr2twitter.impl.facebook.*,com.googlecode.flickr2twitter.intf.*,com.googlecode.flickr2twitter.exceptions.*,com.googlecode.flickr2twitter.core.*,java.util.logging.*,com.google.gdata.client.http.AuthSubUtil,com.googlecode.flickr2twitter.datastore.*,com.googlecode.flickr2twitter.datastore.model.*,com.googlecode.flickr2twitter.servlet.*,java.util.*"
 	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 
@@ -15,6 +15,8 @@
 
 	String token = request
 			.getParameter(TargetServiceProviderFacebook.PARA_CODE);
+	
+	out.print("The first place Code is: " + token + "\r\n");
 
 	log.info("Facebook Access Code: " + token);
 	if (currentData == null || user == null || token == null) {
@@ -29,7 +31,7 @@
 					currentProviderID).readyAuthorization(
 					user.getUserId().getEmail(), currentData);
 
-			log.info(retMsg);
+			// log.info(retMsg);
 		} catch (TokenAlreadyRegisteredException ex) {
 			request.getSession().removeAttribute(currentProviderID);
 			log.warning("Account \""
@@ -39,6 +41,20 @@
 		} catch (Exception e) {
 			log.warning(e.toString());
 		}
-		response.sendRedirect(IServiceAuthorizer.POST_AUTH_PAGE);
+		try {
+			String ret = FacebookUtil.gaeGetToken(token);
+			out.print("ret message result is:" + ret);
+
+			String postMessageRet = FacebookUtil.gaePostMessage(
+					"This message comes from ebaySocialHub", ret);
+			out.print("Code is: " + token + "\r\n");
+			out.print("Token is: " + ret + "\r\n");
+			out.print("Post message result is:" + postMessageRet
+					+ "\r\n");
+
+		} catch (Exception ex) {
+			out.println(ex.toString());
+		}
+		//response.sendRedirect(IServiceAuthorizer.POST_AUTH_PAGE);
 	}
 %>
