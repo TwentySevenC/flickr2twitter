@@ -8,6 +8,8 @@ import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 import org.restlet.resource.ServerResource;
 
+import twitter4j.internal.logging.Logger;
+
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory.Permission;
 import com.googlecode.flickr2twitter.datastore.model.User;
@@ -19,7 +21,8 @@ import com.googlecode.flickr2twitter.services.rest.models.UserModel;
  *
  */
 public class UserServerResource extends ServerResource implements IUserResource {
-
+	private static final Logger log = Logger.getLogger(UserServerResource.class);
+	
 	/**
 	 * 
 	 */
@@ -29,6 +32,7 @@ public class UserServerResource extends ServerResource implements IUserResource 
 
 	@Post
 	public UserModel retrieve(String userEmail) {
+		log.info("Retrieving user information for -> " + userEmail);
 		User user = MyPersistenceManagerFactory.getUser(userEmail);
 		if (user != null) {
 			return new UserModel(user.getUserId().getEmail(), 
@@ -51,7 +55,9 @@ public class UserServerResource extends ServerResource implements IUserResource 
 	 */
 	@Post
 	public UserModel login(String userEmail, String password) {
-		User user = MyPersistenceManagerFactory.getLoginUser(userEmail, password);
+		User user = null;
+		log.info("Retrieving user information for -> " + userEmail);
+		user = MyPersistenceManagerFactory.getLoginUser(userEmail, password);
 		if (user != null) {
 			return new UserModel(user.getUserId().getEmail(), 
 					user.getPassword(), user.getPermission(), user.getScreenName());
@@ -63,8 +69,9 @@ public class UserServerResource extends ServerResource implements IUserResource 
 	 * @see com.googlecode.flickr2twitter.services.rest.models.IUserResource#openidLogin(java.lang.String, java.lang.String)
 	 */
 	@Post
-	public UserModel openidLogin(String userEmail, String password) {
-		User user = MyPersistenceManagerFactory.getLoginUser(userEmail, password, true);
+	public UserModel openidLogin(String userEmail) {
+		log.info("Retrieving opendid user information for -> " + userEmail);
+		User user = MyPersistenceManagerFactory.getOpenIdLoginUser(userEmail);
 		if (user != null) {
 			return new UserModel(user.getUserId().getEmail(), 
 					user.getPassword(), user.getPermission(), user.getScreenName());
