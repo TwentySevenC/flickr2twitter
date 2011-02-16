@@ -22,5 +22,6 @@
     <string name="connection_problem">Problem connecting - Please press Return</string>
     <string name="textUserName">User Name</string>
     <string name="textPassword">Password</string>
+    <string name="google_openid_oauth">Google OpenID OAuth</string>
     
 </resources>
