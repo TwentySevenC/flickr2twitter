@@ -98,7 +98,6 @@ public class Login extends Activity {
 				@Override
 				public void onClick(View v) {
 					Intent i = new Intent(Login.this, GoogleOpenIDActivity.class);
-					//i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					startActivity(i);
 				}
@@ -146,11 +145,11 @@ public class Login extends Activity {
 				if (params != null && params.length == 1) {
 					userEmail = params[0];
 				}
+				
+				// Get the remote contact
 				if (userEmail != null) {
-					//txtUserName.setText(userEmail);
 					user = resource.openidLogin(userEmail);
 				} else {
-					// Get the remote contact
 					user = resource.login(txtUserName.getText().toString()
 							, txtPassword.getText().toString());
 				}

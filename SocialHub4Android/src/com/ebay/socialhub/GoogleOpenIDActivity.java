@@ -14,7 +14,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 /**
  * @author Toby Yu(yuyang226@gmail.com)
@@ -67,11 +66,8 @@ public class GoogleOpenIDActivity extends Activity {
 					Intent loginActivity = new Intent(this, Login.class);
 					//loginActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
 					loginActivity.putExtra(KEY_USER_EMAIL, userEmail);
-					setResult(RESULT_OK, loginActivity);
 					loginActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					this.startActivity(loginActivity);
-//					Toast.makeText(GoogleOpenIDActivity.this, "Login Successful - " + userEmail ,Toast.LENGTH_LONG).show();
-//					super.finish();
 				}
 			}
 		} catch (Exception e) {
