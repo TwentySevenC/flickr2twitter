@@ -42,6 +42,7 @@ import com.googlecode.flickr2twitter.services.rest.models.UserModel;
 public class Login extends Activity {
 	public static final String TAG = "SocialHub";
 	public static final String SERVER_LOCATION = "http://ebaysocialhub.appspot.com/rest/user";
+	private static final int REQUEST_CODE = 10;
 	
 	private EditText txtUserName;
 	private EditText txtPassword;
@@ -100,10 +101,9 @@ public class Login extends Activity {
 				@Override
 				public void onClick(View v) {
 					Intent i = new Intent(Login.this, GoogleOpenIDActivity.class);
-					startActivity(i);
+					startActivityForResult(i, REQUEST_CODE);
 				}
 			});
-			
 			
 		} catch (Exception e) {
 			Log.e(TAG, e.toString(), e);
@@ -111,6 +111,31 @@ public class Login extends Activity {
 
 		
 	}
+	
+	
+	
+	@Override
+	protected void onResume() {
+		Bundle extras = getIntent().getExtras();
+		if (extras != null) {
+			if (extras.containsKey(GoogleOpenIDActivity.KEY_USER_EMAIL)) {
+				String userEmail = extras.getString(GoogleOpenIDActivity.KEY_USER_EMAIL);
+				new GetCredentialsTask().execute(userEmail);
+			}
+		}
+		super.onResume();
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
+			if (data.hasExtra(GoogleOpenIDActivity.KEY_USER_EMAIL)) {
+				String userEmail = data.getExtras().getString(GoogleOpenIDActivity.KEY_USER_EMAIL);
+				new GetCredentialsTask().execute(userEmail);
+			}
+		}
+	}
+
 	
 	/* (non-Javadoc)
 	 * @see android.app.Activity#finish()
@@ -142,10 +167,18 @@ public class Login extends Activity {
 			try {
 				ClientResource cr = new ClientResource(SERVER_LOCATION);
 				IUserResource resource = cr.wrap(IUserResource.class);
-
-				// Get the remote contact
-				user = resource.login(txtUserName.getText().toString()
-						, txtPassword.getText().toString());
+				String userEmail = null;
+				if (params != null && params.length == 1) {
+					userEmail = params[0];
+				}
+				if (userEmail != null) {
+					//txtUserName.setText(userEmail);
+					user = resource.openidLogin(userEmail);
+				} else {
+					// Get the remote contact
+					user = resource.login(txtUserName.getText().toString()
+							, txtPassword.getText().toString());
+				}
 			} catch (Exception e) {
 				Log.e(TAG, e.toString(), e);
 			}
@@ -155,6 +188,7 @@ public class Login extends Activity {
 		protected void onPostExecute(UserModel user) {
 			authDialog.dismiss();
 			if(user != null){
+				txtUserName.setText(user.getUserId());
 				txtUserScreenName.setText(user.toString());
 				Toast.makeText(Login.this, "Login Successful",Toast.LENGTH_LONG).show();
 			} else{
