@@ -119,7 +119,7 @@ public class Login extends Activity {
 			}
 		}
 	}*/
-	
+
 	private class GetCredentialsTask extends AsyncTask<String, Void, UserModel> {
 		ProgressDialog authDialog;
 		 

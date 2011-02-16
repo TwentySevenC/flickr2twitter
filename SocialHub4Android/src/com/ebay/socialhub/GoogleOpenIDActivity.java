@@ -14,6 +14,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * @author Toby Yu(yuyang226@gmail.com)
@@ -82,7 +83,7 @@ public class GoogleOpenIDActivity extends Activity {
 		protected void onPreExecute() {
 			authDialog = ProgressDialog.show(GoogleOpenIDActivity.this, 
 				getText(R.string.auth_progress_title), 
-				getText(R.string.auth_progress_text), 
+				getText(R.string.google_openid_oauth_message), 
 				true,	// indeterminate duration
 				false); // not cancel-able
 		}
@@ -92,7 +93,7 @@ public class GoogleOpenIDActivity extends Activity {
 		 */
 		@Override
 		protected String doInBackground(Void... params) {
-			String message = "success";
+			String message = null;
 			try {
 				manager = new OpenIdManager();
 		        manager.setReturnTo(GAE_CALLBACK_URL);
@@ -103,8 +104,8 @@ public class GoogleOpenIDActivity extends Activity {
 					Association association = manager.lookupAssociation(endpoint);
 					String authUrl = manager.getAuthenticationUrl(endpoint, association);
 					Log.i(TAG, "Google OpenID AuthURL: " + authUrl);
-					GoogleOpenIDActivity.this.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(authUrl)));
-					message = authUrl;
+					GoogleOpenIDActivity.this.startActivity(
+							new Intent(Intent.ACTION_VIEW, Uri.parse(authUrl)));
 				}
 			} catch (Exception e) {
 				Log.e(TAG, e.toString(), e);
@@ -115,8 +116,10 @@ public class GoogleOpenIDActivity extends Activity {
 		
 		protected void onPostExecute(String result) {
 			authDialog.dismiss();
-			/*Toast.makeText(GoogleOpenIDActivity.this, 
-					"Google OpenID OAuth - " + result,Toast.LENGTH_LONG).show();*/
+			if (result != null) {
+				Toast.makeText(GoogleOpenIDActivity.this, 
+					"Google OpenID OAuth - " + result,Toast.LENGTH_LONG).show();
+			}
 		}
 		
 	}
