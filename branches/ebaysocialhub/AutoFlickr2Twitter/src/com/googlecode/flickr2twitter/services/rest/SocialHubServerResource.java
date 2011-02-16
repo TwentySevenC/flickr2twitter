@@ -50,8 +50,13 @@ public class SocialHubServerResource extends ServerResource implements ISociaHub
 		log.info("Retrieving user information for -> " + userEmail);
 		User user = MyPersistenceManagerFactory.getUser(userEmail);
 		if (user != null) {
-			return new UserModel(user.getUserId().getEmail(), 
+			UserModel model = new UserModel(user.getUserId().getEmail(), 
 					user.getPassword(), user.getPermission(), user.getScreenName());
+			model.setSourceServices(convertSourceData(
+					MyPersistenceManagerFactory.getUserSourceServices(userEmail)));
+			model.setTargetServices(convertTargetData(
+					MyPersistenceManagerFactory.getUserTargetServices(userEmail)));
+			return model;
 		}
 		return null;
 	}
@@ -74,8 +79,13 @@ public class SocialHubServerResource extends ServerResource implements ISociaHub
 		log.info("Retrieving user information for -> " + userEmail);
 		user = MyPersistenceManagerFactory.getLoginUser(userEmail, password);
 		if (user != null) {
-			return new UserModel(user.getUserId().getEmail(), 
+			UserModel model = new UserModel(user.getUserId().getEmail(), 
 					user.getPassword(), user.getPermission(), user.getScreenName());
+			model.setSourceServices(convertSourceData(
+					MyPersistenceManagerFactory.getUserSourceServices(userEmail)));
+			model.setTargetServices(convertTargetData(
+					MyPersistenceManagerFactory.getUserTargetServices(userEmail)));
+			return model;
 		}
 		return null;
 	}
@@ -124,6 +134,8 @@ public class SocialHubServerResource extends ServerResource implements ISociaHub
 		
 		return data;
 	}
+	
+
 
 	/* (non-Javadoc)
 	 * @see com.googlecode.flickr2twitter.services.rest.models.ISociaHubResource#getSupportedSourceServiceProviders()
@@ -145,6 +157,21 @@ public class SocialHubServerResource extends ServerResource implements ISociaHub
 		}
 		return data;
 	}
+	
+	public List<UserSourceServiceConfigModel> convertSourceData(
+			List<UserSourceServiceConfig> userConfigs) {
+		List<UserSourceServiceConfigModel> data = new ArrayList<UserSourceServiceConfigModel>();
+		for (UserSourceServiceConfig userConfig : userConfigs) {
+			try {
+				data.add(new UserSourceServiceConfigModel(userConfig.getUserEmail(), userConfig.getServiceUserId(), 
+						userConfig.getServiceUserName(), userConfig.getUserSiteUrl(), userConfig.getServiceProviderId(), 
+						userConfig.getAdditionalParameters(), userConfig.isEnabled(), userConfig.getServiceAccessToken()));
+			} catch (UnsupportedEncodingException e) {
+				log.throwing(this.getClass().getName(), "convertSourceData", e);
+			}
+		}
+		return data;
+	}
 
 	/* (non-Javadoc)
 	 * @see com.googlecode.flickr2twitter.services.rest.models.ISociaHubResource#getUserSourceServiceConfigs(java.lang.String)
@@ -152,17 +179,7 @@ public class SocialHubServerResource extends ServerResource implements ISociaHub
 	@Override
 	public List<UserSourceServiceConfigModel> getUserSourceServiceConfigs(
 			String userEmail) {
-		List<UserSourceServiceConfigModel> data = new ArrayList<UserSourceServiceConfigModel>();
-		for (UserSourceServiceConfig userConfig : MyPersistenceManagerFactory.getUserSourceServices(userEmail)) {
-			try {
-				data.add(new UserSourceServiceConfigModel(userConfig.getUserEmail(), userConfig.getServiceUserId(), 
-						userConfig.getServiceUserName(), userConfig.getUserSiteUrl(), userConfig.getServiceProviderId(), 
-						userConfig.getAdditionalParameters(), userConfig.isEnabled(), userConfig.getServiceAccessToken()));
-			} catch (UnsupportedEncodingException e) {
-				log.throwing(this.getClass().getName(), "getUserSourceServiceConfigs", e);
-			}
-		}
-		return data;
+		return convertSourceData(MyPersistenceManagerFactory.getUserSourceServices(userEmail));
 	}
 
 	/* (non-Javadoc)
@@ -188,6 +205,22 @@ public class SocialHubServerResource extends ServerResource implements ISociaHub
 		}
 		return false;
 	}
+	
+	public List<UserTargetServiceConfigModel> convertTargetData(
+			List<UserTargetServiceConfig> userConfigs) {
+		List<UserTargetServiceConfigModel> data = new ArrayList<UserTargetServiceConfigModel>();
+		for (UserTargetServiceConfig userConfig : userConfigs) {
+			try {
+				data.add(new UserTargetServiceConfigModel(userConfig.getUserEmail(), userConfig.getServiceUserId(), 
+						userConfig.getServiceUserName(), userConfig.getUserSiteUrl(), userConfig.getServiceProviderId(), 
+						userConfig.getAdditionalParameters(), userConfig.isEnabled(), userConfig.getServiceAccessToken(), 
+						userConfig.getServiceTokenSecret()));
+			} catch (UnsupportedEncodingException e) {
+				log.throwing(this.getClass().getName(), "convertTargetData", e);
+			}
+		}
+		return data;
+	}
 
 	/* (non-Javadoc)
 	 * @see com.googlecode.flickr2twitter.services.rest.models.ISociaHubResource#getUserTargetServiceConfigs(java.lang.String)
@@ -195,18 +228,7 @@ public class SocialHubServerResource extends ServerResource implements ISociaHub
 	@Override
 	public List<UserTargetServiceConfigModel> getUserTargetServiceConfigs(
 			String userEmail) {
-		List<UserTargetServiceConfigModel> data = new ArrayList<UserTargetServiceConfigModel>();
-		for (UserTargetServiceConfig userConfig : MyPersistenceManagerFactory.getUserTargetServices(userEmail)) {
-			try {
-				data.add(new UserTargetServiceConfigModel(userConfig.getUserEmail(), userConfig.getServiceUserId(), 
-						userConfig.getServiceUserName(), userConfig.getUserSiteUrl(), userConfig.getServiceProviderId(), 
-						userConfig.getAdditionalParameters(), userConfig.isEnabled(), userConfig.getServiceAccessToken(), 
-						userConfig.getServiceTokenSecret()));
-			} catch (UnsupportedEncodingException e) {
-				log.throwing(this.getClass().getName(), "getUserTargetServiceConfigs", e);
-			}
-		}
-		return data;
+		return convertTargetData(MyPersistenceManagerFactory.getUserTargetServices(userEmail));
 	}
 
 	/* (non-Javadoc)
