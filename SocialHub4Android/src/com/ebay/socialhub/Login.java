@@ -28,7 +28,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.googlecode.flickr2twitter.services.rest.models.IUserResource;
+import com.googlecode.flickr2twitter.services.rest.models.ISociaHubResource;
 import com.googlecode.flickr2twitter.services.rest.models.UserModel;
 
 /**
@@ -140,7 +140,7 @@ public class Login extends Activity {
 			UserModel user = null;
 			try {
 				ClientResource cr = new ClientResource(SERVER_LOCATION);
-				IUserResource resource = cr.wrap(IUserResource.class);
+				ISociaHubResource resource = cr.wrap(ISociaHubResource.class);
 				String userEmail = null;
 				if (params != null && params.length == 1) {
 					userEmail = params[0];
