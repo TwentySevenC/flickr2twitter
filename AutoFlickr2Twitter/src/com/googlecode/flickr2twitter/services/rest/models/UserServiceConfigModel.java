@@ -1,79 +1,65 @@
 /**
  * 
  */
-package com.googlecode.flickr2twitter.datastore.model;
+package com.googlecode.flickr2twitter.services.rest.models;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.util.Hashtable;
+import java.io.Serializable;
 import java.util.Map;
-
-import javax.jdo.annotations.IdGeneratorStrategy;
-import javax.jdo.annotations.Inheritance;
-import javax.jdo.annotations.InheritanceStrategy;
-import javax.jdo.annotations.NotPersistent;
-import javax.jdo.annotations.PersistenceCapable;
-import javax.jdo.annotations.Persistent;
-import javax.jdo.annotations.PrimaryKey;
-
-import com.google.appengine.api.datastore.Key;
-import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Toby Yu(yuyang226@gmail.com)
  *
  */
-@PersistenceCapable
-@Inheritance(strategy = InheritanceStrategy.SUBCLASS_TABLE)
-public abstract class UserServiceConfig {
-	@PrimaryKey
-	@Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
-	private Key key;
-	
-	@Persistent
-	private String userEmail;
-	
-	@Persistent
-	private String serviceUserId;
-	
-	@Persistent
-	private String serviceUserName;
-	
-	@Persistent
-	private String userSiteUrl;
-	
-	@Persistent
-	private String serviceProviderId;
-	
-	@Persistent
-	private String additionalParamsPersitent;
-	
-	@NotPersistent
-	private Map<String, String> additionalParameters;
-	
-	@Persistent
-	private boolean enabled = true;
-	
+public class UserServiceConfigModel implements Serializable {
+
 	/**
 	 * 
 	 */
-	public UserServiceConfig() {
+	private static final long serialVersionUID = 1L;
+	
+	private String userEmail;
+	
+	private String serviceUserId;
+	
+	private String serviceUserName;
+	
+	private String userSiteUrl;
+	
+	private String serviceProviderId;
+	
+	private Map<String, String> additionalParameters;
+	
+	private boolean enabled = true;
+
+	/**
+	 * 
+	 */
+	public UserServiceConfigModel() {
 		super();
 	}
 
 	/**
-	 * @return the key
+	 * @param userEmail
+	 * @param serviceUserId
+	 * @param serviceUserName
+	 * @param userSiteUrl
+	 * @param serviceProviderId
+	 * @param additionalParamsPersitent
+	 * @param additionalParameters
+	 * @param enabled
 	 */
-	public Key getKey() {
-		return key;
-	}
-
-	/**
-	 * @param key the key to set
-	 */
-	public void setKey(Key key) {
-		this.key = key;
+	public UserServiceConfigModel(String userEmail, String serviceUserId,
+			String serviceUserName, String userSiteUrl,
+			String serviceProviderId, 
+			Map<String, String> additionalParameters, boolean enabled) {
+		super();
+		this.userEmail = userEmail;
+		this.serviceUserId = serviceUserId;
+		this.serviceUserName = serviceUserName;
+		this.userSiteUrl = userSiteUrl;
+		this.serviceProviderId = serviceProviderId;
+		this.additionalParameters = additionalParameters;
+		this.enabled = enabled;
 	}
 
 	/**
@@ -148,64 +134,16 @@ public abstract class UserServiceConfig {
 
 	/**
 	 * @return the additionalParameters
-	 * @throws UnsupportedEncodingException 
 	 */
-	public Map<String, String> getAdditionalParameters() throws UnsupportedEncodingException {
-		this.additionalParameters = deserializeParams();
+	public Map<String, String> getAdditionalParameters() {
 		return additionalParameters;
-	}
-	
-	/**
-	 * @param addtionalParameter the addtionalParameter to add
-	 * @throws UnsupportedEncodingException 
-	 */
-	public void addAddtionalParameter(String key, String value) throws UnsupportedEncodingException {
-		if (this.additionalParameters == null) {
-			this.additionalParameters = new Hashtable<String, String>();
-		}
-		this.additionalParameters.put(key, value);
-		serializeParams();
 	}
 
 	/**
 	 * @param additionalParameters the additionalParameters to set
-	 * @throws UnsupportedEncodingException 
 	 */
-	public void setAdditionalParameters(Map<String, String> additionalParameters) throws UnsupportedEncodingException {
+	public void setAdditionalParameters(Map<String, String> additionalParameters) {
 		this.additionalParameters = additionalParameters;
-		serializeParams();
-	}
-	
-	private void serializeParams() throws UnsupportedEncodingException {
-		StringBuffer buf = new StringBuffer();
-		if (additionalParameters != null && additionalParameters.size() > 0) {
-			String encoding = System.getProperty("file.encoding");
-			for (String key : additionalParameters.keySet()) {
-				String value = additionalParameters.get(key);
-				if (value == null)
-					value = "";
-				buf.append(URLEncoder.encode(key, encoding));
-				buf.append("=");
-				buf.append(URLEncoder.encode(value, encoding));
-				buf.append("&");
-			}
-			buf.deleteCharAt(buf.length() - 1);
-		}
-		this.additionalParamsPersitent = buf.toString();
-	}
-	
-	private Map<String, String> deserializeParams() throws UnsupportedEncodingException {
-		Map<String, String> result = new Hashtable<String, String>();
-		if (StringUtils.isNotBlank(this.additionalParamsPersitent)) {
-			String encoding = System.getProperty("file.encoding");
-			for (String data : StringUtils.split(additionalParamsPersitent, "&")) {
-				String key = StringUtils.substringBefore(data, "=");
-				String value = StringUtils.substringAfter(data, "=");
-				result.put(URLDecoder.decode(key, encoding), URLDecoder.decode(value, encoding));
-			}
-		}
-		
-		return result;
 	}
 
 	/**
@@ -231,6 +169,11 @@ public abstract class UserServiceConfig {
 		int result = 1;
 		result = prime
 				* result
+				+ ((additionalParameters == null) ? 0 : additionalParameters
+						.hashCode());
+		result = prime * result + (enabled ? 1231 : 1237);
+		result = prime
+				* result
 				+ ((serviceProviderId == null) ? 0 : serviceProviderId
 						.hashCode());
 		result = prime * result
@@ -253,9 +196,16 @@ public abstract class UserServiceConfig {
 			return true;
 		if (obj == null)
 			return false;
-		if (!(obj instanceof UserServiceConfig))
+		if (!(obj instanceof UserServiceConfigModel))
 			return false;
-		UserServiceConfig other = (UserServiceConfig) obj;
+		UserServiceConfigModel other = (UserServiceConfigModel) obj;
+		if (additionalParameters == null) {
+			if (other.additionalParameters != null)
+				return false;
+		} else if (!additionalParameters.equals(other.additionalParameters))
+			return false;
+		if (enabled != other.enabled)
+			return false;
 		if (serviceProviderId == null) {
 			if (other.serviceProviderId != null)
 				return false;
@@ -289,11 +239,13 @@ public abstract class UserServiceConfig {
 	 */
 	@Override
 	public String toString() {
-		return "UserServiceConfig [additionalParameters=" + additionalParamsPersitent
-				+ ", key=" + key + ", serviceProviderId=" + serviceProviderId
+		return "UserServiceConfigModel [userEmail=" + userEmail
 				+ ", serviceUserId=" + serviceUserId + ", serviceUserName="
-				+ serviceUserName + ", userEmail=" + userEmail
-				+ ", userSiteUrl=" + userSiteUrl + "]";
+				+ serviceUserName + ", userSiteUrl=" + userSiteUrl
+				+ ", serviceProviderId=" + serviceProviderId
+				+ ", additionalParameters=" + additionalParameters
+				+ ", enabled=" + enabled + "]";
 	}
+	
 
 }
