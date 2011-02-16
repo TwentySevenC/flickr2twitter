@@ -4,13 +4,9 @@
 package com.ebay.socialhub;
 
 import org.apache.http.HttpVersion;
-import org.apache.http.client.HttpClient;
-import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
@@ -42,7 +38,6 @@ import com.googlecode.flickr2twitter.services.rest.models.UserModel;
 public class Login extends Activity {
 	public static final String TAG = "SocialHub";
 	public static final String SERVER_LOCATION = "http://ebaysocialhub.appspot.com/rest/user";
-	private static final int REQUEST_CODE = 10;
 	
 	private EditText txtUserName;
 	private EditText txtPassword;
@@ -50,9 +45,6 @@ public class Login extends Activity {
 	private Button btnCancel;
 	private ImageButton btnOpenidGoogle;
 	private TextView txtUserScreenName;
-	
-	
-	private HttpClient mClient;
 	
 
 
@@ -86,8 +78,6 @@ public class Login extends Activity {
 
 			SchemeRegistry schReg = new SchemeRegistry();
 			schReg.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-			ClientConnectionManager tsccm = new ThreadSafeClientConnManager(parameters, schReg);
-			mClient = new DefaultHttpClient(tsccm, parameters);
 
 			txtUserName=(EditText)this.findViewById(R.id.txtUname);
 			txtPassword=(EditText)this.findViewById(R.id.txtPwd);
@@ -129,16 +119,6 @@ public class Login extends Activity {
 			}
 		}
 	}*/
-
-	
-	/* (non-Javadoc)
-	 * @see android.app.Activity#finish()
-	 */
-	@Override
-	public void finish() {
-		super.finish();
-		mClient.getConnectionManager().shutdown();
-	}
 	
 	private class GetCredentialsTask extends AsyncTask<String, Void, UserModel> {
 		ProgressDialog authDialog;
