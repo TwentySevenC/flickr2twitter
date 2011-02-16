@@ -21,7 +21,7 @@ public interface IUserResource {
 	public UserModel login(String userEmail, String password);
 	
 	@Post
-	public UserModel openidLogin(String userEmail, String password);
+	public UserModel openidLogin(String userEmail);
 
 	@Put
 	public boolean registerNewUser(UserModel user);
