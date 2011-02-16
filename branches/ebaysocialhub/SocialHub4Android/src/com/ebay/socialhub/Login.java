@@ -70,6 +70,13 @@ public class Login extends Activity {
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.login);
 			
+			Bundle extras = getIntent().getExtras();
+			if (extras != null) {
+				if (extras.containsKey(GoogleOpenIDActivity.KEY_USER_EMAIL)) {
+					String userEmail = extras.getString(GoogleOpenIDActivity.KEY_USER_EMAIL);
+					new GetCredentialsTask().execute(userEmail);
+				}
+			}
 			HttpParams parameters = new BasicHttpParams();
 			HttpProtocolParams.setVersion(parameters, HttpVersion.HTTP_1_1);
 			HttpProtocolParams.setContentCharset(parameters, HTTP.DEFAULT_CONTENT_CHARSET);
@@ -111,20 +118,6 @@ public class Login extends Activity {
 		}
 
 		
-	}
-	
-	
-	
-	@Override
-	protected void onResume() {
-		Bundle extras = getIntent().getExtras();
-		if (extras != null) {
-			if (extras.containsKey(GoogleOpenIDActivity.KEY_USER_EMAIL)) {
-				String userEmail = extras.getString(GoogleOpenIDActivity.KEY_USER_EMAIL);
-				new GetCredentialsTask().execute(userEmail);
-			}
-		}
-		super.onResume();
 	}
 
 	/*@Override
