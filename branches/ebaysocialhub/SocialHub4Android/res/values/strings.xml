@@ -23,5 +23,6 @@
     <string name="textUserName">User Name</string>
     <string name="textPassword">Password</string>
     <string name="google_openid_oauth">Google OpenID OAuth</string>
+    <string name="google_openid_oauth_message">Redirecting to Google for Authentication</string>
     
 </resources>
