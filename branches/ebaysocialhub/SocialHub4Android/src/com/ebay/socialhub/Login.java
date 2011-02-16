@@ -98,7 +98,8 @@ public class Login extends Activity {
 				@Override
 				public void onClick(View v) {
 					Intent i = new Intent(Login.this, GoogleOpenIDActivity.class);
-					i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					//i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					startActivity(i);
 				}
 			});

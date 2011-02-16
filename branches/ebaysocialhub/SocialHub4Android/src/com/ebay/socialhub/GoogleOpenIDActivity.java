@@ -65,9 +65,10 @@ public class GoogleOpenIDActivity extends Activity {
 				if (query.startsWith(KEY_USER_EMAIL)) {
 					String userEmail = query.substring(KEY_USER_EMAIL.length() + 1, query.length());
 					Intent loginActivity = new Intent(this, Login.class);
-					loginActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
+					//loginActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
 					loginActivity.putExtra(KEY_USER_EMAIL, userEmail);
 					setResult(RESULT_OK, loginActivity);
+					loginActivity.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					this.startActivity(loginActivity);
 //					Toast.makeText(GoogleOpenIDActivity.this, "Login Successful - " + userEmail ,Toast.LENGTH_LONG).show();
 //					super.finish();
