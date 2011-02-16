@@ -26,6 +26,8 @@ public class GoogleOpenIDActivity extends Activity {
 	private static final Uri CALLBACK_URI = Uri.parse("socialhub-openid://google");
 	
 	private static final String GAE_CALLBACK_URL = "http://ebaysocialhub.appspot.com/google_openid_callback.jsp";
+	public static final String KEY_USER_EMAIL = "userEmail";
+
 	
 	/**
 	 * 
@@ -66,21 +68,19 @@ public class GoogleOpenIDActivity extends Activity {
 		try {
 			super.onResume();
 			Uri uri = getIntent().getData();
+			
 			if (uri != null && CALLBACK_URI.getScheme().equals(uri.getScheme())) {
-				
-				//byte[] mac_key = association.getRawMacKey();
-				//String alias = endpoint.getAlias();
-				Toast.makeText(GoogleOpenIDActivity.this, "Login Successful - " + uri.toString() ,Toast.LENGTH_LONG).show();
-				/*Authentication authentication = manager.getAuthentication(request, mac_key, alias);
-				response.setContentType("text/html; charset=UTF-8");
-				String userEmail = authentication.getEmail();
-				User user = MyPersistenceManagerFactory.getOpenIdLoginUser(userEmail);
-				if (user == null) {
-					//not a registered user
-					log.info("New open ID user, try to automatically register->" + userEmail);
-					user = MyPersistenceManagerFactory.createNewUser(userEmail, "openid", authentication.getFullname());
-				}*/
-				System.out.println(uri);
+				String query = uri.getQuery();
+				if (query.startsWith(KEY_USER_EMAIL)) {
+					String userEmail = query.substring(KEY_USER_EMAIL.length() + 1, query.length());
+					Intent loginActivity = new Intent(this, Login.class);
+					loginActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
+					loginActivity.putExtra(KEY_USER_EMAIL, userEmail);
+					setResult(RESULT_OK, loginActivity);
+					this.startActivity(loginActivity);
+//					Toast.makeText(GoogleOpenIDActivity.this, "Login Successful - " + userEmail ,Toast.LENGTH_LONG).show();
+//					super.finish();
+				}
 			}
 		} catch (Exception e) {
 			Log.e(TAG, e.toString(), e);
