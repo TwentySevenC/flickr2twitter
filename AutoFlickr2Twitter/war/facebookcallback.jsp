@@ -41,20 +41,7 @@
 		} catch (Exception e) {
 			log.warning(e.toString());
 		}
-		try {
-			String ret = FacebookUtil.gaeGetToken(token);
-			out.print("ret message result is:" + ret);
-
-			String postMessageRet = FacebookUtil.gaePostMessage(
-					"This message comes from ebaySocialHub", ret);
-			out.print("Code is: " + token + "\r\n");
-			out.print("Token is: " + ret + "\r\n");
-			out.print("Post message result is:" + postMessageRet
-					+ "\r\n");
-
-		} catch (Exception ex) {
-			out.println(ex.toString());
-		}
-		//response.sendRedirect(IServiceAuthorizer.POST_AUTH_PAGE);
+		
+		response.sendRedirect(IServiceAuthorizer.POST_AUTH_PAGE);
 	}
 %>
