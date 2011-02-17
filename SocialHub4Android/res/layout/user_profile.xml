@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent" android:layout_height="match_parent">
+    
+    
+	<TableLayout android:id="@+id/linearLayout1"
+		android:layout_width="match_parent" android:layout_height="wrap_content">
+		<TableRow>
+			<ImageView android:src="@drawable/android_avatar"
+				android:layout_height="150dip" android:layout_width="150dip"
+				android:id="@+id/user_image">
+			</ImageView>
+			<LinearLayout android:id="@+id/linearLayout1"
+				android:layout_width="match_parent" android:layout_height="wrap_content"
+				android:orientation="vertical" >
+				<TextView android:text="User Screen Name" android:id="@+id/userScreenName" 
+				android:layout_width="match_parent" android:layout_height="wrap_content"
+				android:textStyle="bold"></TextView>
+				<TextView android:text="User Email" android:id="@+id/userEmail" 
+				android:layout_width="match_parent" android:layout_height="wrap_content"
+				android:clickable="true"></TextView>				
+			</LinearLayout>
+		</TableRow>
+	</TableLayout>
+	
+	<LinearLayout android:id="@+id/listViewLayout"
+		android:layout_width="match_parent" android:layout_height="wrap_content">
+		<ListView android:layout_width="match_parent" android:layout_height="wrap_content" 
+		android:id="@+id/srcServiceList"></ListView>
+	</LinearLayout>
+</LinearLayout>
