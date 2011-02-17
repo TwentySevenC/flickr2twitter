@@ -100,7 +100,7 @@ public class SocialHub extends ListActivity implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		try {
 			super.onCreate(savedInstanceState);
-			setContentView(R.layout.main);
+			setContentView(R.layout.old_main);
 
 			HttpParams parameters = new BasicHttpParams();
 			HttpProtocolParams.setVersion(parameters, HttpVersion.HTTP_1_1);

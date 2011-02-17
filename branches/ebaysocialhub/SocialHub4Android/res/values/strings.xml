@@ -26,4 +26,8 @@
     <string name="google_openid_oauth_message">Redirecting to Google for Authentication</string>
     <string name="user_profile_view_name">User Profile</string>
     
+    
+    
+    <string name="hello">Hello World, SoftwarePassionView!</string>
+    <string name="main_no_items">No orders to display</string>
 </resources>
