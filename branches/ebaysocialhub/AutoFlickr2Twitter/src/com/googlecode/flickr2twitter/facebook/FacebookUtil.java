@@ -181,5 +181,37 @@ public class FacebookUtil {
 
 		return null;
 	}
+	
+	public static String gaeDisplayName(String token) {
+
+		StringBuffer sb = new StringBuffer();
+
+		try {
+			log.info("Trying to get user name using token " + token);
+
+			String fullURL = "https://graph.facebook.com/me?access_token="
+					+ token;
+
+			log.info("Token Generation url: " + fullURL);
+
+			URL url = new URL(fullURL);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					url.openStream()));
+			String line;
+
+			while ((line = reader.readLine()) != null) {
+				sb.append(line + "\r\n");
+			}
+			reader.close();
+
+		} catch (MalformedURLException e) {
+		} catch (IOException e) {
+		}
+
+		String tokenString = sb.toString();
+		log.info("me string from facebook:\r\n " + tokenString);
+
+		return null;
+	}
 
 }
