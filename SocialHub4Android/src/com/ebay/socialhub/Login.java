@@ -156,7 +156,6 @@ public class Login extends Activity {
 					Toast.makeText(Login.this, "Login Successful",Toast.LENGTH_LONG).show();
 					Intent i = new Intent(Login.this, UserProfileActivity.class);
 					i.putExtra("user", user);
-					i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					startActivity(i);
 				} else{
 					txtUserScreenName.setText("Not Logged In");

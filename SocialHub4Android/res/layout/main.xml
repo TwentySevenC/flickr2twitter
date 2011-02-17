@@ -8,7 +8,7 @@
 		<TableRow android:layout_width="match_parent"
 			android:layout_height="wrap_content">
 			<ImageView android:id="@+id/userImage"
-				android:src="@drawable/android_avatar" android:layout_width="150dip" android:layout_height="150dip"></ImageView>
+				android:src="@drawable/android_avatar"></ImageView>
 			<LinearLayout 
 				android:orientation="vertical" android:layout_width="match_parent"
 				android:layout_height="wrap_content">
@@ -20,7 +20,9 @@
 		</TableRow>
 	</TableLayout>
 	
-	<ListView android:id="@+id/listView" android:layout_width="fill_parent"
+	<ListView android:id="@+id/sourceServiceList" android:layout_width="fill_parent"
+		android:layout_height="fill_parent" />
+	<ListView android:id="@+id/targetServiceList" android:layout_width="fill_parent"
 		android:layout_height="fill_parent" />
 	<TextView android:id="@+id/android:empty"
 		android:layout_width="fill_parent" android:layout_height="fill_parent"
