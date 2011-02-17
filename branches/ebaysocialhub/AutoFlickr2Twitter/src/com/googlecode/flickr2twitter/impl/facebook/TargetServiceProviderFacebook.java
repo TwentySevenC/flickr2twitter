@@ -91,7 +91,7 @@ public class TargetServiceProviderFacebook implements ITargetServiceProvider {
 		service.setServiceProviderId(ID);
 		service.setServiceAccessToken(code);
 		service.setServiceTokenSecret("NO SECRET FOR THIS AUTH.");
-		service.setServiceUserId(user.getUserId().toString());
+		service.setServiceUserId(user.getUserId().getEmail());
 		service.setUserEmail(user.getUserId().getEmail());
 		service.setServiceUserName("Display Name");
 		service.setUserSiteUrl("http://www.facebook.com");
