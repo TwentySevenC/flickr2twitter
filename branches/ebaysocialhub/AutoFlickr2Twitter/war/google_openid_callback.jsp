@@ -6,7 +6,7 @@
 	Logger log = Logger.getLogger(request.getRequestURI());
 	String userEmail = request.getParameter("openid.ext1.value.email");
 	String userFirstName = request.getParameter("openid.ext1.value.firstname");
-	String userLastName = request.getParameter("openid.ext1.value.firstname");
+	String userLastName = request.getParameter("openid.ext1.value.lastName");
 	log.info(new StringBuffer("userEmail=").append(userEmail).append(", firstName=")
 			.append(userFirstName).append(", lastName=").append(userLastName).toString());
 	if (userEmail != null) {
