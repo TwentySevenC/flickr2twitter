@@ -106,19 +106,7 @@ public class Login extends Activity {
 		} catch (Exception e) {
 			Log.e(TAG, e.toString(), e);
 		}
-
-		
 	}
-
-	/*@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
-			if (data.hasExtra(GoogleOpenIDActivity.KEY_USER_EMAIL)) {
-				String userEmail = data.getExtras().getString(GoogleOpenIDActivity.KEY_USER_EMAIL);
-				new GetCredentialsTask().execute(userEmail);
-			}
-		}
-	}*/
 
 	private class GetCredentialsTask extends AsyncTask<String, Void, UserModel> {
 		ProgressDialog authDialog;
@@ -160,14 +148,22 @@ public class Login extends Activity {
 		}
 		
 		protected void onPostExecute(UserModel user) {
-			authDialog.dismiss();
-			if(user != null){
-				txtUserName.setText(user.getUserId());
-				txtUserScreenName.setText(user.toString());
-				Toast.makeText(Login.this, "Login Successful",Toast.LENGTH_LONG).show();
-			} else{
-				txtUserScreenName.setText("Not Logged In");
-				Toast.makeText(Login.this, "Invalid Login",Toast.LENGTH_LONG).show();
+			try {
+				authDialog.dismiss();
+				if(user != null){
+					txtUserName.setText(user.getUserId());
+					//txtUserScreenName.setText(user.toString());
+					Toast.makeText(Login.this, "Login Successful",Toast.LENGTH_LONG).show();
+					Intent i = new Intent(Login.this, UserProfileActivity.class);
+					i.putExtra("user", user);
+					i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					startActivity(i);
+				} else{
+					txtUserScreenName.setText("Not Logged In");
+					Toast.makeText(Login.this, "Invalid Login",Toast.LENGTH_LONG).show();
+				}
+			} catch (Exception e) {
+				Log.e(TAG, e.toString(), e);
 			}
 		}
 		
