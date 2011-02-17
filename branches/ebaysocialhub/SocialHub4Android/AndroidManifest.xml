@@ -7,30 +7,19 @@
                   android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name="SoftwarePassionView"
-                  android:label="@string/user_profile_view_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.View" />
-                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
     	<activity android:name="UserProfileActivity"
                   android:label="@string/user_profile_view_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.View" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
+                  <intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+			</intent-filter>
         </activity>
         <activity android:name="SocialHub"
 			android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.View" />
-				<category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </activity>
         <activity android:name="OAUTH"
 			android:label="@string/oauth_name">
