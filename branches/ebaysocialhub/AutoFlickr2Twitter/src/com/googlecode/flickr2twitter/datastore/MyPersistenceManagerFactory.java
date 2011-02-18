@@ -131,22 +131,24 @@ public final class MyPersistenceManagerFactory {
 			UserServiceConfig service = result.get(0);
 			service.setEnabled(!service.isEnabled());
 			pm.makePersistent(service);
-			if( type == 0 ) {
-				List<UserSourceServiceConfig> sources = user.getSourceServices();
-				for( UserSourceServiceConfig src : sources ) {
-					if( src.getServiceAccessToken().equals( accessToken )) {
+			if (type == 0) {
+				List<UserSourceServiceConfig> sources = user
+						.getSourceServices();
+				for (UserSourceServiceConfig src : sources) {
+					if (src.getServiceAccessToken().equals(accessToken)) {
 						src.setEnabled(!src.isEnabled());
 					}
 				}
 			} else {
-				List<UserTargetServiceConfig> targets = user.getTargetServices();
-				for( UserTargetServiceConfig tgt : targets ) {
-					if( tgt.getServiceAccessToken().equals( accessToken )) {
+				List<UserTargetServiceConfig> targets = user
+						.getTargetServices();
+				for (UserTargetServiceConfig tgt : targets) {
+					if (tgt.getServiceAccessToken().equals(accessToken)) {
 						tgt.setEnabled(!tgt.isEnabled());
 					}
 				}
 			}
-			
+
 		} finally {
 			pm.close();
 		}
@@ -431,6 +433,31 @@ public final class MyPersistenceManagerFactory {
 			pm.close();
 		}
 		return conf;
+	}
+
+	public static boolean deleteOldUserTargetSource(String userServiceID,
+			String userEmail) {
+		PersistenceManagerFactory pmf = MyPersistenceManagerFactory
+				.getInstance();
+		PersistenceManager pm = pmf.getPersistenceManager();
+		try {
+			Query query = pm.newQuery(UserTargetServiceConfig.class);
+			query.setFilter("serviceUserId == currentServiceUserID");
+			query.setFilter("userEmail == userEmailAddress");
+
+			query.declareParameters("String currentServiceUserID, String userEmailAddress");
+			@SuppressWarnings("unchecked")
+			List<?> data = (List<?>) query.execute(userServiceID, userEmail);
+			if (data != null) {
+				log.info("Found target service:" + data.size());
+				pm.deletePersistentAll(data);
+				log.info("Target Service deleted.");
+				return true;
+			}
+			return false;
+		} finally {
+			pm.close();
+		}
 	}
 
 }

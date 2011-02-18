@@ -11,6 +11,7 @@ import java.util.Properties;
 import java.util.logging.Logger;
 
 import org.apache.commons.httpclient.HttpException;
+import org.json.JSONObject;
 
 import com.googlecode.flickr2twitter.core.GlobalDefaultConfiguration;
 import com.googlecode.flickr2twitter.impl.facebook.TargetServiceProviderFacebook;
@@ -57,6 +58,8 @@ public class FacebookUtil {
 	public static final String POST_STATUS_URL = "https://api.facebook.com/method/status.set?"
 			+ "status={0}&" + TOKEN_PARAM + "={1}&format=json";
 
+	public static final String USER_DETAIL_URL = "https://graph.facebook.com/me?access_token={0}";
+
 	public static String gaePostMessage(String message, String token)
 			throws HttpException, IOException {
 		// https://api.facebook.com/method/status.set?status=asdfasdfasdfasdfasdfasdfasdfasdf&access_token=199812620030608|2920b2600e1a0ac4f29428f4-100001872430428|tMMmzsAv_4noicwf6nQakNULrCQ&format=json
@@ -96,8 +99,7 @@ public class FacebookUtil {
 			log.info("Trying to generate user token using code " + code);
 
 			String fullURL = MessageFormat.format(TOKEN_URL, REDIRECT_URI_HOST
-					+ TargetServiceProviderFacebook.CALLBACK_URL,
-					code);
+					+ TargetServiceProviderFacebook.CALLBACK_URL, code);
 
 			log.info("Token Generation url: " + fullURL);
 
@@ -136,17 +138,22 @@ public class FacebookUtil {
 		return null;
 	}
 
-	public static String gaeDisplayName(String token) {
+	/**
+	 * get user details from facebook
+	 * 
+	 * @param token
+	 * @return a string array: user id, user name
+	 */
+	public static String[] gaeGetUserDetails(String token) {
 
 		StringBuffer sb = new StringBuffer();
 
 		try {
 			log.info("Trying to get user name using token " + token);
 
-			String fullURL = "https://graph.facebook.com/me?access_token="
-					+ token;
+			String fullURL = MessageFormat.format(USER_DETAIL_URL, token);
 
-			log.info("Token Generation url: " + fullURL);
+			log.info("User Detail url: " + fullURL);
 
 			URL url = new URL(fullURL);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
@@ -158,14 +165,19 @@ public class FacebookUtil {
 			}
 			reader.close();
 
-		} catch (MalformedURLException e) {
-		} catch (IOException e) {
+			String userDetailStr = sb.toString();
+			log.info("User Details from facebook:\r\n " + userDetailStr);
+
+			JSONObject jsonDetails = new JSONObject(userDetailStr);
+			String id = jsonDetails.getString("id");
+			String name = jsonDetails.getString("name");
+			return new String[] { id, name };
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
-		String tokenString = sb.toString();
-		log.info("me string from facebook:\r\n " + tokenString);
-
-		return null;
+		return new String[] { "FailedToRetrieveUserID", "DefaultFBUsername" };
 	}
 
 }

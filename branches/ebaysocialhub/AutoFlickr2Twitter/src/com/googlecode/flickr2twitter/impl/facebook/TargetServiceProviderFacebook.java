@@ -74,12 +74,23 @@ public class TargetServiceProviderFacebook implements ITargetServiceProvider {
 
 		StringBuffer buf = new StringBuffer();
 
-		for (UserTargetServiceConfig service : MyPersistenceManagerFactory
-				.getUserTargetServices(userEmail)) {
-			if (code.equals(service.getServiceAccessToken())) {
-				throw new IllegalArgumentException(
-						"Target already registered: " + ID);
-			}
+		log.info("Trying to retrieve user details from facebook....");
+		String token = FacebookUtil.gaeGetToken(code);
+		String[] userDetails = FacebookUtil.gaeGetUserDetails(token);
+
+		log.info("User details from facebook user id:\"" + userDetails[0]
+				+ "\", user name:\"" + userDetails[1] + "\"");
+
+		log.info("Trying to delete old facebook auth data for facebook user id:\""
+				+ userDetails[0] + "\", user name:\"" + userDetails[1] + "\"");
+
+		boolean deletedOldUser = MyPersistenceManagerFactory
+				.deleteOldUserTargetSource(userDetails[0], userEmail);
+
+		if (deletedOldUser == true) {
+			log.info("Found and deleted old user.");
+		} else {
+			log.info("No old user found.");
 		}
 
 		buf.append("Facebook Auth Code: " + code);
@@ -89,10 +100,11 @@ public class TargetServiceProviderFacebook implements ITargetServiceProvider {
 		service.setServiceProviderId(ID);
 		service.setServiceAccessToken(code);
 		service.setServiceTokenSecret("NO SECRET FOR THIS AUTH.");
-		service.setServiceUserId(user.getUserId().getEmail());
-		service.setUserEmail(user.getUserId().getEmail());
-		service.setServiceUserName("Display Name");
+		service.setServiceUserId(userDetails[0]);
+		service.setServiceUserName(userDetails[1]);
 		service.setUserSiteUrl("http://www.facebook.com");
+
+		service.setUserEmail(user.getUserId().getEmail());
 		MyPersistenceManagerFactory.addTargetServiceApp(userEmail, service);
 		log.info("Writing data to database done!");
 
