@@ -44,7 +44,6 @@ public class Login extends Activity {
 	private Button btnLogin;
 	private ImageButton btnOpenidGoogle;
 	private TextView txtUserScreenName;
-	
 
 
 	/**
@@ -153,7 +152,7 @@ public class Login extends Activity {
 					//txtUserScreenName.setText(user.toString());
 					Toast.makeText(Login.this, "Login Successful",Toast.LENGTH_LONG).show();
 					Intent i = new Intent(Login.this, UserProfileActivity.class);
-					i.putExtra("user", user);
+					i.putExtra(UserProfileActivity.TAG_USER, user);
 					startActivity(i);
 				} else{
 					txtUserScreenName.setText("Not Logged In");

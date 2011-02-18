@@ -12,6 +12,7 @@ import java.util.Map;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,6 +36,10 @@ import com.googlecode.flickr2twitter.services.rest.models.UserServiceConfigModel
 public class UserProfileActivity extends Activity {
 	public static final String TAG = "SocialHub";
 	private static final Map<String, Integer> ICON_MAP;
+	public static final String TAG_USER = "user";
+	
+	private static final String HEADER_SOURCE = "Authroized Source Services";
+	private static final String HEADER_TARGET = "Authroized Target Services";
 	
     private SectionedAdapter sourceAdapter;
 	
@@ -71,8 +76,8 @@ public class UserProfileActivity extends Activity {
 			Bundle extras = getIntent().getExtras();
 			UserModel user = null;
 			if (extras != null) {
-				if (extras.containsKey("user")) {
-					Object obj = extras.getSerializable("user");
+				if (extras.containsKey(TAG_USER)) {
+					Object obj = extras.getSerializable(TAG_USER);
 					if (obj instanceof UserModel) {
 						user = (UserModel)obj;
 					}
@@ -87,9 +92,9 @@ public class UserProfileActivity extends Activity {
 				@Override
 				public boolean onLongClick(View v) {
 					if (v instanceof TextView) {
-						TextView txtV = (TextView)v;
-						Toast.makeText(UserProfileActivity.this, txtV.getText(),
-								Toast.LENGTH_SHORT).show();
+						Intent i = new Intent(UserProfileActivity.this, AuthorizeActivity.class);
+						//i.putExtra(UserProfileActivity.TAG_USER, user);
+						UserProfileActivity.this.startActivity(i);
 						return true;
 					}
 					return false;
@@ -113,11 +118,11 @@ public class UserProfileActivity extends Activity {
 				}
 			};
 			
-			sourceAdapter.addSection("Authroized Source Services", new ItemAdapter(
+			sourceAdapter.addSection(HEADER_SOURCE, new ItemAdapter(
 					this, R.layout.row, 
 					new ArrayList<UserServiceConfigModel>(user.getSourceServices())));
 
-			sourceAdapter.addSection("Authroized Target Services", new ItemAdapter(
+			sourceAdapter.addSection(HEADER_TARGET, new ItemAdapter(
 					this, R.layout.row, new ArrayList<UserServiceConfigModel>(user.getTargetServices())));
 			
 			this.sourceServiceListView = (ListView)this.findViewById(R.id.sourceServiceList);
