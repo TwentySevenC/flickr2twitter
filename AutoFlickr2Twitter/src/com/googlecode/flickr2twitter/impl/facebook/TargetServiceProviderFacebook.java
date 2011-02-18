@@ -13,7 +13,6 @@ import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.googlecode.flickr2twitter.datastore.model.GlobalTargetApplicationService;
 import com.googlecode.flickr2twitter.datastore.model.User;
 import com.googlecode.flickr2twitter.datastore.model.UserTargetServiceConfig;
-import com.googlecode.flickr2twitter.facebook.FacebookUtil;
 import com.googlecode.flickr2twitter.intf.ITargetServiceProvider;
 import com.googlecode.flickr2twitter.model.IItem;
 import com.googlecode.flickr2twitter.model.IItemList;
@@ -22,6 +21,7 @@ import com.googlecode.flickr2twitter.model.IPhoto;
 import com.googlecode.flickr2twitter.model.IShortUrl;
 import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
 import com.googlecode.flickr2twitter.urlshorteners.BitLyUtils;
+import com.googlecode.flickr2twitter.utils.FacebookUtil;
 
 public class TargetServiceProviderFacebook implements ITargetServiceProvider {
 

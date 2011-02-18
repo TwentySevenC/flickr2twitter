@@ -1,4 +1,4 @@
-package com.googlecode.flickr2twitter.facebook;
+package com.googlecode.flickr2twitter.utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
