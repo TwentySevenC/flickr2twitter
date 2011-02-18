@@ -30,9 +30,9 @@ public class SystemInitializer implements ServletContextListener {
 	}
 
 	@Override
-	public void contextInitialized(ServletContextEvent arg0) {
+	public void contextInitialized(ServletContextEvent servletContextEvent) {
 		log.info("Initializing Twitter the World System.....");
-
+		
 		Properties props = GlobalDefaultConfiguration.getInstance()
 				.getProperties();
 		String adminEmail = props
