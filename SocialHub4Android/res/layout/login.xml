@@ -1,47 +1,57 @@
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent" android:layout_height="fill_parent"
-	android:stretchColumns="1">
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:gravity="top">
+		<TableLayout android:layout_width="fill_parent"
+			android:layout_height="fill_parent" android:stretchColumns="1">
 
-	<TableRow>
-		<TextView android:text="User Name: " android:id="@+id/TextView01"
-			android:layout_width="wrap_content" android:layout_height="wrap_content">
-		</TextView>
+			<TableRow>
+				<TextView android:text="User Name: " android:id="@+id/TextView01"
+					android:layout_width="wrap_content" android:layout_height="wrap_content">
+				</TextView>
 
-		<EditText android:text="" android:id="@+id/txtUname"
-			android:layout_width="fill_parent" android:layout_height="wrap_content">
-		</EditText>
-	</TableRow>
+				<EditText android:text="" android:id="@+id/txtUname"
+					android:layout_width="fill_parent" android:layout_height="wrap_content">
+				</EditText>
+			</TableRow>
 
+			<TableRow>
+				<TextView android:text="Password: " android:id="@+id/TextView02"
+					android:layout_width="wrap_content" android:layout_height="wrap_content">
+				</TextView>
+				<EditText android:text="" android:id="@+id/txtPwd"
+					android:layout_width="fill_parent" android:layout_height="wrap_content"
+					android:password="true">
+				</EditText>
+			</TableRow>
+			<TableRow android:layout_width="match_parent" android:gravity="right">
+				<LinearLayout android:layout_width="fill_parent"
+					android:layout_height="wrap_content" android:gravity="right">
+						<Button android:text="Login" android:id="@+id/btnLogin"
+							android:layout_height="wrap_content" android:layout_width="120dip">
+						</Button>
+				</LinearLayout>
+			</TableRow>
+		</TableLayout>
+	</LinearLayout>
+	<TableLayout android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:gravity="bottom">
+		<TableRow>
+			<TextView android:text="Login with OpenID"
+				android:layout_width="fill_parent" android:layout_height="wrap_content"></TextView>
+		</TableRow>
 
-	<TableRow>
-		<TextView android:text="Password: " android:id="@+id/TextView02"
-			android:layout_width="wrap_content" android:layout_height="wrap_content">
-		</TextView>
+		<TableRow android:gravity="center_horizontal">
+			<ImageButton android:layout_height="wrap_content"
+				android:id="@+id/btnOpenidGoogle" android:layout_width="fill_parent"
+				android:src="@drawable/google"></ImageButton>
+		</TableRow>
+		<TableRow>
+			<TextView android:text="Not Logged In" android:id="@+id/textLoginStatus"
+				android:layout_width="fill_parent" android:layout_height="wrap_content"></TextView>
+		</TableRow>
+	</TableLayout>
 
-
-		<EditText android:text="" android:id="@+id/txtPwd"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:password="true">
-		</EditText>
-	</TableRow>
-	<TableRow>
-		<Button android:text="Cancel" android:id="@+id/btnCancel"
-			android:layout_width="fill_parent" android:layout_height="wrap_content">
-		</Button>
-
-		<Button android:text="Login" android:id="@+id/btnLogin"
-			android:layout_width="fill_parent" android:layout_height="wrap_content">
-		</Button>
-	</TableRow>
-	<GridView android:id="@+id/gridView1" android:layout_width="wrap_content" android:layout_height="wrap_content"></GridView>
-	<GridView android:id="@+id/gridView2" android:layout_width="wrap_content" android:layout_height="wrap_content"></GridView>
-	<TableRow>
-		<TextView android:text="Login with OpenID" android:id="@+id/textView1" 
-		android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-		
-		<ImageButton android:layout_height="wrap_content" android:id="@+id/btnOpenidGoogle" 
-		android:layout_width="wrap_content" android:src="@drawable/google"></ImageButton>
-
-	</TableRow>
-	<TextView android:text="Not Logged In" android:id="@+id/txtUserScreenName" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-</TableLayout>
+</LinearLayout>

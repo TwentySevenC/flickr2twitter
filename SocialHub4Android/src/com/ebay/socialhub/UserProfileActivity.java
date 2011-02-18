@@ -22,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.googlecode.flickr2twitter.services.rest.models.UserModel;
 import com.googlecode.flickr2twitter.services.rest.models.UserServiceConfigModel;
@@ -113,6 +114,8 @@ public class UserProfileActivity extends Activity {
 			this.sourceServiceListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			    public void onItemClick(AdapterView<?> parent, View view,
 			        int position, long id) {
+			    	Object obj = sourceAdapter.getItem(position);
+			    	Toast.makeText(UserProfileActivity.this, String.valueOf(obj), Toast.LENGTH_SHORT).show();
 			    	/*UserServiceConfigModel serviceModel = sourceAdapter.items.get(position);
 					if (serviceModel != null && serviceModel.getUserSiteUrl() != null) {
 						UserProfileActivity.this.startActivity(
