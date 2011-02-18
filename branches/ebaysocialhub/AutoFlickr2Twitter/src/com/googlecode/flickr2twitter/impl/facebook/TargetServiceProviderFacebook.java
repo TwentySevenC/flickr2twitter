@@ -121,7 +121,7 @@ public class TargetServiceProviderFacebook implements ITargetServiceProvider {
 		result.setTargetAppConsumerId(FacebookUtil.APP_ID);
 		result.setTargetAppConsumerSecret(FacebookUtil.APP_SECRET);
 		result.setAuthPagePath(CALLBACK_URL);
-		result.setImagePath(null); // TODO set the default image path
+		result.setImagePath("/services/facebook/images/facebook_100.gif");
 		return result;
 	}
 

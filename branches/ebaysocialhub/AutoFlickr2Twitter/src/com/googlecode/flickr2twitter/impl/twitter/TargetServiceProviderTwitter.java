@@ -140,7 +140,7 @@ implements ITargetServiceProvider {
 		result.setTargetAppConsumerSecret(GlobalDefaultConfiguration
 				.getInstance().getTwitterConsumerSecret());
 		result.setAuthPagePath(CALLBACK_URL + "?" + KEY_SOURCE + "=" + Boolean.FALSE);
-		result.setImagePath(null); // TODO set the default image path
+		result.setImagePath("/services/twitter/images/twitter_100.gif");
 		return result;
 	}
 

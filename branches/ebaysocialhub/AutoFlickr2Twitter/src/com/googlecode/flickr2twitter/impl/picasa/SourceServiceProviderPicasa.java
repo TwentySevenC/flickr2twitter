@@ -207,7 +207,7 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 		result.setSourceAppApiKey(CONSUMER_KEY);
 		result.setSourceAppSecret(CONSUMER_SECRET);
 		result.setAuthPagePath(CALLBACK_URL);
-		result.setImagePath(null); // TODO set the default image path
+		result.setImagePath("/services/picasa/images/picasa_100.gif");
 		return result;
 	}
 

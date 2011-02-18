@@ -235,7 +235,7 @@ public class TargetServiceProviderSina implements ITargetServiceProvider {
 		result.setTargetAppConsumerId(Weibo.CONSUMER_KEY);
 		result.setTargetAppConsumerSecret(Weibo.CONSUMER_SECRET);
 		result.setAuthPagePath(CALLBACK_URL);
-		result.setImagePath(null); // TODO set the default image path
+		result.setImagePath("/services/sina/images/sina_100.gif");
 		return result;
 	}
 }

@@ -41,14 +41,14 @@
 						<p/>
 						<% if (sourceProvider instanceof IServiceAuthorizer) {%>
 						<a href="/oauth?<%=OAuthServlet.PARA_OPT%>=<%=OAuthServlet.OPT_AUTH_SOURCE%>&<%=OAuthServlet.PARA_PROVIDER_ID%>=<%=currentProviderID%>"
-							target="_new">Authorize <%=sourceApp.getAppName()%> Account </a>
+							target="_new"><img src="<%=sourceApp.getImagePath()%>" alt="<%=sourceApp.getDescription()%>"></a>
 						<% } else if (sourceProvider instanceof IConfigurableService) {
 							IConfigurableService configService = (IConfigurableService)sourceProvider;
 						%>
 						<a href="<%=configService.getConfigPagePath()%>"
-							target="_new">Configure <%=sourceApp.getAppName()%> Account </a>
+							target="_new"><img src="<%=sourceApp.getImagePath()%>" alt="<%=sourceApp.getDescription()%>"></a>
 						<%
-							}
+						   }
 						}
 						%>
 			<li>Target</li>
@@ -68,7 +68,7 @@
 					%>
 					<p/>
 					<a href="/oauth?<%=OAuthServlet.PARA_OPT%>=<%=OAuthServlet.OPT_AUTH_TARGET%>&<%=OAuthServlet.PARA_PROVIDER_ID%>=<%=currentProviderID%>"
-					target="_new">Authorize <%=targetApp.getAppName()%> Account </a>
+					target="_new"><img src="<%=targetApp.getImagePath()%>" alt="<%=targetApp.getDescription()%>"></a>
 					<%
 						}
 					%>
