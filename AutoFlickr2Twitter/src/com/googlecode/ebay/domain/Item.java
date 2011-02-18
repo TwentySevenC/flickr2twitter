@@ -3,11 +3,15 @@
  */
 package com.googlecode.ebay.domain;
 
+import java.io.Serializable;
+
 /**
  * @author hochen
  *
  */
-public class Item {
+public class Item implements Serializable{
+
+	private static final long serialVersionUID = -6124834259739272123L;
 	
 	private long itemId;
 	private String title;
