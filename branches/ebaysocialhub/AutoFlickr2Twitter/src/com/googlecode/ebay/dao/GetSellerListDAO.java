@@ -249,12 +249,12 @@ public class GetSellerListDAO {
 
 		Calendar currentTime = Calendar.getInstance();
 		
-		GetSellerListDAO sessionDao = new GetSellerListDAO();
+		GetSellerListDAO getSellerListDAO = new GetSellerListDAO();
 		System.out.println(
-				sessionDao.getSellerList(
+				getSellerListDAO.getSellerList(
 				false,
-				"ebaysjinternal",
-				"AgAAAA**AQAAAA**aAAAAA**xre1Sw**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFlYCjDpaGowudj6x9nY+seQ**AgAAAA**AAMAAA**DIWV/4lHrc6zyd2bHG+Y7H7wFMfkNM72DZNhtS8iwb/DBPJph72ORDyQtnuBDNeHZPs89atJAIFQBRM/bgNTl9BOyjlUcCJFPuf2mPI4q8904jW07I8kLx1hp5aVAtJ8Z4CsAuELGfVg+f7JaFdw2+4vOHvRCDK6v/o2ucDauhz/wchtpfTnZw6djKIrmaUvJNTt6/YI0C8a5VV91DDNFSgEbzPMZ6hsDntknFDgGkCLyGf5InwJLtXvtZ7UmJ/KX86Lm8i8bTGXRNjLuwPBtjhNLzGfRyTIYK2MdIkJd8mLO9NClwuwSNPqPR4o4XoprREun4cm5YRdtXZ8ZCY4fkK2nC3FuHrgFUq5mcrJzqeKCwbqGiGXotJAfd4aU07rSCsNcuto2w0Bg067rFQNeHRubjWyky0rksVsbdV1sdkD5sOHkyp85oFoKX8F9fLNCjgKy2KoKtzc4f1RYcZBtjRd57+ViWW2Hn8mK6Trqa+wFcJ3uhomvFQkbUiIIieAX6gBkYTmovQTYgiJ4vlyM5uhLf8/DstejnCctM/azwZj8VaS9yV8SVR51bmp2p1KAXkNbGU/eVKqNdxUw06BTJfJstfEycBzhchGzC4D7OERKzpS2e7VlhhIezL+8HWXKvSfzK1MqG/KWenb0Yv8evQ0WnymnzXKkTT7emy3daD5FSanavnUmsjwHqrm3eT/5q7G1CG8LUi/Lv2Bomwj0mkAzMXQDu6w7mOl6/EFhZssD8l5WX1vj61+pJGxiYDp", 
+				"eBay929a8-96bf-4ad8-a71c-94de77a7c9e",
+				"AgAAAA**AQAAAA**aAAAAA**NnMoSw**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFlYCjDpaGowudj6x9nY+seQ**eZwAAA**AAMAAA**K3QVcQZ8+oPZZR5TLygxtewZ3aQL4Ow0JKF1xFezrMp2T3ITZ9XK/avOy2qZxuPfsUjaV/+6SFTeGE2D+E8IkSB228hBuuDBlFKEG2ka3X9vbEjsF+EdDH9MlNZky1AZvBWXO5gZKZ15U/MARsIoQ6iewemP0sJqMPKtVu+IAI54BC5V5BDkY1DHRmYYS0HOxKOxYZdsHGbI2ULfPX54Oro+TsGnFazsa90weB9LeRF2YeKE3zoeDgHuFXPrjmqiIf82kDbFfOZMrJz5zexATCdTRlVSZXT499ZrZnKTc02xUPND0yF2Sm7mPjsW5nyo9mbYuOcxBAcblVsT2CTiY5t8DI1cvEoRa3iWG11KIRJ2/98UxBQqqrc+eE3I8W/FUoD51uG1ncSX7jKN9wjrTGhKLtmSjbKvzGHfgGeepoJY/OO6sian/oF4i6V8NbkrU9K2NcSEglmsOxQpQSkG9wZmR/qyly4aaQDa389D+9AS0tG8fJRohw7QJVuWK0a+aLdi1HiSKfwbiGl0ZbqTdEhJMF/HjK/gR0OTPtXPtem3JaO0MtNPrx1InnBo5NVRwZ7Mt9vZD8v3YfejLdSszVf5ay6f6fImWr+SeVhQfwHMMFKG0ltNWYQjOEuRKRqaIigAn+EhnMvAu+GoxK0CU+6jNxlIVMlV5nQdeuHt/OdZh52/qZUuUkvi8ZkAVdalWAGXoc+BXT/2IwZyy5hd9t4hTTnj9wmCs55xgp9vQXqoJa9e1JR+nhSV07L2qSNd", 
 				"eforcity", 
 				tenMinBeforecurrentTime.getTime(), 
 				currentTime.getTime(),
@@ -262,7 +262,7 @@ public class GetSellerListDAO {
 		
 
 		System.out.println(
-				sessionDao.getSellerList(
+				getSellerListDAO.getSellerList(
 				true,
 				"eBayb1609-29f8-4684-aadb-6ba5a05a182",
 				"AgAAAA**AQAAAA**aAAAAA**VyBeTQ**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wJnY+iAZeEqQ2dj6x9nY+seQ**rS0BAA**AAMAAA**aoGraHo8YuNvBclGXrIgdnxGZm7y5Hvm45WprtR0mG0ViRWk7xjw6P6rYtmUCUHP/4T+dYgt4jugQp8ZGzMpyYwd8H0Srf9dDS7lwMhwMkBL4RZ0UFvcbYCR1ukgXWlXWQ3PtGdjnBCAjacHlrGiwJr/XdlaBET/yNwyQpi3Qt0NMRhT0XAXjgaV+Me9SfvJ3oTY6U4vXj7Ui1K7OpUxPBPsg3RQ+PI055EttgYMe2Gw1z0RxxxETzruKX30g2KzvAx+SRF5jtoDECvl0eMJMN+pC8VOSLwQ8UBTsdds3GH+w+iS47fV0l3pvGOFlH/iJ0uIxM0cHGVctqUT246JBBp3Va1BDU3L9P78frLBzkReB8NHza020geqMf2oklt6mFb7gepfqVNvJEAF/SyRUC2CbuV1gYKXf2AAALazne6MNYP4H5EHb44eq3ncQx7P9QXkLOXQO+CT5AxxdrCwFfPh9E6ybqK1k4+vyBzKJEebLTZ1Q9cJBZy6iZ/hMO0YW3k2tcZOXwlI6E8xrQhW0nzrzv32a9uALTSFP+nS9ozFMEkR10HiDEZQlcba+Nm2T+8kJ2fFkzW5Tm741rIvrDkmSHP0I9nOqeUblrxv9lNMF+DFQyJShZEPd3Pn/NphDohhjcmdYEOFnnd2j6Xs2ojoS7BKplISME6we/eebk/W+7Xe1RJarStmJusrKcneYmTVlpK072bVaQcTdkSI4y10QcjbEG1ZVyaDm77b6XuEmDb8pHdXyQoStDNR30+J", 
