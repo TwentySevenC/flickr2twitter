@@ -31,6 +31,7 @@ import android.widget.Toast;
 
 import com.googlecode.flickr2twitter.services.rest.models.GlobalApplicationConfigModel;
 import com.googlecode.flickr2twitter.services.rest.models.GlobalSourceApplicationServiceModel;
+import com.googlecode.flickr2twitter.services.rest.models.GlobalTargetApplicationServiceModel;
 import com.googlecode.flickr2twitter.services.rest.models.ISociaHubResource;
 
 /**
@@ -71,7 +72,7 @@ public class AuthorizeActivity extends Activity {
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.authorize);
 			
-			new GetAvailableServicesTask().execute();
+			//new GetAvailableServicesTask().execute();
 			final OnLongClickListener longClickListener = new OnLongClickListener() {
 				
 				@Override
@@ -103,15 +104,33 @@ public class AuthorizeActivity extends Activity {
 				}
 			};
 			
-			/*servicesAdapter.addSection("Source Services", new ItemAdapter(
+			String authPagePath = null;
+			String configPagePath = null;
+			String imagePath = null;
+			String sourceAppApiKey = null;
+			String sourceAppSecret = null;
+			String targetAppConsumerId = null;
+			String targetAppConsumerSecret = null;
+			
+			List<GlobalApplicationConfigModel> sources = new ArrayList<GlobalApplicationConfigModel>();
+			sources.add(new GlobalSourceApplicationServiceModel("ebay", "eBay", "	The world's leading e-commerce site", authPagePath, configPagePath, imagePath, sourceAppApiKey, sourceAppSecret));
+			sources.add(new GlobalSourceApplicationServiceModel("flickr", "Flickr", "The world's leading online photo storage service ", authPagePath, configPagePath, imagePath, sourceAppApiKey, sourceAppSecret));
+			sources.add(new GlobalSourceApplicationServiceModel("picasa", "Picasa Web Album", "The Google's online photo storage service", authPagePath, configPagePath, imagePath, sourceAppApiKey, sourceAppSecret));
+			sources.add(new GlobalSourceApplicationServiceModel("youtube", "Youtube", "The Google's online video-sharing service", authPagePath, configPagePath, imagePath, sourceAppApiKey, sourceAppSecret));
+			List<GlobalApplicationConfigModel> targets = new ArrayList<GlobalApplicationConfigModel>();
+			targets.add(new GlobalTargetApplicationServiceModel("facebook", "Facebook", "Facebook Status service", authPagePath, configPagePath, imagePath, targetAppConsumerId, targetAppConsumerSecret));
+			targets.add(new GlobalTargetApplicationServiceModel("twitter", "Twitter", "The world's leading online micro-blog service", authPagePath, configPagePath, imagePath, targetAppConsumerId, targetAppConsumerSecret));
+			targets.add(new GlobalTargetApplicationServiceModel("Sina", "Sina MicroBlog", "The MaLeGeBi's leading online micro-blog service", authPagePath, configPagePath, imagePath, targetAppConsumerId, targetAppConsumerSecret));
+			
+			servicesAdapter.addSection("Source Services", new ItemAdapter(
 					this, R.layout.row, 
-					new ArrayList<GlobalApplicationConfigModel>()));
+					sources));
 
 			servicesAdapter.addSection("Target Services", new ItemAdapter(
-					this, R.layout.row, new ArrayList<GlobalApplicationConfigModel>()));*/
+					this, R.layout.row, targets));
 			
 			this.authorizeServiceListView = (ListView)this.findViewById(R.id.authorizeServiceList);
-			//authorizeServiceListView.setAdapter(this.servicesAdapter);
+			authorizeServiceListView.setAdapter(this.servicesAdapter);
 			this.authorizeServiceListView.setTextFilterEnabled(true);
 			
 
@@ -152,7 +171,7 @@ public class AuthorizeActivity extends Activity {
 			}
 			GlobalApplicationConfigModel serviceModel = items.get(position);
 			if (serviceModel != null) {
-				ImageView image = (ImageView) v.findViewById(R.id.serviceIcon);
+				ImageView image = (ImageView) v.findViewById(R.id.authorizeServiceIcon);
 				String providerId = serviceModel.getProviderId();
 				
 				if (providerId != null && ICON_MAP.containsKey(providerId.toLowerCase(Locale.US))) {
