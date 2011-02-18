@@ -1,5 +1,5 @@
 <%@ page language="java"
-	import="java.net.*,java.text.*,com.googlecode.flickr2twitter.facebook.*,com.googlecode.flickr2twitter.impl.facebook.*,com.googlecode.flickr2twitter.intf.*,com.googlecode.flickr2twitter.exceptions.*,com.googlecode.flickr2twitter.core.*,java.util.logging.*,com.google.gdata.client.http.AuthSubUtil,com.googlecode.flickr2twitter.datastore.*,com.googlecode.flickr2twitter.datastore.model.*,com.googlecode.flickr2twitter.servlet.*,java.util.*"
+	import="java.net.*,java.text.*,com.googlecode.flickr2twitter.utils.*,com.googlecode.flickr2twitter.impl.facebook.*,com.googlecode.flickr2twitter.intf.*,com.googlecode.flickr2twitter.exceptions.*,com.googlecode.flickr2twitter.core.*,java.util.logging.*,com.google.gdata.client.http.AuthSubUtil,com.googlecode.flickr2twitter.datastore.*,com.googlecode.flickr2twitter.datastore.model.*,com.googlecode.flickr2twitter.servlet.*,java.util.*"
 	contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 
