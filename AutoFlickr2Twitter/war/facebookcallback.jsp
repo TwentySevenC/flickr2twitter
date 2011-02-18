@@ -15,7 +15,7 @@
 
 	String token = request
 			.getParameter(TargetServiceProviderFacebook.PARA_CODE);
-	
+
 	out.print("The first place Code is: " + token + "\r\n");
 
 	log.info("Facebook Access Code: " + token);
@@ -41,7 +41,7 @@
 		} catch (Exception e) {
 			log.warning(e.toString());
 		}
-		
+
 		response.sendRedirect(IServiceAuthorizer.POST_AUTH_PAGE);
 	}
 %>
