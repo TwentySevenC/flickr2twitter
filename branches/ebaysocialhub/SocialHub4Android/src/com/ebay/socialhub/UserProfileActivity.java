@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -81,6 +82,19 @@ public class UserProfileActivity extends Activity {
 			this.txtUserName = (TextView)this.findViewById(R.id.userScreenName);
 			this.txtUserEmail = (TextView)this.findViewById(R.id.userEmail);
 			
+			final OnLongClickListener longClickListener = new OnLongClickListener() {
+				
+				@Override
+				public boolean onLongClick(View v) {
+					if (v instanceof TextView) {
+						TextView txtV = (TextView)v;
+						Toast.makeText(UserProfileActivity.this, txtV.getText(),
+								Toast.LENGTH_SHORT).show();
+						return true;
+					}
+					return false;
+				}
+			};
 			this.sourceAdapter = new SectionedAdapter() {
 
 				@Override
@@ -94,7 +108,7 @@ public class UserProfileActivity extends Activity {
 					}
 
 					result.setText(caption);
-
+					result.setOnLongClickListener(longClickListener);
 					return (result);
 				}
 			};

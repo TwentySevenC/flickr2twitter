@@ -38,7 +38,7 @@ abstract public class SectionedAdapter extends BaseAdapter {
 
 			int size = section.adapter.getCount() + 1;
 
-			if (position > 0) {
+			if (position < size) {
 				return (section.adapter.getItem(position - 1));
 			}
 
