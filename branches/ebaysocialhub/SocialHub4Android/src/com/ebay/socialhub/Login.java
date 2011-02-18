@@ -42,7 +42,6 @@ public class Login extends Activity {
 	private EditText txtUserName;
 	private EditText txtPassword;
 	private Button btnLogin;
-	private Button btnCancel;
 	private ImageButton btnOpenidGoogle;
 	private TextView txtUserScreenName;
 	
@@ -82,9 +81,8 @@ public class Login extends Activity {
 			txtUserName=(EditText)this.findViewById(R.id.txtUname);
 			txtPassword=(EditText)this.findViewById(R.id.txtPwd);
 			btnLogin=(Button)this.findViewById(R.id.btnLogin);
-			btnCancel=(Button)this.findViewById(R.id.btnCancel);
 			btnOpenidGoogle=(ImageButton)this.findViewById(R.id.btnOpenidGoogle);
-			txtUserScreenName = (TextView)this.findViewById(R.id.txtUserScreenName);
+			txtUserScreenName = (TextView)this.findViewById(R.id.textLoginStatus);
 
 			btnLogin.setOnClickListener(new OnClickListener() {
 
