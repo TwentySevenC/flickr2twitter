@@ -21,9 +21,7 @@
 	</TableLayout>
 	
 	<ListView android:id="@+id/sourceServiceList" android:layout_width="fill_parent"
-		android:layout_height="fill_parent" />
-	<ListView android:id="@+id/targetServiceList" android:layout_width="fill_parent"
-		android:layout_height="fill_parent" />
+		android:layout_height="fill_parent" android:drawSelectorOnTop="true" />
 	<TextView android:id="@+id/android:empty"
 		android:layout_width="fill_parent" android:layout_height="fill_parent"
 		android:text="@string/main_no_items" />
