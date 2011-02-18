@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.restlet.resource.Delete;
+import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 import org.restlet.resource.ServerResource;
@@ -24,6 +25,7 @@ import com.googlecode.flickr2twitter.datastore.model.UserTargetServiceConfig;
 import com.googlecode.flickr2twitter.intf.ISourceServiceProvider;
 import com.googlecode.flickr2twitter.intf.ITargetServiceProvider;
 import com.googlecode.flickr2twitter.model.IItem;
+import com.googlecode.flickr2twitter.services.rest.models.GlobalApplicationConfigModel;
 import com.googlecode.flickr2twitter.services.rest.models.GlobalSourceApplicationServiceModel;
 import com.googlecode.flickr2twitter.services.rest.models.GlobalTargetApplicationServiceModel;
 import com.googlecode.flickr2twitter.services.rest.models.ISociaHubResource;
@@ -43,6 +45,18 @@ public class SocialHubServerResource extends ServerResource implements ISociaHub
 	 */
 	public SocialHubServerResource() {
 		super();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.googlecode.flickr2twitter.services.rest.models.ISociaHubResource#getSupportedServiceProviders()
+	 */
+	@Get
+	public List<GlobalApplicationConfigModel> getSupportedServiceProviders() {
+		final List<GlobalApplicationConfigModel> data = new ArrayList<GlobalApplicationConfigModel>();
+		data.addAll(getSupportedSourceServiceProviders());
+		data.addAll(getSupportedTargetServiceProviders());
+		log.info("Retrieving supported service providers -> " + data);
+		return data;
 	}
 
 	@Post
@@ -116,7 +130,7 @@ public class SocialHubServerResource extends ServerResource implements ISociaHub
 	/* (non-Javadoc)
 	 * @see com.googlecode.flickr2twitter.services.rest.models.ISociaHubResource#getSupportedTargetServiceProviders()
 	 */
-	@Override
+	@Get
 	public List<GlobalTargetApplicationServiceModel> getSupportedTargetServiceProviders() {
 		final List<GlobalTargetApplicationServiceModel> data = 
 			new ArrayList<GlobalTargetApplicationServiceModel>();
@@ -140,7 +154,7 @@ public class SocialHubServerResource extends ServerResource implements ISociaHub
 	/* (non-Javadoc)
 	 * @see com.googlecode.flickr2twitter.services.rest.models.ISociaHubResource#getSupportedSourceServiceProviders()
 	 */
-	@Override
+	@Get
 	public List<GlobalSourceApplicationServiceModel> getSupportedSourceServiceProviders() {
 		final List<GlobalSourceApplicationServiceModel> data = 
 			new ArrayList<GlobalSourceApplicationServiceModel>();
@@ -176,7 +190,7 @@ public class SocialHubServerResource extends ServerResource implements ISociaHub
 	/* (non-Javadoc)
 	 * @see com.googlecode.flickr2twitter.services.rest.models.ISociaHubResource#getUserSourceServiceConfigs(java.lang.String)
 	 */
-	@Override
+	@Post
 	public List<UserSourceServiceConfigModel> getUserSourceServiceConfigs(
 			String userEmail) {
 		return convertSourceData(MyPersistenceManagerFactory.getUserSourceServices(userEmail));
@@ -185,7 +199,7 @@ public class SocialHubServerResource extends ServerResource implements ISociaHub
 	/* (non-Javadoc)
 	 * @see com.googlecode.flickr2twitter.services.rest.models.ISociaHubResource#addUserSourceServiceConfig(java.lang.String, com.googlecode.flickr2twitter.services.rest.models.UserSourceServiceConfigModel)
 	 */
-	@Override
+	@Post
 	public boolean addUserSourceServiceConfig(String userEmail,
 			UserSourceServiceConfigModel sourceServiceConfig) {
 		if (sourceServiceConfig != null) {
@@ -225,7 +239,7 @@ public class SocialHubServerResource extends ServerResource implements ISociaHub
 	/* (non-Javadoc)
 	 * @see com.googlecode.flickr2twitter.services.rest.models.ISociaHubResource#getUserTargetServiceConfigs(java.lang.String)
 	 */
-	@Override
+	@Post
 	public List<UserTargetServiceConfigModel> getUserTargetServiceConfigs(
 			String userEmail) {
 		return convertTargetData(MyPersistenceManagerFactory.getUserTargetServices(userEmail));
@@ -234,7 +248,7 @@ public class SocialHubServerResource extends ServerResource implements ISociaHub
 	/* (non-Javadoc)
 	 * @see com.googlecode.flickr2twitter.services.rest.models.ISociaHubResource#addUserTargetServiceConfig(java.lang.String, com.googlecode.flickr2twitter.services.rest.models.UserTargetServiceConfigModel)
 	 */
-	@Override
+	@Post
 	public boolean addUserTargetServiceConfig(String userEmail,
 			UserTargetServiceConfigModel targetServiceConfig) {
 		if (targetServiceConfig != null) {
