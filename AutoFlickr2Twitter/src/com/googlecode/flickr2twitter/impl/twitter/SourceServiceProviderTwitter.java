@@ -111,7 +111,7 @@ implements ISourceServiceProvider<IItem>, IAdminServiceProvider, IServiceAuthori
 		result.setSourceAppSecret(GlobalDefaultConfiguration
 				.getInstance().getTwitterConsumerSecret());
 		result.setAuthPagePath("source" + CALLBACK_URL);
-		result.setImagePath(null); // TODO set the default image path
+		result.setImagePath("/services/twitter/images/twitter_100.gif");
 		return result;
 	}
 

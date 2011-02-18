@@ -55,7 +55,7 @@ public class SourceServiceProviderEbay implements ISourceServiceProvider<IItem>,
 		result.setSourceAppSecret("hello world again");
 		result.setAuthPagePath(null);
 		result.setConfigPagePath(PAGE_NAME_CONFIG);
-		result.setImagePath(null); // TODO set the default image path
+		result.setImagePath("/services/ebay/images/ebay_100.gif");
 		return result;
 	}
 
