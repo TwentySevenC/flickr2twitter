@@ -287,7 +287,7 @@ public class GetSellerListDAO {
 		Date now = Calendar.getInstance().getTime();
 		
 //		return getSellerList(true, APP_ID_SANDBOX, TOKEN_SANDBOX, userId, from, 
-		return getSellerList(false, APP_ID_SANDBOX, TOKEN_SANDBOX, EFORCITY, from, 
+		return getSellerList(false, APP_ID_SANDBOX, TOKEN_SANDBOX, userId, from, 
 				now, 100);
 	}
 
