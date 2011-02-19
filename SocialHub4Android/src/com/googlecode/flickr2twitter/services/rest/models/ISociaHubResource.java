@@ -20,7 +20,7 @@ public interface ISociaHubResource {
 	 * @return
 	 */
 	@Get
-	public List<GlobalApplicationConfigModel> getSupportedServiceProviders();
+	public GlobalApplicationConfigModelList getSupportedServiceProviders();
 	
 	/**
 	 * @return
