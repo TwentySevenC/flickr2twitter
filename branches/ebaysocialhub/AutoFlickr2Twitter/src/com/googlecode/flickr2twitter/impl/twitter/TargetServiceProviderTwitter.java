@@ -26,6 +26,7 @@ import com.googlecode.flickr2twitter.model.IGeoItem;
 import com.googlecode.flickr2twitter.model.IItem;
 import com.googlecode.flickr2twitter.model.IItemList;
 import com.googlecode.flickr2twitter.model.IMedia;
+import com.googlecode.flickr2twitter.model.IMsgItem;
 import com.googlecode.flickr2twitter.model.IPhoto;
 import com.googlecode.flickr2twitter.model.IShortUrl;
 import com.googlecode.flickr2twitter.urlshorteners.BitLyUtils;
@@ -69,6 +70,7 @@ implements ITargetServiceProvider {
 				globalAppConfig.getTargetAppConsumerId(),
 				globalAppConfig.getTargetAppConsumerSecret(), accessToken);
 		Twitter twitter = new TwitterFactory().getInstance(auth);
+		
 		for (IItemList<IItem> itemList : items) {
 			log.info("Processing items from: " + itemList.getListTitle());
 			for (IItem item : itemList.getItems()) {
@@ -84,6 +86,7 @@ implements ITargetServiceProvider {
 									.getGeoData().getLongitude());
 						}
 					}
+					
 					String message = null;
 					if (item instanceof IPhoto) {
 						IPhoto photo = (IPhoto) item;
@@ -105,12 +108,16 @@ implements ITargetServiceProvider {
 							url = BitLyUtils.shortenUrl(media.getUrl());
 						}
 						message += " " + url;
+					} else if (item instanceof IMsgItem) {
+						IMsgItem msgItem = (IMsgItem) item;
+						message = msgItem.getMessage();
 					}
+					
 					if (message != null) {
 						try {
-							Status status = geoLoc == null ? twitter
-									.updateStatus(message) : twitter.updateStatus(
-											message, geoLoc);
+							Status status = geoLoc == null ? 
+												twitter.updateStatus(message) : 
+												twitter.updateStatus(message, geoLoc);
 									log.info("Successfully updated the status ["
 											+ status.getText() + "] to user @"
 											+ targetConfig.getServiceUserName());

@@ -109,7 +109,7 @@ public class YoutubeVideo implements IVideo {
 	/* (non-Javadoc)
 	 * @see com.googlecode.flickr2twitter.model.IItem#setDescription(java.lang.String)
 	 */
-	@Override
+//	@Override
 	public void setDescription(String description) {
 		// TODO Auto-generated method stub
 
@@ -118,7 +118,7 @@ public class YoutubeVideo implements IVideo {
 	/* (non-Javadoc)
 	 * @see com.googlecode.flickr2twitter.model.IItem#setId(java.lang.String)
 	 */
-	@Override
+//	@Override
 	public void setId(String id) {
 		// TODO Auto-generated method stub
 
@@ -127,7 +127,7 @@ public class YoutubeVideo implements IVideo {
 	/* (non-Javadoc)
 	 * @see com.googlecode.flickr2twitter.model.IItem#setTitle(java.lang.String)
 	 */
-	@Override
+//	@Override
 	public void setTitle(String title) {
 		// TODO Auto-generated method stub
 

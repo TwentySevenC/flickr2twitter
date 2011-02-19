@@ -24,7 +24,7 @@ public class FlickrBaseEncoder {
 				return url;
 			}
 		}
-		String suffix = FlickrBaseEncoder.encode(Long.parseLong(id));
+		String suffix = encode(Long.parseLong(id));
 		url = FLICKR_SHORT_URL_PREFIX + suffix;
 		return url;
 	}

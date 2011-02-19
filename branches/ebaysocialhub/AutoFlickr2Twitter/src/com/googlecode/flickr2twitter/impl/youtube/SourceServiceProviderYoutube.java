@@ -9,7 +9,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 import java.util.logging.Logger;
 
 import com.google.api.client.googleapis.auth.authsub.AuthSubSingleUseTokenRequestUrl;
@@ -17,7 +16,6 @@ import com.google.gdata.client.youtube.YouTubeService;
 import com.google.gdata.data.youtube.UserProfileEntry;
 import com.google.gdata.data.youtube.VideoEntry;
 import com.google.gdata.data.youtube.VideoFeed;
-import com.googlecode.flickr2twitter.core.ServiceRunner;
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.googlecode.flickr2twitter.datastore.model.GlobalServiceConfiguration;
 import com.googlecode.flickr2twitter.datastore.model.GlobalSourceApplicationService;
@@ -25,8 +23,8 @@ import com.googlecode.flickr2twitter.datastore.model.User;
 import com.googlecode.flickr2twitter.datastore.model.UserSourceServiceConfig;
 import com.googlecode.flickr2twitter.exceptions.TokenAlreadyRegisteredException;
 import com.googlecode.flickr2twitter.impl.youtube.model.YoutubeVideo;
+import com.googlecode.flickr2twitter.intf.BaseSourceProvider;
 import com.googlecode.flickr2twitter.intf.IServiceAuthorizer;
-import com.googlecode.flickr2twitter.intf.ISourceServiceProvider;
 import com.googlecode.flickr2twitter.model.IVideo;
 import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
 
@@ -34,7 +32,7 @@ import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
  * @author Toby Yu(yuyang226@gmail.com)
  *
  */
-public class SourceServiceProviderYoutube implements ISourceServiceProvider<IVideo>, IServiceAuthorizer {
+public class SourceServiceProviderYoutube extends BaseSourceProvider<IVideo> implements  IServiceAuthorizer {
 	public static final String ID = "youtube";
 	public static final String DISPLAY_NAME = "Youtube";
 	
@@ -72,10 +70,8 @@ public class SourceServiceProviderYoutube implements ISourceServiceProvider<IVid
 		String sessionToken = sourceService.getServiceAccessToken();
 		youtubeService.setAuthSubToken(sessionToken);
 		
-		Calendar past = Calendar.getInstance(TimeZone.getTimeZone(ServiceRunner.TIMEZONE_UTC));
-		long newTime = currentTime - globalConfig.getMinUploadTime();
-		past.setTimeInMillis(newTime);
-
+		Calendar past = getFromTime(globalConfig, currentTime);
+			
 		URL feedUrl = new URL(URL_ACTIVITIES);
 		VideoFeed videoFeed = youtubeService.getFeed(feedUrl, VideoFeed.class);
 

@@ -99,9 +99,13 @@ public class SourceServiceProviderFlickr implements
 		Calendar cstTime = Calendar.getInstance(TimeZone.getTimeZone(TIMEZONE_GMT));
 		cstTime.setTimeInMillis(currentTime);
 		log.info("Converted current time: " + cstTime.getTime());
+		
+//		Calendar past = getFromTime(globalConfig, currentTime);
+			
 		Calendar past = Calendar.getInstance(TimeZone.getTimeZone(TIMEZONE_GMT));
 		long newTime = cstTime.getTime().getTime() - interval;
 		past.setTimeInMillis(newTime);
+		
 		PhotoList list = photosFace.recentlyUpdated(past.getTime(), extras, 100,
 				1);
 		
