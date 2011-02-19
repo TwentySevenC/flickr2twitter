@@ -132,8 +132,7 @@ public class SocialHubServerResource extends ServerResource implements ISociaHub
 	/* (non-Javadoc)
 	 * @see com.googlecode.flickr2twitter.services.rest.models.ISociaHubResource#getSupportedTargetServiceProviders()
 	 */
-	@Get
-	public List<GlobalTargetApplicationServiceModel> getSupportedTargetServiceProviders() {
+	private List<GlobalTargetApplicationServiceModel> getSupportedTargetServiceProviders() {
 		final List<GlobalTargetApplicationServiceModel> data = 
 			new ArrayList<GlobalTargetApplicationServiceModel>();
 		for (ITargetServiceProvider targetProvider : ServiceFactory.getAllTargetProviders()) {
@@ -156,8 +155,7 @@ public class SocialHubServerResource extends ServerResource implements ISociaHub
 	/* (non-Javadoc)
 	 * @see com.googlecode.flickr2twitter.services.rest.models.ISociaHubResource#getSupportedSourceServiceProviders()
 	 */
-	@Get
-	public List<GlobalSourceApplicationServiceModel> getSupportedSourceServiceProviders() {
+	private List<GlobalSourceApplicationServiceModel> getSupportedSourceServiceProviders() {
 		final List<GlobalSourceApplicationServiceModel> data = 
 			new ArrayList<GlobalSourceApplicationServiceModel>();
 		for (ISourceServiceProvider<IItem> srcProvider : ServiceFactory.getAllSourceProviders()) {

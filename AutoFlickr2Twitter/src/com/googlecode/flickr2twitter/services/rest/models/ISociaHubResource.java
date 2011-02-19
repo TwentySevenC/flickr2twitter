@@ -22,18 +22,6 @@ public interface ISociaHubResource {
 	@Get
 	public GlobalApplicationConfigModelList getSupportedServiceProviders();
 	
-	/**
-	 * @return
-	 */
-	@Get
-	public List<GlobalSourceApplicationServiceModel> getSupportedSourceServiceProviders();
-	
-	/**
-	 * @return
-	 */
-	@Get
-	public List<GlobalTargetApplicationServiceModel> getSupportedTargetServiceProviders();
-	
 	@Post
 	public List<UserSourceServiceConfigModel> getUserSourceServiceConfigs(String userEmail);
 	
