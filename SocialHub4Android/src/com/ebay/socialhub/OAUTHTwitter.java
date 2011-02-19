@@ -18,8 +18,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
-public class OAUTH extends Activity {
-	private static final String TAG = "OAUTH";
+public class OAUTHTwitter extends Activity {
+	private static final String TAG = "OAUTHTwitter";
 
 	public static final String USER_TOKEN = "user_token";
 	public static final String USER_SECRET = "user_secret";
@@ -79,8 +79,8 @@ public class OAUTH extends Activity {
 
 			Uri uri = getIntent().getData();
 			if (uri != null && CALLBACK_URI.getScheme().equals(uri.getScheme())) {
-				String token = mSettings.getString(OAUTH.REQUEST_TOKEN, null);
-				String secret = mSettings.getString(OAUTH.REQUEST_SECRET, null);
+				String token = mSettings.getString(OAUTHTwitter.REQUEST_TOKEN, null);
+				String secret = mSettings.getString(OAUTHTwitter.REQUEST_SECRET, null);
 				Intent i = new Intent(this, SocialHub.class); // Currently, how we get back to main activity.
 
 				try {
@@ -100,9 +100,9 @@ public class OAUTH extends Activity {
 					// Now we can retrieve the goodies
 					token = mConsumer.getToken();
 					secret = mConsumer.getTokenSecret();
-					OAUTH.saveAuthInformation(mSettings, token, secret);
+					OAUTHTwitter.saveAuthInformation(mSettings, token, secret);
 					// Clear the request stuff, now that we have the real thing
-					OAUTH.saveRequestInformation(mSettings, null, null);
+					OAUTHTwitter.saveRequestInformation(mSettings, null, null);
 					i.putExtra(USER_TOKEN, token);
 					i.putExtra(USER_SECRET, secret);
 				} catch (OAuthMessageSignerException e) {
@@ -127,19 +127,19 @@ public class OAUTH extends Activity {
 		// null means to clear the old values
 		SharedPreferences.Editor editor = settings.edit();
 		if(token == null) {
-			editor.remove(OAUTH.REQUEST_TOKEN);
+			editor.remove(OAUTHTwitter.REQUEST_TOKEN);
 			Log.d(TAG, "Clearing Request Token");
 		}
 		else {
-			editor.putString(OAUTH.REQUEST_TOKEN, token);
+			editor.putString(OAUTHTwitter.REQUEST_TOKEN, token);
 			Log.d(TAG, "Saving Request Token: " + token);
 		}
 		if (secret == null) {
-			editor.remove(OAUTH.REQUEST_SECRET);
+			editor.remove(OAUTHTwitter.REQUEST_SECRET);
 			Log.d(TAG, "Clearing Request Secret");
 		}
 		else {
-			editor.putString(OAUTH.REQUEST_SECRET, secret);
+			editor.putString(OAUTHTwitter.REQUEST_SECRET, secret);
 			Log.d(TAG, "Saving Request Secret: " + secret);
 		}
 		editor.commit();
@@ -150,19 +150,19 @@ public class OAUTH extends Activity {
 		// null means to clear the old values
 		SharedPreferences.Editor editor = settings.edit();
 		if(token == null) {
-			editor.remove(OAUTH.USER_TOKEN);
+			editor.remove(OAUTHTwitter.USER_TOKEN);
 			Log.d(TAG, "Clearing OAuth Token");
 		}
 		else {
-			editor.putString(OAUTH.USER_TOKEN, token);
+			editor.putString(OAUTHTwitter.USER_TOKEN, token);
 			Log.d(TAG, "Saving OAuth Token: " + token);
 		}
 		if (secret == null) {
-			editor.remove(OAUTH.USER_SECRET);
+			editor.remove(OAUTHTwitter.USER_SECRET);
 			Log.d(TAG, "Clearing OAuth Secret");
 		}
 		else {
-			editor.putString(OAUTH.USER_SECRET, secret);
+			editor.putString(OAUTHTwitter.USER_SECRET, secret);
 			Log.d(TAG, "Saving OAuth Secret: " + secret);
 		}
 		editor.commit();

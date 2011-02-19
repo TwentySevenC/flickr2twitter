@@ -30,7 +30,7 @@
         <activity android:name="SocialHub"
 			android:label="@string/app_name">
         </activity>
-        <activity android:name="OAUTH"
+        <activity android:name="OAUTHTwitter"
 			android:label="@string/oauth_name">
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW" />
