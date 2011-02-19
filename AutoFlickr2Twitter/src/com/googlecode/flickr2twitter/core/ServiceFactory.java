@@ -5,7 +5,7 @@ package com.googlecode.flickr2twitter.core;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -40,15 +40,15 @@ public class ServiceFactory {
 	private static final Collection<ITargetServiceProvider> TARGET_PROVIDERS_List;
 
 	private static final Class<?>[] PROVIDER_CLASSES = {
-			SourceServiceProviderFlickr.class, SourceServiceProviderPicasa.class, 
-			SourceServiceProviderTwitter.class, SourceServiceProviderYoutube.class,
-			SourceServiceProviderEbay.class, 
-			TargetServiceProviderTwitter.class, TargetServiceProviderSina.class, TargetServiceProviderFacebook.class};
+		SourceServiceProviderEbay.class, SourceServiceProviderFlickr.class, 
+		SourceServiceProviderPicasa.class, SourceServiceProviderTwitter.class, 
+		SourceServiceProviderYoutube.class,	TargetServiceProviderFacebook.class,
+		TargetServiceProviderTwitter.class, TargetServiceProviderSina.class};
 
 	static {
-		Map<String, ISourceServiceProvider<IItem>> sourceData = new HashMap<String, ISourceServiceProvider<IItem>>(
+		Map<String, ISourceServiceProvider<IItem>> sourceData = new LinkedHashMap<String, ISourceServiceProvider<IItem>>(
 				2);
-		Map<String, ITargetServiceProvider> targetData = new HashMap<String, ITargetServiceProvider>(
+		Map<String, ITargetServiceProvider> targetData = new LinkedHashMap<String, ITargetServiceProvider>(
 				5);
 
 		for (Class<?> _class : PROVIDER_CLASSES) {

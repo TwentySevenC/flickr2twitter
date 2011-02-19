@@ -14,7 +14,7 @@
 	<%@ include file="header.jsp"%>
 	<div id="content">
 		<%
-			if(signedIn) {
+			if(user != null && signedIn) {
 				boolean isAdmin = MyPersistenceManagerFactory.Permission.ADMIN.name().equals(user.getPermission());
 		%>
 		<div id="left">
