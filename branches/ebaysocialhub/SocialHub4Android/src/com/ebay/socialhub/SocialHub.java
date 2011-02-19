@@ -123,7 +123,7 @@ public class SocialHub extends ListActivity implements OnClickListener {
 			mImage = (ImageView) this.findViewById(R.id.imageView1);
 			mButton.setOnClickListener(this);
 			mCB.setOnClickListener(this);
-			mSettings = getSharedPreferences(OAUTH.PREFS, Context.MODE_PRIVATE);
+			mSettings = getSharedPreferences(OAUTHTwitter.PREFS, Context.MODE_PRIVATE);
 			mConsumer = new CommonsHttpOAuthConsumer(
 					Keys.TWITTER_CONSUMER_KEY, 
 					Keys.TWITTER_CONSUMER_SECRET);
@@ -140,9 +140,9 @@ public class SocialHub extends ListActivity implements OnClickListener {
 			super.onResume();
 
 			// We look for saved user keys
-			if(mSettings.contains(OAUTH.USER_TOKEN) && mSettings.contains(OAUTH.USER_SECRET)) {
-				mToken = mSettings.getString(OAUTH.USER_TOKEN, null);
-				mSecret = mSettings.getString(OAUTH.USER_SECRET, null);
+			if(mSettings.contains(OAUTHTwitter.USER_TOKEN) && mSettings.contains(OAUTHTwitter.USER_SECRET)) {
+				mToken = mSettings.getString(OAUTHTwitter.USER_TOKEN, null);
+				mSecret = mSettings.getString(OAUTHTwitter.USER_SECRET, null);
 				if(!(mToken == null || mSecret == null)) {
 					mConsumer.setTokenWithSecret(mToken, mSecret);
 				}
@@ -161,10 +161,10 @@ public class SocialHub extends ListActivity implements OnClickListener {
 	public void onClick(View v) {
 		if(mCB.equals(v)) {
 			if(mCB.isChecked()) {
-				Intent i = new Intent(this, OAUTH.class);
+				Intent i = new Intent(this, OAUTHTwitter.class);
 				startActivity(i);
 			} else {
-				OAUTH.saveAuthInformation(mSettings, null, null);
+				OAUTHTwitter.saveAuthInformation(mSettings, null, null);
 				mButton.setEnabled(false);
 				mEditor.setEnabled(false);
 				mCB.setChecked(false);
