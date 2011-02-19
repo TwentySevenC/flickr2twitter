@@ -71,6 +71,9 @@ public class SourceServiceProviderEbay extends BaseSourceProvider<IItem>implemen
 			
 		List<EbayItem> ebayItems = dao.getSellerListFromSandBox(sellerId, past.getTime());
 		
+		log.info("get updated recently from ebay.com");
+		log.info("find " + ebayItems.size() + " items updated recently");
+		
 		return convert(ebayItems);
 	}
 
@@ -80,6 +83,7 @@ public class SourceServiceProviderEbay extends BaseSourceProvider<IItem>implemen
 			IItem itm = new EbayItemAdapter(each);
 			items.add(itm);
 		}
+		
 		return items;
 	}
 

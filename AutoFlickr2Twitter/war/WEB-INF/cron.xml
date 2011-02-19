@@ -3,6 +3,6 @@
   <cron>
     <url>/tasks/recheck</url>
     <description>Run the service with the specified time interval</description>
-    <schedule>every 10 minutes</schedule>
+    <schedule>every 1 minutes</schedule>
   </cron>
 </cronentries>
