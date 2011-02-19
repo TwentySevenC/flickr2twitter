@@ -49,13 +49,13 @@ public class AuthorizeActivity extends Activity {
 	
 	static {
 		Map<String, Integer> map = new HashMap<String, Integer>();
-		map.put("flickr", R.drawable.flickr_32);
-		map.put("youtube", R.drawable.youtube_32);
-		map.put("facebook", R.drawable.facebook_32);
-		map.put("twitter", R.drawable.twitter_32);
-		map.put("picasa", R.drawable.picasa_32);
-		map.put("ebay", R.drawable.ebay_32);
-		map.put("sina", R.drawable.sina_32);
+		map.put("flickr", R.drawable.flickr_64);
+		map.put("youtube", R.drawable.youtube_64);
+		map.put("facebook", R.drawable.facebook_64);
+		map.put("twitter", R.drawable.twitter_64);
+		map.put("picasa", R.drawable.picasa_64);
+		map.put("ebay", R.drawable.ebay_64);
+		map.put("sina", R.drawable.sina_64);
 		
 		ICON_MAP = Collections.unmodifiableMap(map);
 	}
