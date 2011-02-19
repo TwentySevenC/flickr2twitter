@@ -26,6 +26,7 @@ import com.googlecode.flickr2twitter.intf.ISourceServiceProvider;
 import com.googlecode.flickr2twitter.intf.ITargetServiceProvider;
 import com.googlecode.flickr2twitter.model.IItem;
 import com.googlecode.flickr2twitter.services.rest.models.GlobalApplicationConfigModel;
+import com.googlecode.flickr2twitter.services.rest.models.GlobalApplicationConfigModelList;
 import com.googlecode.flickr2twitter.services.rest.models.GlobalSourceApplicationServiceModel;
 import com.googlecode.flickr2twitter.services.rest.models.GlobalTargetApplicationServiceModel;
 import com.googlecode.flickr2twitter.services.rest.models.ISociaHubResource;
@@ -51,12 +52,13 @@ public class SocialHubServerResource extends ServerResource implements ISociaHub
 	 * @see com.googlecode.flickr2twitter.services.rest.models.ISociaHubResource#getSupportedServiceProviders()
 	 */
 	@Get
-	public List<GlobalApplicationConfigModel> getSupportedServiceProviders() {
+	public GlobalApplicationConfigModelList getSupportedServiceProviders() {
 		final List<GlobalApplicationConfigModel> data = new ArrayList<GlobalApplicationConfigModel>();
 		data.addAll(getSupportedSourceServiceProviders());
 		data.addAll(getSupportedTargetServiceProviders());
-		log.info("Retrieving supported service providers -> " + data);
-		return data;
+		GlobalApplicationConfigModelList list = new GlobalApplicationConfigModelList(data);
+		log.info("Retrieving supported service providers -> " + list);
+		return list;
 	}
 
 	@Post
