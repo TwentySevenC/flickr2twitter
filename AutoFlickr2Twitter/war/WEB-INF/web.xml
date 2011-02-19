@@ -74,6 +74,15 @@
 		<servlet-name>srctgtmgr</servlet-name>
 		<url-pattern>/srctgtmgr</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>ebayConfig</servlet-name>
+		<servlet-class>com.googlecode.flickr2twitter.servlet.EbayConfigServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ebayConfig</servlet-name>
+		<url-pattern>/ebayConfig</url-pattern>
+	</servlet-mapping>
 
 	<security-constraint>
 		<web-resource-collection>
