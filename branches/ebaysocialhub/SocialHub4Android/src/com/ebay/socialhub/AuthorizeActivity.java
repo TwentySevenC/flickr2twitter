@@ -105,35 +105,8 @@ public class AuthorizeActivity extends Activity {
 				}
 			};
 			
-			/*String authPagePath = null;
-			String configPagePath = null;
-			String imagePath = null;
-			String sourceAppApiKey = null;
-			String sourceAppSecret = null;
-			String targetAppConsumerId = null;
-			String targetAppConsumerSecret = null;*/
-			
-			List<GlobalApplicationConfigModel> sources = new ArrayList<GlobalApplicationConfigModel>();
-			/*sources.add(new GlobalSourceApplicationServiceModel("ebay", "eBay", "	The world's leading e-commerce site", authPagePath, configPagePath, imagePath, sourceAppApiKey, sourceAppSecret));
-			sources.add(new GlobalSourceApplicationServiceModel("flickr", "Flickr", "The world's leading online photo storage service ", authPagePath, configPagePath, imagePath, sourceAppApiKey, sourceAppSecret));
-			sources.add(new GlobalSourceApplicationServiceModel("picasa", "Picasa Web Album", "The Google's online photo storage service", authPagePath, configPagePath, imagePath, sourceAppApiKey, sourceAppSecret));
-			sources.add(new GlobalSourceApplicationServiceModel("youtube", "Youtube", "The Google's online video-sharing service", authPagePath, configPagePath, imagePath, sourceAppApiKey, sourceAppSecret));*/
-			List<GlobalApplicationConfigModel> targets = new ArrayList<GlobalApplicationConfigModel>();
-			/*targets.add(new GlobalTargetApplicationServiceModel("facebook", "Facebook", "Facebook Status service", authPagePath, configPagePath, imagePath, targetAppConsumerId, targetAppConsumerSecret));
-			targets.add(new GlobalTargetApplicationServiceModel("twitter", "Twitter", "The world's leading online micro-blog service", authPagePath, configPagePath, imagePath, targetAppConsumerId, targetAppConsumerSecret));
-			targets.add(new GlobalTargetApplicationServiceModel("Sina", "Sina MicroBlog", "The MaLeGeBi's leading online micro-blog service", authPagePath, configPagePath, imagePath, targetAppConsumerId, targetAppConsumerSecret));*/
-			
-			/*servicesAdapter.addSection("Source Services", new ItemAdapter(
-					this, R.layout.row, 
-					sources));
-
-			servicesAdapter.addSection("Target Services", new ItemAdapter(
-					this, R.layout.row, targets));*/
-			
 			this.authorizeServiceListView = (ListView)this.findViewById(R.id.authorizeServiceList);
-			//authorizeServiceListView.setAdapter(this.servicesAdapter);
 			this.authorizeServiceListView.setTextFilterEnabled(true);
-			
 
 			this.authorizeServiceListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			    public void onItemClick(AdapterView<?> parent, View view,
@@ -163,6 +136,13 @@ public class AuthorizeActivity extends Activity {
 			this.items = objects;
 		}
 		
+		/* (non-Javadoc)
+		 * @see android.widget.BaseAdapter#getViewTypeCount()
+		 */
+		@Override
+		public int getViewTypeCount() {
+			return items != null ? items.size() : 0;
+		}
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			View v = convertView;
