@@ -72,6 +72,25 @@ public class GetSellerListDAO {
 	String EBAY_API_SERVER = "api.ebay.com";
 	String EBAY_API_PATH = "/wsapi";
 	
+	String msg1 = "<soapenv:Envelope xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">" 
+   + "<soapenv:Header>"
+   + "<RequesterCredentials soapenv:mustUnderstand=\"0\" xmlns=\"urn:ebay:apis:eBLBaseComponents\">"
+   + "  <ebl:eBayAuthToken xmlns:ebl=\"urn:ebay:apis:eBLBaseComponents\">AgAAAA**AQAAAA**aAAAAA**VyBeTQ**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wJnY+iAZeEqQ2dj6x9nY+seQ**rS0BAA**AAMAAA**aoGraHo8YuNvBclGXrIgdnxGZm7y5Hvm45WprtR0mG0ViRWk7xjw6P6rYtmUCUHP/4T+dYgt4jugQp8ZGzMpyYwd8H0Srf9dDS7lwMhwMkBL4RZ0UFvcbYCR1ukgXWlXWQ3PtGdjnBCAjacHlrGiwJr/XdlaBET/yNwyQpi3Qt0NMRhT0XAXjgaV+Me9SfvJ3oTY6U4vXj7Ui1K7OpUxPBPsg3RQ+PI055EttgYMe2Gw1z0RxxxETzruKX30g2KzvAx+SRF5jtoDECvl0eMJMN+pC8VOSLwQ8UBTsdds3GH+w+iS47fV0l3pvGOFlH/iJ0uIxM0cHGVctqUT246JBBp3Va1BDU3L9P78frLBzkReB8NHza020geqMf2oklt6mFb7gepfqVNvJEAF/SyRUC2CbuV1gYKXf2AAALazne6MNYP4H5EHb44eq3ncQx7P9QXkLOXQO+CT5AxxdrCwFfPh9E6ybqK1k4+vyBzKJEebLTZ1Q9cJBZy6iZ/hMO0YW3k2tcZOXwlI6E8xrQhW0nzrzv32a9uALTSFP+nS9ozFMEkR10HiDEZQlcba+Nm2T+8kJ2fFkzW5Tm741rIvrDkmSHP0I9nOqeUblrxv9lNMF+DFQyJShZEPd3Pn/NphDohhjcmdYEOFnnd2j6Xs2ojoS7BKplISME6we/eebk/W+7Xe1RJarStmJusrKcneYmTVlpK072bVaQcTdkSI4y10QcjbEG1ZVyaDm77b6XuEmDb8pHdXyQoStDNR30+J</ebl:eBayAuthToken>"
+    + "</RequesterCredentials>"
+  +" </soapenv:Header>"
+  +" <soapenv:Body>"
+  + "   <GetSellerListRequest xmlns=\"urn:ebay:apis:eBLBaseComponents\">"
+  + "    <DetailLevel>ReturnAll</DetailLevel>"
+  + "    <Version>711</Version>"
+  + "    <UserID>eforcity</UserID>"
+  + "    <StartTimeFrom>2011-02-18 17:14:01</StartTimeFrom>"
+  + "    <StartTimeTo>2011-02-19 17:14:01</StartTimeTo>"
+  + "    <Pagination>"
+  + "      <EntriesPerPage>2</EntriesPerPage>"
+  + "    </Pagination>"
+  + "  </GetSellerListRequest>"
+  + "</soapenv:Body>"
+  + "</soapenv:Envelope>";
 	
 	public List<EbayItem> getSellerList(
 			boolean isSandbox,
@@ -91,7 +110,7 @@ public class GetSellerListDAO {
 		parameters.put("client", "Nemo");
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 
 
 		
@@ -244,7 +263,6 @@ public class GetSellerListDAO {
 		Calendar tenMinBeforecurrentTime = Calendar.getInstance();
 		tenMinBeforecurrentTime.add(Calendar.HOUR, -10);
 		
-
 		Calendar currentTime = Calendar.getInstance();
 		
 		GetSellerListDAO sessionDao = new GetSellerListDAO();
@@ -253,8 +271,9 @@ public class GetSellerListDAO {
 		System.out.println(
 				sessionDao.getSellerList(
 				false,
-				"ebaysjinternal",
-				"AgAAAA**AQAAAA**aAAAAA**xre1Sw**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFlYCjDpaGowudj6x9nY+seQ**AgAAAA**AAMAAA**DIWV/4lHrc6zyd2bHG+Y7H7wFMfkNM72DZNhtS8iwb/DBPJph72ORDyQtnuBDNeHZPs89atJAIFQBRM/bgNTl9BOyjlUcCJFPuf2mPI4q8904jW07I8kLx1hp5aVAtJ8Z4CsAuELGfVg+f7JaFdw2+4vOHvRCDK6v/o2ucDauhz/wchtpfTnZw6djKIrmaUvJNTt6/YI0C8a5VV91DDNFSgEbzPMZ6hsDntknFDgGkCLyGf5InwJLtXvtZ7UmJ/KX86Lm8i8bTGXRNjLuwPBtjhNLzGfRyTIYK2MdIkJd8mLO9NClwuwSNPqPR4o4XoprREun4cm5YRdtXZ8ZCY4fkK2nC3FuHrgFUq5mcrJzqeKCwbqGiGXotJAfd4aU07rSCsNcuto2w0Bg067rFQNeHRubjWyky0rksVsbdV1sdkD5sOHkyp85oFoKX8F9fLNCjgKy2KoKtzc4f1RYcZBtjRd57+ViWW2Hn8mK6Trqa+wFcJ3uhomvFQkbUiIIieAX6gBkYTmovQTYgiJ4vlyM5uhLf8/DstejnCctM/azwZj8VaS9yV8SVR51bmp2p1KAXkNbGU/eVKqNdxUw06BTJfJstfEycBzhchGzC4D7OERKzpS2e7VlhhIezL+8HWXKvSfzK1MqG/KWenb0Yv8evQ0WnymnzXKkTT7emy3daD5FSanavnUmsjwHqrm3eT/5q7G1CG8LUi/Lv2Bomwj0mkAzMXQDu6w7mOl6/EFhZssD8l5WX1vj61+pJGxiYDp", 
+				EFORCITY,
+//				"ebaysjinternal",
+				TOKEN,
 				EFORCITY,
 				tenMinBeforecurrentTime.getTime(), 
 				currentTime.getTime(),
@@ -262,16 +281,16 @@ public class GetSellerListDAO {
 		
 
 		System.out.println("*************** from sandBox");
-		System.out.println(
-				sessionDao.getSellerList(
-				true,
-				APP_ID_SANDBOX,
-				TOKEN_SANDBOX, 
-				"tuser1", 
-				//"testuser_sandboxfgofh",
-				tenMinBeforecurrentTime.getTime(), 
-				currentTime.getTime(),
-				20));
+//		System.out.println(
+//				sessionDao.getSellerList(
+//				true,
+//				APP_ID_SANDBOX,
+//				TOKEN_SANDBOX, 
+//				"tuser1", 
+//				//"testuser_sandboxfgofh",
+//				tenMinBeforecurrentTime.getTime(), 
+//				currentTime.getTime(),
+//				20));
 	}
 
 	private static final String EFORCITY = "eforcity" ; 
@@ -281,14 +300,20 @@ public class GetSellerListDAO {
 	private static final String TOKEN_SANDBOX=
 				"AgAAAA**AQAAAA**aAAAAA**VyBeTQ**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wJnY+iAZeEqQ2dj6x9nY+seQ**rS0BAA**AAMAAA**aoGraHo8YuNvBclGXrIgdnxGZm7y5Hvm45WprtR0mG0ViRWk7xjw6P6rYtmUCUHP/4T+dYgt4jugQp8ZGzMpyYwd8H0Srf9dDS7lwMhwMkBL4RZ0UFvcbYCR1ukgXWlXWQ3PtGdjnBCAjacHlrGiwJr/XdlaBET/yNwyQpi3Qt0NMRhT0XAXjgaV+Me9SfvJ3oTY6U4vXj7Ui1K7OpUxPBPsg3RQ+PI055EttgYMe2Gw1z0RxxxETzruKX30g2KzvAx+SRF5jtoDECvl0eMJMN+pC8VOSLwQ8UBTsdds3GH+w+iS47fV0l3pvGOFlH/iJ0uIxM0cHGVctqUT246JBBp3Va1BDU3L9P78frLBzkReB8NHza020geqMf2oklt6mFb7gepfqVNvJEAF/SyRUC2CbuV1gYKXf2AAALazne6MNYP4H5EHb44eq3ncQx7P9QXkLOXQO+CT5AxxdrCwFfPh9E6ybqK1k4+vyBzKJEebLTZ1Q9cJBZy6iZ/hMO0YW3k2tcZOXwlI6E8xrQhW0nzrzv32a9uALTSFP+nS9ozFMEkR10HiDEZQlcba+Nm2T+8kJ2fFkzW5Tm741rIvrDkmSHP0I9nOqeUblrxv9lNMF+DFQyJShZEPd3Pn/NphDohhjcmdYEOFnnd2j6Xs2ojoS7BKplISME6we/eebk/W+7Xe1RJarStmJusrKcneYmTVlpK072bVaQcTdkSI4y10QcjbEG1ZVyaDm77b6XuEmDb8pHdXyQoStDNR30+J"; 
 	
+	private static final String TOKEN = 
+				"AgAAAA**AQAAAA**aAAAAA**xre1Sw**nY+sHZ2PrBmdj6wVnY+sEZ2PrA2dj6wFlYCjDpaGowudj6x9nY+seQ**AgAAAA**AAMAAA**DIWV/4lHrc6zyd2bHG+Y7H7wFMfkNM72DZNhtS8iwb/DBPJph72ORDyQtnuBDNeHZPs89atJAIFQBRM/bgNTl9BOyjlUcCJFPuf2mPI4q8904jW07I8kLx1hp5aVAtJ8Z4CsAuELGfVg+f7JaFdw2+4vOHvRCDK6v/o2ucDauhz/wchtpfTnZw6djKIrmaUvJNTt6/YI0C8a5VV91DDNFSgEbzPMZ6hsDntknFDgGkCLyGf5InwJLtXvtZ7UmJ/KX86Lm8i8bTGXRNjLuwPBtjhNLzGfRyTIYK2MdIkJd8mLO9NClwuwSNPqPR4o4XoprREun4cm5YRdtXZ8ZCY4fkK2nC3FuHrgFUq5mcrJzqeKCwbqGiGXotJAfd4aU07rSCsNcuto2w0Bg067rFQNeHRubjWyky0rksVsbdV1sdkD5sOHkyp85oFoKX8F9fLNCjgKy2KoKtzc4f1RYcZBtjRd57+ViWW2Hn8mK6Trqa+wFcJ3uhomvFQkbUiIIieAX6gBkYTmovQTYgiJ4vlyM5uhLf8/DstejnCctM/azwZj8VaS9yV8SVR51bmp2p1KAXkNbGU/eVKqNdxUw06BTJfJstfEycBzhchGzC4D7OERKzpS2e7VlhhIezL+8HWXKvSfzK1MqG/KWenb0Yv8evQ0WnymnzXKkTT7emy3daD5FSanavnUmsjwHqrm3eT/5q7G1CG8LUi/Lv2Bomwj0mkAzMXQDu6w7mOl6/EFhZssD8l5WX1vj61+pJGxiYDp"; 
 	public List<EbayItem> getSellerListFromSandBox(
 			String userId,
 			Date from) throws IOException, SAXException {
 		Date now = Calendar.getInstance().getTime();
 		
 //		return getSellerList(true, APP_ID_SANDBOX, TOKEN_SANDBOX, userId, from, 
-		return getSellerList(false, APP_ID_SANDBOX, TOKEN_SANDBOX, userId, from, 
-				now, 100);
+
+		Calendar past = Calendar.getInstance();
+		past.add(Calendar.HOUR, -24);
+//		from=past.getTime();
+		return getSellerList(false, APP_ID_SANDBOX, TOKEN, userId, from, 
+				now, 2);
 	}
 
 }
