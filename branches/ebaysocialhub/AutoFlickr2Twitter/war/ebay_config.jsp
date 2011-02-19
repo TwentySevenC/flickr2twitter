@@ -12,14 +12,25 @@
 	<%@ include file="header.jsp"%>
 	<div id="content">
 		<div id="left">
-		<h1>About flickr2twitter</h1>
-		<p>
-		<img src="images/help.jpg"/><br/>
-		Please visit our <a href="http://code.google.com/p/flickr2twitter/">project site</a> and <a href="http://groups.google.com/group/flickr2twitter">Project discussion group</a>.
-		</p>
+			<ul>
+				<li><h3>Set the Seller's ID you want to follow</h3></li>
+				<form action="/ebayConfig" method="post" name="frmEbay">
+					<table class="border_table">
+						<tr>
+							<td>Seller Id:</td>
+							<td>
+								<input type="text" name="<%=EbayConfigServlet.PARA_SELLER_ID%>"/>
+							</td>
+						</tr>
+						<tr>
+				            <td>
+				            	<input type="submit" value="OK"/>
+				            </td>
+				        </tr>
+					</table>
+				</form>
+			</ul>
 		</div>
-
-		<%@ include file="right.jsp"%>
 	</div>
 	<%@ include file="footer.jsp"%>
 </div>
