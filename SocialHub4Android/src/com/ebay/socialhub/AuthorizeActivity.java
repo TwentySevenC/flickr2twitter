@@ -32,7 +32,6 @@ import android.widget.Toast;
 import com.googlecode.flickr2twitter.services.rest.models.GlobalApplicationConfigModel;
 import com.googlecode.flickr2twitter.services.rest.models.GlobalApplicationConfigModelList;
 import com.googlecode.flickr2twitter.services.rest.models.GlobalSourceApplicationServiceModel;
-import com.googlecode.flickr2twitter.services.rest.models.GlobalTargetApplicationServiceModel;
 import com.googlecode.flickr2twitter.services.rest.models.ISociaHubResource;
 
 /**
@@ -44,6 +43,8 @@ public class AuthorizeActivity extends Activity {
 	private static final Map<String, Integer> ICON_MAP;
 	
     private SectionedAdapter servicesAdapter;
+    
+    public static final String SERVICES_ID = "serviceProviders";
 	
 	private ListView authorizeServiceListView;
 	
@@ -73,7 +74,6 @@ public class AuthorizeActivity extends Activity {
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.authorize);
 			
-			new GetAvailableServicesTask().execute();
 			final OnLongClickListener longClickListener = new OnLongClickListener() {
 				
 				@Override
@@ -108,6 +108,12 @@ public class AuthorizeActivity extends Activity {
 			this.authorizeServiceListView = (ListView)this.findViewById(R.id.authorizeServiceList);
 			this.authorizeServiceListView.setTextFilterEnabled(true);
 
+			if (getIntent().hasExtra(SERVICES_ID)) {
+				setListData((GlobalApplicationConfigModelList)getIntent().getExtras().getSerializable(SERVICES_ID));
+			} else {
+				new GetAvailableServicesTask().execute();
+			}
+			
 			this.authorizeServiceListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			    public void onItemClick(AdapterView<?> parent, View view,
 			        int position, long id) {
@@ -171,7 +177,32 @@ public class AuthorizeActivity extends Activity {
 		}
 	}
 	
-	private class GetAvailableServicesTask extends AsyncTask<Void, Void, List<GlobalApplicationConfigModel>> {
+	private void setListData(GlobalApplicationConfigModelList models) {
+		if(models != null && models.getGlobalAppConfigModels() != null) {
+			List<GlobalApplicationConfigModel> sources = 
+				new ArrayList<GlobalApplicationConfigModel>();
+			List<GlobalApplicationConfigModel> targets = 
+				new ArrayList<GlobalApplicationConfigModel>();
+			
+			for (GlobalApplicationConfigModel model : models.getGlobalAppConfigModels()) {
+				if (model instanceof GlobalSourceApplicationServiceModel) {
+					sources.add(model);
+				} else {
+					targets.add(model);
+				}
+			}
+			AuthorizeActivity.this.servicesAdapter.addSection("Source Services", new ItemAdapter(
+					AuthorizeActivity.this, R.layout.row, 
+					sources));
+
+			AuthorizeActivity.this.servicesAdapter.addSection("Target Services", new ItemAdapter(
+					AuthorizeActivity.this, R.layout.row, targets));
+			authorizeServiceListView.setAdapter(AuthorizeActivity.this.servicesAdapter);
+			AuthorizeActivity.this.getIntent().putExtra(SERVICES_ID, models);
+		}
+	}
+	
+	private class GetAvailableServicesTask extends AsyncTask<Void, Void, GlobalApplicationConfigModelList> {
 		ProgressDialog authDialog;
 		 
 		@Override
@@ -187,45 +218,22 @@ public class AuthorizeActivity extends Activity {
 		 * @see android.os.AsyncTask#doInBackground(Params[])
 		 */
 		@Override
-		protected List<GlobalApplicationConfigModel> doInBackground(Void... arg0) {
+		protected GlobalApplicationConfigModelList doInBackground(Void... arg0) {
 			try {
 				ClientResource cr = new ClientResource(Login.SERVER_LOCATION);
 				ISociaHubResource resource = cr.wrap(ISociaHubResource.class);
-				GlobalApplicationConfigModelList models = resource.getSupportedServiceProviders();
-				if (models != null) {
-					return models.getGlobalAppConfigModels();
-				}
+				return resource.getSupportedServiceProviders();
 			} catch (Exception e) {
 				Log.e(TAG, e.toString(), e);
 			}
-			return Collections.emptyList();
+			return null;
 		}
 		
 		
-		protected void onPostExecute(List<GlobalApplicationConfigModel> models) {
+		protected void onPostExecute(GlobalApplicationConfigModelList models) {
 			try {
 				authDialog.dismiss();
-				if(models != null && models.isEmpty() == false){
-					List<GlobalApplicationConfigModel> sources = 
-						new ArrayList<GlobalApplicationConfigModel>();
-					List<GlobalApplicationConfigModel> targets = 
-						new ArrayList<GlobalApplicationConfigModel>();
-					
-					for (GlobalApplicationConfigModel model : models) {
-						if (model instanceof GlobalSourceApplicationServiceModel) {
-							sources.add(model);
-						} else {
-							targets.add(model);
-						}
-					}
-					AuthorizeActivity.this.servicesAdapter.addSection("Source Services", new ItemAdapter(
-							AuthorizeActivity.this, R.layout.row, 
-							sources));
-
-					AuthorizeActivity.this.servicesAdapter.addSection("Target Services", new ItemAdapter(
-							AuthorizeActivity.this, R.layout.row, targets));
-					authorizeServiceListView.setAdapter(AuthorizeActivity.this.servicesAdapter);
-				}
+				setListData(models);
 			} catch (Exception e) {
 				Log.e(TAG, e.toString(), e);
 			}
