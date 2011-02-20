@@ -14,51 +14,49 @@
 		<%
 			if(!signedIn) {
 		%>
+		<h1>Welcome to SocialHub</h1>
+		<hr/>
+		<p>You need to sign in first, if you don't have an account here yet, you can use your google or yahoo account to sign in directly.</p>
 		<div id="left">
-			<h1>Welcome to SocialHub</h1>
-			<p>You need to sign in first, if you don't have an account here yet, you can use your google or yahoo account to sign in directly.</p>
-			<p/>
 			<form action="/userOperation" method="post" name="frmSign">
 				<table class="border_table">
 					<tr>
-						<td>User Name:</td>
+						<td class="first">User Name:</td>
 						<td><input type="text" name="<%=UserAccountServlet.PARA_EMAIL%>"></input></td>
 					</tr>
 					<tr>
 						<td>Password:</td>
 						<td><input type="password" name="<%=UserAccountServlet.PARA_PASSWORD%>"></input><input
 							type="hidden" name="<%=UserAccountServlet.PARA_OPT%>" value="<%=UserAccountServlet.OPT_LOGIN%>"></input></td>
-
+	
 					</tr>
 					<tr>
 						<td></td>
 						<td>
-							<a href="#" onclick="frmSign.submit();"><img src="images/signin_Button.jpg"/></a>
+							<a href="#" onclick="frmSign.submit();"><img src="/images/button_signin.png" alt=""/></a>
 						</td>
 					</tr>
 				</table>
 			</form>
-			<p>Or sign in with open ID account:</p>
-			<a href="/openid?op=Google" ><img border="0" src="http://openid.net/images/get-logos/google.png" alt="Google"></a><br/>
-			<a href="/openid?op=Yahoo" ><img border="0" src="http://openid.net/wordpress-content/uploads/2009/11/yahoo.png" alt="Yahoo"></a>
-			<p/>
+		</div>
+		<div id="right">
+		<p>
+			<a href="/openid?op=Google" ><img border="0" src="http://openid.net/images/get-logos/google.png" alt="Google"/></a><br/><br/>
+			<a href="/openid?op=Yahoo" ><img border="0" src="http://openid.net/wordpress-content/uploads/2009/11/yahoo.png" alt="Yahoo"/></a>
+		</p>
 		</div>
 		<%
 		} else { //user already signed in.
 		%>
-		<div id="left">
-			<h1>Welcome to SocialHub, <%=user.getScreenName()%>.</h1>
-			<p>Now you can authorize your source and target account if you have not done so, or you can manage your accounts.</p>
-			<p/>
-			<p/>
-			<hr/>
-			<p/>
-			<a href="logout.jsp" class="signoutbutton">Exit</a>			
-		</div>
+		<h1>Welcome to SocialHub, <%=user.getScreenName()%>.</h1>
+		<hr/>
+		<p>Now you can authorize your source and target account if you have not done so, or you can manage your accounts.</p>
+		<p>
+			<a href="logout.jsp"><img src="/images/button_logout.png" alt=""/></a>
+		</p>
 		<%
 		}
 		%>
-		<%@ include file="right.jsp"%>
 	</div>
 	<%@ include file="footer.jsp"%>
 </div>

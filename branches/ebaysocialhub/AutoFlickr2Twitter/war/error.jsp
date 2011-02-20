@@ -21,7 +21,6 @@
 		<%= exception.getMessage() %>
 		</p>
 		</div>
-		<%@ include file="right.jsp"%>
 	</div>
 	<%@ include file="footer.jsp"%>
 </div>

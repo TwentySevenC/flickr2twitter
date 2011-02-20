@@ -25,53 +25,70 @@
 				.getUserTargetServices(user);
 	%>
 	<div id="content">
-		<div id="left">
-		<h1>Manage your accounts</h1>
-		<p>
-		<ul>
-		<li>Source</li>
-		<p/>
-		<table class="nobordertable" width="100%">
-		<%
-			boolean odd = true;
-			for( UserSourceServiceConfig src : sourceSvcs ) {
-		%>
-			<tr>
-				<td width="60%" <%if(odd) {%>bgcolor="#CDCDCD"<%}else{%>bgcolor="AEAEAE"<%}%>>
-					<a target="_new" href="<%=src.getUserSiteUrl()%>"><%=src.getServiceUserName()%>@<%=src.getServiceProviderId().toUpperCase()%></a>
-				</td>
-				<td <%if(odd) {%>bgcolor="#CDCDCD"<%}else{%>bgcolor="AEAEAE"<%}%>>
-					<a href="srctgtmgr?at=<%=src.getServiceAccessToken()%>&type=0"><%=src.isEnabled()?"Disable":"Enable"%>
-				</td>
-			</tr>
-		<%
-			odd = !odd;
-			}
-		%>
-		</table><p/>
-		<li>Target</li>
-		<p/>
-		<table class="nobordertable" width="100%"><p/>
-		<%
-			for( UserTargetServiceConfig tgt : targetSvcs ) {
-		%>
-			<tr>
-				<td width="60%" <%if(odd) {%>bgcolor="#CDCDCD"<%}else{%>bgcolor="AEAEAE"<%}%>>
-					<a target="_new" href="<%=tgt.getUserSiteUrl()%>"><%=tgt.getServiceUserName()%>@<%=tgt.getServiceProviderId().toUpperCase()%></a>
-				</td>
-				<td <%if(odd) {%>bgcolor="#CDCDCD"<%}else{%>bgcolor="AEAEAE"<%}%>>
-					<a href="srctgtmgr?at=<%=tgt.getServiceAccessToken()%>&type=1"><%=tgt.isEnabled()?"Disable":"Enable"%>
-				</td>
-			</tr>
-		<%
-			odd = !odd;
-			}
-		%>
-		</ul>
-		</table><p/>
+		<h1>Manage Accounts</h1>
+		<hr/>
+		<div id="middle">
+			<img src="/images/group_source.png" alt=""/>
+			<br/>
+			<br/>
+			<table class="no_border_table">
+			<%
+				boolean odd = true;
+				if ( sourceSvcs.size() == 0 ) {
+			%>
+				<tr>
+					<td class="first" bgcolor="#85a157"/>
+					<td bgcolor="#85a157"/>
+				</tr>
+			<%
+				odd = false;
+				}
+				for( UserSourceServiceConfig src : sourceSvcs ) {
+			%>
+				<tr>
+					<td <%if(odd) {%>bgcolor="#85a157"<%}else{%>bgcolor="#FEBE43"<%}%>>
+						<a target="_new" href="<%=src.getUserSiteUrl()%>"><%=src.getServiceUserName()%>@<%=src.getServiceProviderId().toUpperCase()%></a>
+					</td>
+					<td <%if(odd) {%>bgcolor="#85a157"<%}else{%>bgcolor="#FEBE43"<%}%>>
+						<a href="srctgtmgr?at=<%=src.getServiceAccessToken()%>&type=0"><%=src.isEnabled()?"Disable":"Enable"%></a>
+					</td>
+				</tr>
+			<%
+				odd = !odd;
+				}
+			%>
+			</table>
+			<p/>
+			<img src="/images/group_target.png" alt=""/>
+			<br/>
+			<table class="no_border_table">
+			<%
+				odd = true;
+				if ( targetSvcs.size() == 0 ) {
+			%>
+				<tr>
+					<td class="first" bgcolor="#85a157"/>
+					<td bgcolor="#85a157"/>
+				</tr>
+			<%
+				odd = false;
+				}
+				for( UserTargetServiceConfig tgt : targetSvcs ) {
+			%>
+				<tr>
+					<td <%if(odd) {%>bgcolor="#85a157"<%}else{%>bgcolor="#FEBE43"<%}%>>
+						<a target="_new" href="<%=tgt.getUserSiteUrl()%>"><%=tgt.getServiceUserName()%>@<%=tgt.getServiceProviderId().toUpperCase()%></a>
+					</td>
+					<td <%if(odd) {%>bgcolor="#85a157"<%}else{%>bgcolor="#FEBE43"<%}%>>
+						<a href="srctgtmgr?at=<%=tgt.getServiceAccessToken()%>&type=1"><%=tgt.isEnabled()?"Disable":"Enable"%></a>
+					</td>
+				</tr>
+			<%
+				odd = !odd;
+				}
+			%>
+			</table>
 		</div>
-
-		<%@ include file="right.jsp"%>
 	</div>
 	<%@ include file="footer.jsp"%>
 </div>

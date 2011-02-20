@@ -2,8 +2,6 @@
                                                                  com.googlecode.flickr2twitter.datastore.model.*,
                                                                  com.googlecode.flickr2twitter.servlet.*"
         contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -21,42 +19,36 @@
 		<%
 			if(signedIn) {
 		%>
+		<h1>Create a User Account</h1>
+		<hr/>
 		<div id="left">
-			<ul>
-			<li><h3>Create an User Account</h3></li>
-			
-			
-			<form action="/userOperation" method="post">
-			<table>
-			
-			        <tr>
-			                <td>User Name *:</td>
-			                <td><input type="text" name="<%=UserAccountServlet.PARA_EMAIL%>"></input></td>
-			        </tr>
-			        <tr>
-			                <td>Display Name:</td>
-			                <td><input type="text" name="<%=UserAccountServlet.PARA_SCREEN_NAME%>"></input></td>
-			        </tr>
-			        <tr>
-			                <td>Password:</td>
-			                <td><input type="password" name="<%=UserAccountServlet.PARA_PASSWORD%>"></input>
-			                <input type="hidden" name="<%=UserAccountServlet.PARA_OPT%>" value="<%=UserAccountServlet.OPT_ADD_USER%>"></input></td>
-			        </tr>
-			        <tr>
-			                <td><input type="submit" value="Create My Account" /></td>
-			        </tr>
-			
-			</table>
+			<form action="/userOperation" method="post" name="frmRegister">
+				<table class="border_table">
+				        <tr>
+				                <td class="first">User Name:</td>
+				                <td><input type="text" name="<%=UserAccountServlet.PARA_EMAIL%>"></input></td>
+				        </tr>
+				        <tr>
+				                <td>Display Name:</td>
+				                <td><input type="text" name="<%=UserAccountServlet.PARA_SCREEN_NAME%>"></input></td>
+				        </tr>
+				        <tr>
+				                <td>Password:</td>
+				                <td><input type="password" name="<%=UserAccountServlet.PARA_PASSWORD%>"></input>
+				                <input type="hidden" name="<%=UserAccountServlet.PARA_OPT%>" value="<%=UserAccountServlet.OPT_ADD_USER%>"></input></td>
+				        </tr>
+				        <tr>
+				        		<td/>
+				                <td><a href="#" onclick="frmRegister.submit();"><img src="/images/button_register.png" alt=""/></a></td>
+				        </tr>
+				</table>
 			</form>
-			
-			</ul>
 		</div>
 		<%
 		} else { //user not signed.
 			response.sendRedirect("index.jsp");
 		}
 		%>
-		<%@ include file="right.jsp"%>
 	</div>
 	<%@ include file="footer.jsp"%>
 </div>
