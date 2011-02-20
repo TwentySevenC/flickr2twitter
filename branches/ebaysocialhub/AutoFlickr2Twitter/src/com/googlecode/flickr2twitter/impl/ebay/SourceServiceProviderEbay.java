@@ -6,11 +6,13 @@ package com.googlecode.flickr2twitter.impl.ebay;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.logging.Logger;
 
 import com.googlecode.flickr2twitter.datastore.model.GlobalServiceConfiguration;
 import com.googlecode.flickr2twitter.datastore.model.GlobalSourceApplicationService;
 import com.googlecode.flickr2twitter.datastore.model.UserSourceServiceConfig;
+import com.googlecode.flickr2twitter.impl.flickr.SourceServiceProviderFlickr;
 import com.googlecode.flickr2twitter.intf.BaseSourceProvider;
 import com.googlecode.flickr2twitter.intf.IConfigurableService;
 import com.googlecode.flickr2twitter.model.IItem;
@@ -52,8 +54,8 @@ public class SourceServiceProviderEbay extends BaseSourceProvider<IItem>implemen
 		result.setAppName(DISPLAY_NAME);
 		result.setProviderId(ID);
 		result.setDescription("The world's leading e-commerce site");
-		result.setSourceAppApiKey("hello world");
-		result.setSourceAppSecret("hello world again");
+		result.setSourceAppApiKey("no_app_api_key");
+		result.setSourceAppSecret("no_app_api_secret");
 		result.setAuthPagePath(null);
 		result.setConfigPagePath(PAGE_NAME_CONFIG);
 		result.setImagePath("/services/ebay/images/ebay_100.gif");
@@ -67,14 +69,20 @@ public class SourceServiceProviderEbay extends BaseSourceProvider<IItem>implemen
 			throws Exception {
 		
 		String sellerId = sourceService.getServiceUserId();
-		Calendar past = getFromTime(globalConfig, currentTime);
+		Calendar now = Calendar.getInstance(TimeZone.getTimeZone(
+				SourceServiceProviderFlickr.TIMEZONE_GMT));
+		now.setTimeInMillis(currentTime);
+		log.info("Converted current time: " + now.getTime());
+			
+		Calendar past = Calendar.getInstance(TimeZone.getTimeZone(SourceServiceProviderFlickr.TIMEZONE_GMT));
+		long newTime = now.getTime().getTime() - globalConfig.getMinUploadTime();
+		past.setTimeInMillis(newTime);
 		
-		Calendar now = getCalendar(currentTime);
-
+		log.info("Fetching latest listing for eBay user->" + sellerId 
+				+ " from " + past.getTime() + " to " + now.getTime());
 		List<EbayItem> ebayItems = dao.getSellerListFromSandBox(sellerId, past.getTime(), now.getTime());
 		
-		log.info("get updated recently from ebay.com");
-		log.info("find " + ebayItems.size() + " items updated recently");
+		log.info("found " + ebayItems.size() + " items updated recently");
 		
 		return convert(ebayItems);
 	}

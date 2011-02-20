@@ -17,6 +17,7 @@ import com.googlecode.flickr2twitter.intf.ITargetServiceProvider;
 import com.googlecode.flickr2twitter.model.IGeoItem;
 import com.googlecode.flickr2twitter.model.IItem;
 import com.googlecode.flickr2twitter.model.IItemList;
+import com.googlecode.flickr2twitter.model.ILinkableItem;
 import com.googlecode.flickr2twitter.model.IPhoto;
 import com.googlecode.flickr2twitter.model.IShortUrl;
 import com.googlecode.flickr2twitter.model.IVideo;
@@ -24,6 +25,7 @@ import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
 import com.googlecode.flickr2twitter.sina.weibo4j.User;
 import com.googlecode.flickr2twitter.sina.weibo4j.Weibo;
 import com.googlecode.flickr2twitter.sina.weibo4j.http.RequestToken;
+import com.googlecode.flickr2twitter.urlshorteners.BitLyUtils;
 
 /**
  * @author Toby Yu(yuyang226@gmail.com)
@@ -111,6 +113,16 @@ public class TargetServiceProviderSina implements ITargetServiceProvider {
 					IVideo media = (IVideo) item;
 					message = "My new video: " + media.getTitle();
 					message += " " + media.getUrl();
+				} else if (item instanceof ILinkableItem) {
+					ILinkableItem litem = (ILinkableItem) item;
+					message = "My new item: " + item.getTitle();
+					String url = litem.getUrl();
+					if (litem instanceof IShortUrl) {
+						url = ((IShortUrl) litem).getShortUrl();
+					} else if (litem.getUrl().length() > 15){
+						url = BitLyUtils.shortenUrl(litem.getUrl());
+					}
+					message += " " + url;
 				} else {
 					message = item.getTitle();
 				}

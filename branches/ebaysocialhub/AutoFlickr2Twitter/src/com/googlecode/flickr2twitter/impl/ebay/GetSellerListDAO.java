@@ -17,7 +17,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -268,7 +267,7 @@ public class GetSellerListDAO {
 		GetSellerListDAO sessionDao = new GetSellerListDAO();
 		
 		System.out.println("*************** from product");
-		System.out.println(
+		/*System.out.println(
 				sessionDao.getSellerList(
 				false,
 				APP_ID,
@@ -277,20 +276,22 @@ public class GetSellerListDAO {
 				EFORCITY,
 				tenMinBeforecurrentTime.getTime(), 
 				currentTime.getTime(),
-				100));
+				100));*/
 		
 
 		System.out.println("*************** from sandBox");
-//		System.out.println(
-//				sessionDao.getSellerList(
-//				true,
-//				APP_ID_SANDBOX,
-//				TOKEN_SANDBOX, 
-//				"tuser1", 
-//				//"testuser_sandboxfgofh",
-//				tenMinBeforecurrentTime.getTime(), 
-//				currentTime.getTime(),
-//				20));
+		System.out.println(
+				sessionDao.getSellerList(
+				true,
+				APP_ID_SANDBOX,
+				TOKEN_SANDBOX, 
+				"TESTUSER_socialhub", 
+				//"testuser_sandboxfgofh",
+				tenMinBeforecurrentTime.getTime(), 
+				currentTime.getTime(),
+				20));
+		
+		//System.out.println(sessionDao.getSellerListFromSandBox("TESTUSER_socialhub", Calendar.getInstance().getTime(), to));;
 	}
 
 	private static final String EFORCITY = "eforcity" ; 
@@ -306,16 +307,7 @@ public class GetSellerListDAO {
 
 	public List<EbayItem> getSellerListFromSandBox(
 			String userId, Date from, Date to) throws IOException, SAXException {
-		Date now = Calendar.getInstance().getTime();
-		
-//		return getSellerList(true, APP_ID_SANDBOX, TOKEN_SANDBOX, userId, from, 
-//			to, 100);
-
-		Calendar past = Calendar.getInstance();
-		past.add(Calendar.HOUR, -24);
-//		from=past.getTime();
-		
-		return getSellerList(false, APP_ID, TOKEN, userId, from, to, 100);
+		return getSellerList(true, APP_ID_SANDBOX, TOKEN_SANDBOX, userId, from, to, 100);
 	}
 
 }
