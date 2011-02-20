@@ -12,9 +12,9 @@
 			<LinearLayout 
 				android:orientation="vertical" android:layout_width="match_parent"
 				android:layout_height="wrap_content">
-				<TextView android:text="TextView" android:id="@+id/userScreenName" 
+				<TextView android:text="" android:id="@+id/userScreenName" 
 				android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-				<TextView android:text="TextView" android:id="@+id/userEmail" 
+				<TextView android:text="" android:id="@+id/userEmail" 
 				android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
 			</LinearLayout>
 		</TableRow>

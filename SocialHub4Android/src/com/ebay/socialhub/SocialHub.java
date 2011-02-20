@@ -8,7 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import oauth.signpost.OAuthConsumer;
-import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
@@ -20,8 +19,6 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -123,7 +120,7 @@ public class SocialHub extends ListActivity implements OnClickListener {
 			mImage = (ImageView) this.findViewById(R.id.imageView1);
 			mButton.setOnClickListener(this);
 			mCB.setOnClickListener(this);
-			mSettings = getSharedPreferences(OAUTHTwitter.PREFS, Context.MODE_PRIVATE);
+			mSettings = getSharedPreferences(OAuthActivity.PREFS, Context.MODE_PRIVATE);
 			/*mConsumer = new CommonsHttpOAuthConsumer(
 					Keys.TWITTER_CONSUMER_KEY, 
 					Keys.TWITTER_CONSUMER_SECRET);*/
@@ -140,9 +137,9 @@ public class SocialHub extends ListActivity implements OnClickListener {
 			super.onResume();
 
 			// We look for saved user keys
-			if(mSettings.contains(OAUTHTwitter.USER_TOKEN) && mSettings.contains(OAUTHTwitter.USER_SECRET)) {
-				mToken = mSettings.getString(OAUTHTwitter.USER_TOKEN, null);
-				mSecret = mSettings.getString(OAUTHTwitter.USER_SECRET, null);
+			if(mSettings.contains(OAuthActivity.USER_TOKEN) && mSettings.contains(OAuthActivity.USER_SECRET)) {
+				mToken = mSettings.getString(OAuthActivity.USER_TOKEN, null);
+				mSecret = mSettings.getString(OAuthActivity.USER_SECRET, null);
 				if(!(mToken == null || mSecret == null)) {
 					mConsumer.setTokenWithSecret(mToken, mSecret);
 				}
@@ -161,10 +158,10 @@ public class SocialHub extends ListActivity implements OnClickListener {
 	public void onClick(View v) {
 		if(mCB.equals(v)) {
 			if(mCB.isChecked()) {
-				Intent i = new Intent(this, OAUTHTwitter.class);
+				Intent i = new Intent(this, OAuthActivity.class);
 				startActivity(i);
 			} else {
-				OAUTHTwitter.saveAuthInformation(mSettings, null, null);
+				OAuthActivity.saveAuthInformation(mSettings, null, null);
 				mButton.setEnabled(false);
 				mEditor.setEnabled(false);
 				mCB.setChecked(false);
