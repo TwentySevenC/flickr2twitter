@@ -15,6 +15,8 @@ import org.restlet.resource.ClientResource;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,6 +34,7 @@ import android.widget.Toast;
 import com.googlecode.flickr2twitter.services.rest.models.GlobalApplicationConfigModel;
 import com.googlecode.flickr2twitter.services.rest.models.GlobalApplicationConfigModelList;
 import com.googlecode.flickr2twitter.services.rest.models.GlobalSourceApplicationServiceModel;
+import com.googlecode.flickr2twitter.services.rest.models.GlobalTargetApplicationServiceModel;
 import com.googlecode.flickr2twitter.services.rest.models.ISociaHubResource;
 
 /**
@@ -45,6 +48,7 @@ public class AuthorizeActivity extends Activity {
     private SectionedAdapter servicesAdapter;
     
     public static final String SERVICES_ID = "serviceProviders";
+    public static final String SERVICE_CONFIG_ID = "serviceConfig";
 	
 	private ListView authorizeServiceListView;
 	
@@ -118,12 +122,18 @@ public class AuthorizeActivity extends Activity {
 			    public void onItemClick(AdapterView<?> parent, View view,
 			        int position, long id) {
 			    	Object obj = servicesAdapter.getItem(position);
-			    	Toast.makeText(AuthorizeActivity.this, String.valueOf(obj), Toast.LENGTH_SHORT).show();
-			    	/*UserServiceConfigModel serviceModel = servicesAdapter.items.get(position);
-					if (serviceModel != null && serviceModel.getUserSiteUrl() != null) {
-						UserProfileActivity.this.startActivity(
-								new Intent(Intent.ACTION_VIEW, Uri.parse(serviceModel.getUserSiteUrl())));
-					}*/
+			    	if (obj instanceof GlobalTargetApplicationServiceModel) {
+			    		GlobalTargetApplicationServiceModel target = (GlobalTargetApplicationServiceModel)obj;
+			    		if ("twitter".equalsIgnoreCase(target.getProviderId())) {
+			    			//we only support twitter for now
+			    			Intent intent = new Intent(AuthorizeActivity.this, 
+									OAUTHTwitter.class);
+			    			intent.putExtra(SERVICE_CONFIG_ID, target);
+			    			AuthorizeActivity.this.startActivity(intent);
+			    		}
+			    	} else {
+			    		Toast.makeText(AuthorizeActivity.this, String.valueOf(obj), Toast.LENGTH_SHORT).show();
+			    	}
 			    }
 			    
 			  });

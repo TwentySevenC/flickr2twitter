@@ -10,13 +10,22 @@ import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 import oauth.signpost.exception.OAuthNotAuthorizedException;
+
+import org.expressme.openid.Association;
+import org.expressme.openid.Endpoint;
+
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+
+import com.googlecode.flickr2twitter.services.rest.models.GlobalTargetApplicationServiceModel;
+import com.googlecode.flickr2twitter.services.rest.models.UserServiceConfigModel;
 
 public class OAUTHTwitter extends Activity {
 	private static final String TAG = "OAUTHTwitter";
@@ -36,17 +45,22 @@ public class OAUTHTwitter extends Activity {
 
 	private OAuthConsumer mConsumer = null;
 	private OAuthProvider mProvider = null;
-	
+
 	SharedPreferences mSettings;
 
 	public void onCreate(Bundle icicle) {
 		try {
 			super.onCreate(icicle);
-
+			GlobalTargetApplicationServiceModel target = null;
+			if (getIntent().hasExtra(AuthorizeActivity.SERVICE_CONFIG_ID)) {
+				target = (GlobalTargetApplicationServiceModel)getIntent().getExtras().get(AuthorizeActivity.SERVICE_CONFIG_ID);
+			} else {
+				finish();
+			}
 			// We don't need to worry about any saved states: we can reconstruct the state
 			mConsumer = new CommonsHttpOAuthConsumer(
-					Keys.TWITTER_CONSUMER_KEY, 
-					Keys.TWITTER_CONSUMER_SECRET);
+					target.getTargetAppConsumerId(), 
+					target.getTargetAppConsumerSecret());
 
 			mProvider = new CommonsHttpOAuthProvider (
 					TWITTER_REQUEST_TOKEN_URL, 
@@ -79,14 +93,18 @@ public class OAUTHTwitter extends Activity {
 
 			Uri uri = getIntent().getData();
 			if (uri != null && CALLBACK_URI.getScheme().equals(uri.getScheme())) {
+				GlobalTargetApplicationServiceModel target;
+				if (getIntent().hasExtra(AuthorizeActivity.SERVICE_CONFIG_ID)) {
+					target = (GlobalTargetApplicationServiceModel)getIntent().getExtras().get(AuthorizeActivity.SERVICE_CONFIG_ID);
+				} else {
+					return;
+				}
 				String token = mSettings.getString(OAUTHTwitter.REQUEST_TOKEN, null);
 				String secret = mSettings.getString(OAUTHTwitter.REQUEST_SECRET, null);
-				Intent i = new Intent(this, SocialHub.class); // Currently, how we get back to main activity.
-
 				try {
-					if(!(token == null || secret == null)) {
-						mConsumer.setTokenWithSecret(token, secret);
-					}
+
+					mConsumer.setTokenWithSecret(token, secret);
+
 					String otoken = uri.getQueryParameter(OAuth.OAUTH_TOKEN);
 					String verifier = uri.getQueryParameter(OAuth.OAUTH_VERIFIER);
 
@@ -103,8 +121,8 @@ public class OAUTHTwitter extends Activity {
 					OAUTHTwitter.saveAuthInformation(mSettings, token, secret);
 					// Clear the request stuff, now that we have the real thing
 					OAUTHTwitter.saveRequestInformation(mSettings, null, null);
-					i.putExtra(USER_TOKEN, token);
-					i.putExtra(USER_SECRET, secret);
+					//i.putExtra(USER_TOKEN, token);
+					//i.putExtra(USER_SECRET, secret);
 				} catch (OAuthMessageSignerException e) {
 					e.printStackTrace();
 				} catch (OAuthNotAuthorizedException e) {
@@ -114,7 +132,9 @@ public class OAUTHTwitter extends Activity {
 				} catch (OAuthCommunicationException e) {
 					e.printStackTrace();
 				} finally {
-					startActivity(i); // we either authenticated and have the extras or not, but we're going back
+					//startActivity(i); // we either authenticated and have the extras or not, but we're going back
+					OAUTHTwitter.this.startActivity(
+							new Intent(OAUTHTwitter.this, UserProfileActivity.class));
 					finish();
 				}
 			}
@@ -122,7 +142,7 @@ public class OAUTHTwitter extends Activity {
 			Log.e(TAG, "Failed on OAuth onResume", e);
 		}
 	}
-	
+
 	public static void saveRequestInformation(SharedPreferences settings, String token, String secret) {
 		// null means to clear the old values
 		SharedPreferences.Editor editor = settings.edit();
@@ -143,9 +163,9 @@ public class OAUTHTwitter extends Activity {
 			Log.d(TAG, "Saving Request Secret: " + secret);
 		}
 		editor.commit();
-		
+
 	}
-	
+
 	public static void saveAuthInformation(SharedPreferences settings, String token, String secret) {
 		// null means to clear the old values
 		SharedPreferences.Editor editor = settings.edit();
@@ -166,7 +186,52 @@ public class OAUTHTwitter extends Activity {
 			Log.d(TAG, "Saving OAuth Secret: " + secret);
 		}
 		editor.commit();
-		
+
 	}
-	
+
+	/*private class OAuthTwitterTask extends AsyncTask<Void, Void, UserServiceConfigModel> {
+		ProgressDialog authDialog;
+
+		@Override
+		protected void onPreExecute() {
+			authDialog = ProgressDialog.show(OAUTHTwitter.this, 
+				"Twitter Authentication", 
+				"Redirecting to twitter for oauth...", 
+				true,	// indeterminate duration
+				false); // not cancel-able
+		}
+
+		 (non-Javadoc)
+	 * @see android.os.AsyncTask#doInBackground(Params[])
+
+		@Override
+		protected UserServiceConfigModel doInBackground(Void... params) {
+			UserServiceConfigModel model = null;
+			try {
+
+				Intent i = OAUTHTwitter.this.getIntent();
+				if (i.getData() == null) {
+					Endpoint endpoint = manager.lookupEndpoint(ID_GOOGLE);
+					Association association = manager.lookupAssociation(endpoint);
+					String authUrl = manager.getAuthenticationUrl(endpoint, association);
+					Log.i(TAG, "Google OpenID AuthURL: " + authUrl);
+					OAUTHTwitter.this.startActivity(
+							new Intent(Intent.ACTION_VIEW, Uri.parse(authUrl)));
+				}
+			} catch (Exception e) {
+				Log.e(TAG, e.toString(), e);
+			}
+			return model;
+		}
+
+		protected void onPostExecute(UserServiceConfigModel model) {
+			authDialog.dismiss();
+			if (model != null) {
+				OAUTHTwitter.this.startActivity(
+						new Intent(OAUTHTwitter.this, UserProfileActivity.class));
+			}
+		}
+
+	}*/
+
 }
