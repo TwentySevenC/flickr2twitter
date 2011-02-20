@@ -31,7 +31,7 @@
 			}
 			
 			StringBuffer url = new StringBuffer();
-			url.append("socialhub-openid://google?");
+			url.append("socialhub-app://google?");
 			url.append("userEmail=");
 			url.append(userEmail);
 			response.sendRedirect(url.toString());
