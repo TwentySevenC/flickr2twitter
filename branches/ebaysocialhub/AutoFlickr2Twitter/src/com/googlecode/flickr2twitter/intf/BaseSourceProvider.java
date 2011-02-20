@@ -16,4 +16,10 @@ public abstract class BaseSourceProvider<T> implements ISourceServiceProvider<T>
 		return past;
 	}
 	
+	protected Calendar getCalendar(long mills) {
+		Calendar past = Calendar.getInstance(TimeZone.getTimeZone(ServiceRunner.TIMEZONE_UTC));
+		past.setTimeInMillis(mills);
+		
+		return past;
+	}
 }
