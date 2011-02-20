@@ -124,9 +124,9 @@ public class SocialHub extends ListActivity implements OnClickListener {
 			mButton.setOnClickListener(this);
 			mCB.setOnClickListener(this);
 			mSettings = getSharedPreferences(OAUTHTwitter.PREFS, Context.MODE_PRIVATE);
-			mConsumer = new CommonsHttpOAuthConsumer(
+			/*mConsumer = new CommonsHttpOAuthConsumer(
 					Keys.TWITTER_CONSUMER_KEY, 
-					Keys.TWITTER_CONSUMER_SECRET);
+					Keys.TWITTER_CONSUMER_SECRET);*/
 			mAA = new MyArrayAdapter(this, android.R.layout.two_line_list_item, android.R.id.text1, mHomeStatus);
 			this.setListAdapter(mAA);
 		} catch (Exception e){
