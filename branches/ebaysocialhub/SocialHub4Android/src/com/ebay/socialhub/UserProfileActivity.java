@@ -49,14 +49,20 @@ public class UserProfileActivity extends Activity {
 	
 	static {
 		Map<String, Integer> map = new HashMap<String, Integer>();
-		map.put("flickr", R.drawable.flickr_32);
+		/*map.put("flickr", R.drawable.flickr_32);
 		map.put("youtube", R.drawable.youtube_32);
 		map.put("facebook", R.drawable.facebook_32);
 		map.put("twitter", R.drawable.twitter_32);
 		map.put("picasa", R.drawable.picasa_32);
 		map.put("ebay", R.drawable.ebay_32);
-		map.put("sina", R.drawable.sina_32);
-		
+		map.put("sina", R.drawable.sina_32);*/
+		map.put("flickr", R.drawable.flickr_64);
+		map.put("youtube", R.drawable.youtube_64);
+		map.put("facebook", R.drawable.facebook_64);
+		map.put("twitter", R.drawable.twitter_64);
+		map.put("picasa", R.drawable.picasa_64);
+		map.put("ebay", R.drawable.ebay_64);
+		map.put("sina", R.drawable.sina_64);
 		ICON_MAP = Collections.unmodifiableMap(map);
 	}
 	
@@ -71,8 +77,6 @@ public class UserProfileActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		try {
 			super.onCreate(savedInstanceState);
-			setContentView(R.layout.main);
-			
 			Bundle extras = getIntent().getExtras();
 			UserModel user = null;
 			if (extras != null) {
@@ -83,6 +87,13 @@ public class UserProfileActivity extends Activity {
 					}
 				}
 			}
+			if (user == null) {
+				Intent intent = new Intent(this, Login.class);
+				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				UserProfileActivity.this.startActivity(intent);
+				finish();
+			}
+			setContentView(R.layout.main);
 			
 			this.txtUserName = (TextView)this.findViewById(R.id.userScreenName);
 			this.txtUserEmail = (TextView)this.findViewById(R.id.userEmail);
@@ -154,6 +165,14 @@ public class UserProfileActivity extends Activity {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see android.app.Activity#onBackPressed()
+	 */
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+	}
+
 	private class ItemAdapter extends ArrayAdapter<UserServiceConfigModel> {
 		private List<UserServiceConfigModel> items;
 
@@ -182,9 +201,9 @@ public class UserProfileActivity extends Activity {
 				TextView tt = (TextView) v.findViewById(R.id.toptext);
 				TextView bt = (TextView) v.findViewById(R.id.bottomtext);
 				if (tt != null) {
-					tt.setText("Provider: "+serviceModel.getServiceProviderId());                            }
+					tt.setText(serviceModel.getServiceProviderId());                            }
 				if(bt != null){
-					bt.setText("User ID: "+ serviceModel.getServiceUserName());
+					bt.setText(serviceModel.getServiceUserName());
 				}
 			}
 			return v;
