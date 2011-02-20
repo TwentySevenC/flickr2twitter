@@ -14,11 +14,10 @@ import com.googlecode.flickr2twitter.datastore.model.UserTargetServiceConfig;
 import com.googlecode.flickr2twitter.intf.ITargetServiceProvider;
 import com.googlecode.flickr2twitter.model.IItem;
 import com.googlecode.flickr2twitter.model.IItemList;
+import com.googlecode.flickr2twitter.model.ILinkableItem;
 import com.googlecode.flickr2twitter.model.IMedia;
 import com.googlecode.flickr2twitter.model.IPhoto;
-import com.googlecode.flickr2twitter.model.IShortUrl;
 import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
-import com.googlecode.flickr2twitter.urlshorteners.BitLyUtils;
 import com.googlecode.flickr2twitter.utils.FacebookUtil;
 
 public class TargetServiceProviderFacebook implements ITargetServiceProvider {
@@ -160,22 +159,19 @@ public class TargetServiceProviderFacebook implements ITargetServiceProvider {
 					IPhoto photo = (IPhoto) item;
 					message = "My new photo: " + photo.getTitle();
 					String url = photo.getUrl();
-					if (photo instanceof IShortUrl) {
-						url = ((IShortUrl) photo).getShortUrl();
-					} else if (photo.getUrl().length() > 15) {
-						url = BitLyUtils.shortenUrl(photo.getUrl());
-					}
 					message += " " + url;
 				} else if (item instanceof IMedia) {
 					IMedia media = (IMedia) item;
 					message = "My new post: " + media.getTitle();
 					String url = media.getUrl();
-					if (media instanceof IShortUrl) {
-						url = ((IShortUrl) media).getShortUrl();
-					} else if (media.getUrl().length() > 15) {
-						url = BitLyUtils.shortenUrl(media.getUrl());
-					}
 					message += " " + url;
+				} else if (item instanceof ILinkableItem) {
+					ILinkableItem litem = (ILinkableItem) item;
+					message = "My new item: " + item.getTitle();
+					String url = litem.getUrl();
+					message += " " + url;
+				} else {
+					message = item.getTitle();
 				}
 				if (message != null) {
 					try {

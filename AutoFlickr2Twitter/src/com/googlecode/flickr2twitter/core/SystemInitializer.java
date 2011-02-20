@@ -31,7 +31,7 @@ public class SystemInitializer implements ServletContextListener {
 
 	@Override
 	public void contextInitialized(ServletContextEvent servletContextEvent) {
-		log.info("Initializing Twitter the World System.....");
+		log.info("Initializing the SocialHub System.....");
 		
 		Properties props = GlobalDefaultConfiguration.getInstance()
 				.getProperties();
@@ -52,7 +52,7 @@ public class SystemInitializer implements ServletContextListener {
 			log.info("Admin account already created.");
 		}
 
-		log.info("Initlizing Twitter the World System finished.....");
+		log.info("Initlizing the SocialHub System finished.....");
 
 	}
 

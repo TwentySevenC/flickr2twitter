@@ -190,10 +190,10 @@ public class GetUserProfileDAO {
 		GetUserProfileDAO getUserProfileDAO = new GetUserProfileDAO();
 		
 		// production
-		System.out.println(getUserProfileDAO.getUserProfile(false, "nemo.chen"));
+		//System.out.println(getUserProfileDAO.getUserProfile(false, "nemo.chen"));
 		
 		// sandbox
-		System.out.println(getUserProfileDAO.getUserProfile(true, "tuser1"));
+		System.out.println(getUserProfileDAO.getUserProfile(true, "TESTUSER_socialhub"));
 		
 		
 	
