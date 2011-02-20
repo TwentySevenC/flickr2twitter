@@ -68,8 +68,10 @@ public class SourceServiceProviderEbay extends BaseSourceProvider<IItem>implemen
 		
 		String sellerId = sourceService.getServiceUserId();
 		Calendar past = getFromTime(globalConfig, currentTime);
-			
-		List<EbayItem> ebayItems = dao.getSellerListFromSandBox(sellerId, past.getTime());
+		
+		Calendar now = getCalendar(currentTime);
+
+		List<EbayItem> ebayItems = dao.getSellerListFromSandBox(sellerId, past.getTime(), now.getTime());
 		
 		log.info("get updated recently from ebay.com");
 		log.info("find " + ebayItems.size() + " items updated recently");
