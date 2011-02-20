@@ -11,15 +11,12 @@
 <body>
 <div id="container">
 	<%@ include file="header.jsp"%>
-	<div id="content">
-		
+	<div id="content">		
 		<div id="left">
 			<h1>Oops...</h1>
 			<p>Page Not Found</p>
 			<img src="/images/404.jpg" alt="center" />
 		</div>
-
-		<%@ include file="right.jsp"%>
 	</div>
 	<%@ include file="footer.jsp"%>
 </div>

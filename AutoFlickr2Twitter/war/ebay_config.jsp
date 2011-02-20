@@ -12,86 +12,83 @@
 <body>
 <div id="container"><%@ include file="header.jsp"%>
 <div id="content">
-<div id="left">
-<ul>
-	<%
-		String ebayUserID = request
-				.getParameter(EbayConfigServlet.PARA_SEARCH_SELLER_ID);
-		boolean hasUserID = (ebayUserID != null) && (ebayUserID.length() > 0);
-	%>
-	<li>
-	<h3>Input the Seller's ID you want to follow</h3>
-	</li>
-	<form action="/ebay_config.jsp" method="post" name="searchebayuser">
-	<table class="border_table">
-		<tr>
-			<td>Seller Id:</td>
-			<td><input type="text"
-				name="<%=EbayConfigServlet.PARA_SEARCH_SELLER_ID%>" /></td>
-		</tr>
-		<tr>
-			<td><input type="submit" value="Get User Profile" /></td>
-		</tr>
-	</table>
-	</form>
-
-	<%
-		if (hasUserID) {
-			GetUserProfileDAO getUserProfileDAO = new GetUserProfileDAO();
-			EbayUser ebayUser = getUserProfileDAO.getUserProfile(true,
-					ebayUserID);
-			// show user details if found a user
-			if (ebayUser != null) {
-	%>
-
-	<form action="/ebayConfig" method="post" name="showebayuserprofile">
-	<table class="border_table">
-		<tr>
-			<td colspan="2" align="center">Seller Profile:</td>
-		</tr>
-		<tr>
-			<td>Seller ID:</td>
-			<td><input type="text" readonly="readonly" value="<%=ebayUserID %>"
-				name="<%=EbayConfigServlet.PARA_SELLER_ID%>" /></td>
-		</tr>
-		<% if (ebayUser.getStoreName() != null) { %>
-		<tr>
-			<td>Store Name:</td>
-			<td><%=ebayUser.getStoreName()%></td>
-		</tr>
-		<tr>
-			<td>Store URL:</td>
-			<td><a href="<%=ebayUser.getStoreURL() %>"><%=ebayUser.getStoreURL() %></a></td>
-		</tr>
-		<% } %>
-		<tr>
-			<td>Selling Items:</td>
-			<td><a href="<%=ebayUser.getSellerItemsURL()%>"><%=ebayUser.getSellerItemsURL()%></a></td>
-		</tr>
-		<tr>
-			<td>My World:</td>
-			<td><a href="<%=ebayUser.getMyWorldURL()%>"><%=ebayUser.getMyWorldURL()%></a></td>
-		</tr>
-		<tr>
-			<td colspan="2"><input type="submit" value="Save" /></td>
-		</tr>
-	</table>
-	</form>
-	<%
-			} else {
-			// notify user that there is no search result
-	%>
-		<table class="border_table">
-		<tr>
-			<td>No User found for ID: <%=ebayUserID %></td>
-		</tr>
-		</table>
-	<%
+	<h1>Set the eBay Seller's ID you want to follow</h1>
+	<hr/>
+	<div id="middle">
+		<%
+			String ebayUserID = request
+					.getParameter(EbayConfigServlet.PARA_SEARCH_SELLER_ID);
+			boolean hasUserID = (ebayUserID != null) && (ebayUserID.length() > 0);
+		%>
+		<form action="/ebay_config.jsp" method="post" name="searchebayuser">
+			<table class="border_table">
+				<tr>
+					<td class="first_ebay"">Seller ID:</td>
+					<td><input type="text"
+						name="<%=EbayConfigServlet.PARA_SEARCH_SELLER_ID%>" /></td>
+				</tr>
+				<tr>
+					<td/>
+					<td><a href="#" onclick="searchebayuser.submit();"><img src="/images/button_search.png" alt=""/></a></td>
+				</tr>
+			</table>
+		</form>
+	
+		<%
+			if (hasUserID) {
+				GetUserProfileDAO getUserProfileDAO = new GetUserProfileDAO();
+				EbayUser ebayUser = getUserProfileDAO.getUserProfile(true,
+						ebayUserID);
+				// show user details if found a user
+				if (ebayUser != null) {
+		%>
+	
+		<h1>Seller Profile</h1>
+		<form action="/ebayConfig" method="post" name="showebayuserprofile">
+			<input type="hidden" value="<%=ebayUserID%>" name="<%=EbayConfigServlet.PARA_SELLER_ID%>"/>
+			<table class="border_table">
+				<tr>
+					<td class="first_ebay">Seller ID:</td>
+					<td><%=ebayUserID%></td>
+				</tr>
+				<% if (ebayUser.getStoreName() != null) { %>
+				<tr>
+					<td>Store Name:</td>
+					<td><%=ebayUser.getStoreName()%></td>
+				</tr>
+				<tr>
+					<td>Store URL:</td>
+					<td><a href="<%=ebayUser.getStoreURL() %>"><%=ebayUser.getStoreURL() %></a></td>
+				</tr>
+				<% } %>
+				<tr>
+					<td>Selling Items:</td>
+					<td><a href="<%=ebayUser.getSellerItemsURL()%>"><%=ebayUser.getSellerItemsURL()%></a></td>
+				</tr>
+				<tr>
+					<td>My World:</td>
+					<td><a href="<%=ebayUser.getMyWorldURL()%>"><%=ebayUser.getMyWorldURL()%></a></td>
+				</tr>
+				<tr>
+					<td/>
+					<td><a href="#" onclick="showebayuserprofile.submit();"><img src="/images/button_submit.png" alt=""/></a></td>
+				</tr>
+			</table>
+		</form>
+		<%
+				} else {
+				// notify user that there is no search result
+		%>
+			<table class="border_table">
+			<tr>
+				<td>No User found for ID: <%=ebayUserID %></td>
+			</tr>
+			</table>
+		<%
+				}
 			}
-		}
-	%>
-</ul>
-</div>
+		%>
+	</div>
 </div>
 <%@ include file="footer.jsp"%></div>
 </body>

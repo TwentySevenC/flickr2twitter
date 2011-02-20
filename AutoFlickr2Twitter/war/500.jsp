@@ -11,8 +11,7 @@
 <body>
 <div id="container">
 	<%@ include file="header.jsp"%>
-	<div id="content">
-		
+	<div id="content">		
 		<div id="left">
 			<h1>Oops...</h1>
 			<p>Server Internal Error.</p>
@@ -20,8 +19,6 @@
 			<p/>
 			<p/>
 		</div>
-
-		<%@ include file="right.jsp"%>
 	</div>
 	<%@ include file="footer.jsp"%>
 </div>

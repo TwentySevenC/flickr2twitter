@@ -11,15 +11,11 @@
 <div id="container">
 	<%@ include file="header.jsp"%>
 	<div id="content">
-		<div id="left">
-		<h1>About eBay Social Hub</h1>
+		<h1 id="about_">About eBay SocialHub</h1>
+		<hr/>
 		<p>
-		<img src="images/help.jpg"/><br/>
-		Please visit our <a href="http://code.google.com/p/flickr2twitter/">project site</a> and <a href="http://groups.google.com/group/flickr2twitter">Project discussion group</a>.
+			Please visit our <a href="http://code.google.com/p/flickr2twitter/">project site</a> and <a href="http://groups.google.com/group/flickr2twitter">project discussion group</a>.
 		</p>
-		</div>
-
-		<%@ include file="right.jsp"%>
 	</div>
 	<%@ include file="footer.jsp"%>
 </div>
