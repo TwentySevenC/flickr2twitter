@@ -26,7 +26,6 @@ import com.googlecode.flickr2twitter.model.IGeoItem;
 import com.googlecode.flickr2twitter.model.IItem;
 import com.googlecode.flickr2twitter.model.IItemList;
 import com.googlecode.flickr2twitter.model.IMedia;
-import com.googlecode.flickr2twitter.model.IMsgItem;
 import com.googlecode.flickr2twitter.model.IPhoto;
 import com.googlecode.flickr2twitter.model.IShortUrl;
 import com.googlecode.flickr2twitter.urlshorteners.BitLyUtils;
@@ -108,9 +107,6 @@ implements ITargetServiceProvider {
 							url = BitLyUtils.shortenUrl(media.getUrl());
 						}
 						message += " " + url;
-					} else if (item instanceof IMsgItem) {
-						IMsgItem msgItem = (IMsgItem) item;
-						message = msgItem.getMessage();
 					}
 					
 					if (message != null) {

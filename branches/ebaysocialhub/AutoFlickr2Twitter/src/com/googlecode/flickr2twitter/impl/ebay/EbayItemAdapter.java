@@ -1,9 +1,12 @@
 package com.googlecode.flickr2twitter.impl.ebay;
 
-import com.googlecode.flickr2twitter.model.IMsgItem;
-import com.googlecode.flickr2twitter.urlshorteners.BitLyUtils;
+import com.googlecode.flickr2twitter.model.ILinkableItem;
 
-public class EbayItemAdapter implements IMsgItem{
+/**
+ * @author John Liu(zhhong.liu@gmail.com)
+ *
+ */
+public class EbayItemAdapter implements ILinkableItem{
 
 	private final EbayItem ebayItem;
 	
@@ -11,19 +14,25 @@ public class EbayItemAdapter implements IMsgItem{
 		this.ebayItem = item;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.googlecode.flickr2twitter.model.ILinkableItem#setUrl(java.lang.String)
+	 */
 	@Override
-	public String getMessage() {
-		// sellerId + "published new item in ebay.com, " + url
-		String msg = ebayItem.getSellerId();
-		msg += " published a new item (" + getTitle() + ") in ebay.com. ";
-		msg += BitLyUtils.shortenUrl(ebayItem.getViewItemURL());
-		
-		return msg;
+	public void setUrl(String url) {
+		this.ebayItem.setViewItemURL(url);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.googlecode.flickr2twitter.model.ILinkableItem#getUrl()
+	 */
+	@Override
+	public String getUrl() {
+		return ebayItem.getViewItemURL();
 	}
 
 	@Override
 	public String getId() {
-		return "" + ebayItem.getItemId();
+		return String.valueOf(ebayItem.getItemId());
 	}
 
 	@Override
