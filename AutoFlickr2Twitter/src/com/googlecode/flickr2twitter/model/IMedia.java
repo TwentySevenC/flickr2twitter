@@ -9,7 +9,7 @@ import java.util.Date;
  * @author Toby Yu(yuyang226@gmail.com)
  *
  */
-public interface IMedia extends IItem {
+public interface IMedia extends ILinkableItem {
 	
 	public void setDatePosted(Date datePosted);
 	public Date getDatePosted();
@@ -17,6 +17,4 @@ public interface IMedia extends IItem {
 	public void setDateTaken(Date dateTaken);
 	public Date getDateTaken();
 	
-	public void setUrl(String url);
-	public String getUrl();
 }

@@ -6,6 +6,10 @@ import java.util.TimeZone;
 import com.googlecode.flickr2twitter.core.ServiceRunner;
 import com.googlecode.flickr2twitter.datastore.model.GlobalServiceConfiguration;
 
+/**
+ * @author John Liu(zhhong.liu@gmail.com)
+ *
+ */
 public abstract class BaseSourceProvider<T> implements ISourceServiceProvider<T>{
 
 	protected Calendar getFromTime(GlobalServiceConfiguration globalConfig, long to) {
