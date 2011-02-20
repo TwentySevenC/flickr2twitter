@@ -62,8 +62,8 @@ public class Login extends Activity {
 			
 			Bundle extras = getIntent().getExtras();
 			if (extras != null) {
-				if (extras.containsKey(GoogleOpenIDActivity.KEY_USER_EMAIL)) {
-					String userEmail = extras.getString(GoogleOpenIDActivity.KEY_USER_EMAIL);
+				if (extras.containsKey(OAuthActivity.KEY_USER_EMAIL)) {
+					String userEmail = extras.getString(OAuthActivity.KEY_USER_EMAIL);
 					new GetCredentialsTask().execute(userEmail);
 				}
 			}
@@ -94,8 +94,9 @@ public class Login extends Activity {
 			btnOpenidGoogle.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					Intent i = new Intent(Login.this, GoogleOpenIDActivity.class);
+					Intent i = new Intent(Login.this, OAuthActivity.class);
 					i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					i.putExtra(OAuthActivity.ID_PROVIDER, OAuthActivity.ID_GOOGLE);
 					startActivity(i);
 				}
 			});

@@ -26,14 +26,14 @@ public interface ISociaHubResource {
 	public List<UserSourceServiceConfigModel> getUserSourceServiceConfigs(String userEmail);
 	
 	@Post
-	public boolean addUserSourceServiceConfig(String userEmail, 
+	public void addUserSourceServiceConfig(String userEmail, 
 			UserSourceServiceConfigModel sourceServiceConfig);
 	
 	@Post
 	public List<UserTargetServiceConfigModel> getUserTargetServiceConfigs(String userEmail);
 	
 	@Post
-	public boolean addUserTargetServiceConfig(String userEmail, 
+	public void addUserTargetServiceConfig(String userEmail, 
 			UserTargetServiceConfigModel targetServiceConfig);
 
 	/**

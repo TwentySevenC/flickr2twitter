@@ -10,13 +10,21 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.http.HttpVersion;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.params.HttpProtocolParams;
+import org.apache.http.protocol.HTTP;
 import org.restlet.resource.ClientResource;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -118,6 +126,8 @@ public class AuthorizeActivity extends Activity {
 				new GetAvailableServicesTask().execute();
 			}
 			
+			final String userEmail = getIntent().getExtras().getString(OAuthActivity.KEY_USER_EMAIL);
+			
 			this.authorizeServiceListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			    public void onItemClick(AdapterView<?> parent, View view,
 			        int position, long id) {
@@ -127,8 +137,10 @@ public class AuthorizeActivity extends Activity {
 			    		if ("twitter".equalsIgnoreCase(target.getProviderId())) {
 			    			//we only support twitter for now
 			    			Intent intent = new Intent(AuthorizeActivity.this, 
-									OAUTHTwitter.class);
+			    					OAuthActivity.class);
 			    			intent.putExtra(SERVICE_CONFIG_ID, target);
+			    			intent.putExtra(OAuthActivity.ID_PROVIDER, OAuthActivity.ID_TWITTER);
+			    			intent.putExtra(OAuthActivity.KEY_USER_EMAIL, userEmail);
 			    			AuthorizeActivity.this.startActivity(intent);
 			    		}
 			    	} else {
