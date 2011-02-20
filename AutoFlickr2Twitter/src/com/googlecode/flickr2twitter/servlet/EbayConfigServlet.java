@@ -76,7 +76,11 @@ public class EbayConfigServlet extends HttpServlet {
 		serviceConfig.setServiceProviderId(SourceServiceProviderEbay.ID);
 		serviceConfig.setUserEmail(userEmail);
 
-		serviceConfig.setUserSiteUrl(ebayUser.getStoreURL());
+		if (ebayUser.getStoreURL() != null) {
+			serviceConfig.setUserSiteUrl(ebayUser.getStoreURL());
+		} else {
+			serviceConfig.setUserSiteUrl(ebayUser.getMyWorldURL());
+		}
 		MyPersistenceManagerFactory.addSourceServiceApp(userEmail,
 				serviceConfig);
 

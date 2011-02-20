@@ -16,11 +16,8 @@ import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.googlecode.flickr2twitter.impl.ebay.SourceServiceProviderEbay;
 import com.googlecode.flickr2twitter.impl.facebook.TargetServiceProviderFacebook;
 import com.googlecode.flickr2twitter.impl.flickr.SourceServiceProviderFlickr;
-import com.googlecode.flickr2twitter.impl.picasa.SourceServiceProviderPicasa;
 import com.googlecode.flickr2twitter.impl.sina.TargetServiceProviderSina;
-import com.googlecode.flickr2twitter.impl.twitter.SourceServiceProviderTwitter;
 import com.googlecode.flickr2twitter.impl.twitter.TargetServiceProviderTwitter;
-import com.googlecode.flickr2twitter.impl.youtube.SourceServiceProviderYoutube;
 import com.googlecode.flickr2twitter.intf.IServiceProvider;
 import com.googlecode.flickr2twitter.intf.ISourceServiceProvider;
 import com.googlecode.flickr2twitter.intf.ITargetServiceProvider;
@@ -41,8 +38,7 @@ public class ServiceFactory {
 
 	private static final Class<?>[] PROVIDER_CLASSES = {
 		SourceServiceProviderEbay.class, SourceServiceProviderFlickr.class, 
-		SourceServiceProviderPicasa.class, SourceServiceProviderTwitter.class, 
-		SourceServiceProviderYoutube.class,	TargetServiceProviderFacebook.class,
+		TargetServiceProviderFacebook.class,
 		TargetServiceProviderTwitter.class, TargetServiceProviderSina.class};
 
 	static {
