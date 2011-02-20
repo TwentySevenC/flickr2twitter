@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.googlecode.ebay.dao;
+package com.googlecode.flickr2twitter.impl.ebay;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,9 +19,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.googlecode.ebay.domain.User;
-import com.googlecode.ebay.http.URLHelper;
-
 /**
  * @author hochen
  * 
@@ -34,8 +31,18 @@ public class GetUserProfileDAO {
 	
 	String EBAY_SHOPPING_API_SERVER = "open.api.ebay.com";
 	String EBAY_SHOPPING_API_PATH = "/shopping";
+	
+	private static final String EBAY_APPID_PRODUCTION = "eBay929a8-96bf-4ad8-a71c-94de77a7c9e";
+	private static final String EBAY_APPID_SANDBOX = "eBayb1609-29f8-4684-aadb-6ba5a05a182";
+	
+	public EbayUser getUserProfile(
+			boolean isSandbox,
+			String userId
+	) throws IOException, SAXException {
+		return getUserProfile(isSandbox, isSandbox ? EBAY_APPID_SANDBOX : EBAY_APPID_PRODUCTION, userId);
+	}
 
-	public User getUserProfile(
+	public EbayUser getUserProfile(
 			boolean isSandbox,
 			String appId,
 			String userId
@@ -99,9 +106,9 @@ public class GetUserProfileDAO {
 
 		NodeList nodeList = document.getElementsByTagName("User");
 		
-		User user = null;
+		EbayUser user = null;
 		if (nodeList != null && nodeList.getLength() > 0) {
-			user = new User();
+			user = new EbayUser();
 			Node userNode = nodeList.item(0);
 			NodeList userFirstLevelNodes = userNode.getChildNodes();
 			generateUser(userFirstLevelNodes, user);
@@ -117,7 +124,7 @@ public class GetUserProfileDAO {
 	
 	
 	
-	private void generateUser(NodeList userFirstLevelNodes, User user) {
+	private void generateUser(NodeList userFirstLevelNodes, EbayUser user) {
 		
 		if (userFirstLevelNodes == null || user == null) {
 			return;
@@ -183,10 +190,10 @@ public class GetUserProfileDAO {
 		GetUserProfileDAO getUserProfileDAO = new GetUserProfileDAO();
 		
 		// production
-		System.out.println(getUserProfileDAO.getUserProfile(false, "eBay929a8-96bf-4ad8-a71c-94de77a7c9e","nemo.chen"));
+		System.out.println(getUserProfileDAO.getUserProfile(false, "nemo.chen"));
 		
 		// sandbox
-		System.out.println(getUserProfileDAO.getUserProfile(true, "eBayb1609-29f8-4684-aadb-6ba5a05a182","tuser1"));
+		System.out.println(getUserProfileDAO.getUserProfile(true, "tuser1"));
 		
 		
 	

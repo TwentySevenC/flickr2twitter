@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.googlecode.ebay.domain;
+package com.googlecode.flickr2twitter.impl.ebay;
 
 import java.io.Serializable;
 
@@ -9,7 +9,7 @@ import java.io.Serializable;
  * @author hochen
  *
  */
-public class User implements Serializable{
+public class EbayUser implements Serializable{
 
 
 	private static final long serialVersionUID = 482763379225490714L;
@@ -254,7 +254,7 @@ public class User implements Serializable{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		User other = (User) obj;
+		EbayUser other = (EbayUser) obj;
 		if (aboutMeURL == null) {
 			if (other.aboutMeURL != null)
 				return false;
