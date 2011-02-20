@@ -25,7 +25,7 @@ public class TargetServiceProviderFacebook implements ITargetServiceProvider {
 	private static final Logger log = Logger
 			.getLogger(TargetServiceProviderFacebook.class.getName());
 
-	public static final String ID = "Facebook";
+	public static final String ID = "facebook";
 	public static final String DISPLAY_NAME = "Facebook";
 	public static final String CALLBACK_URL = "facebookcallback.jsp";
 	public static final String PARA_CODE = "code";

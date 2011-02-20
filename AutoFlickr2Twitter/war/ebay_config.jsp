@@ -54,6 +54,7 @@
 			<td><input type="text" readonly="readonly" value="<%=ebayUserID %>"
 				name="<%=EbayConfigServlet.PARA_SELLER_ID%>" /></td>
 		</tr>
+		<% if (ebayUser.getStoreName() != null) { %>
 		<tr>
 			<td>Store Name:</td>
 			<td><%=ebayUser.getStoreName()%></td>
@@ -61,6 +62,15 @@
 		<tr>
 			<td>Store URL:</td>
 			<td><a href="<%=ebayUser.getStoreURL() %>"><%=ebayUser.getStoreURL() %></a></td>
+		</tr>
+		<% } %>
+		<tr>
+			<td>Selling Items:</td>
+			<td><a href="<%=ebayUser.getSellerItemsURL()%>"><%=ebayUser.getSellerItemsURL()%></a></td>
+		</tr>
+		<tr>
+			<td>My World:</td>
+			<td><a href="<%=ebayUser.getMyWorldURL()%>"><%=ebayUser.getMyWorldURL()%></a></td>
 		</tr>
 		<tr>
 			<td colspan="2"><input type="submit" value="Save" /></td>
