@@ -3,7 +3,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="stylesheets/site.css" rel="stylesheet" type="text/css" />
 <link href="stylesheets/style.css" rel="stylesheet" type="text/css" />
+<link href="stylesheets/content.css" rel="stylesheet" type="text/css" />
 <title>SocialHub</title>
 </head>
 
@@ -19,7 +21,7 @@
 		<br/>
 		<div id="left">
 			<form action="/userOperation" method="post" name="frmSign">
-				<table class="border_table">
+				<table id="index_signin" class="border_table">
 					<tr>
 						<td class="first">User Name:</td>
 						<td><input type="text" name="<%=UserAccountServlet.PARA_EMAIL%>"></input></td>
