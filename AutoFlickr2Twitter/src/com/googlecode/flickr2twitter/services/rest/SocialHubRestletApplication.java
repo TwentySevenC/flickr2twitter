@@ -38,7 +38,8 @@ public class SocialHubRestletApplication extends Application {
 	    // new Resource
 	    Router router = new Router(getContext());
 
-	    router.attachDefault(SocialHubServerResource.class);
+	    router.attach("/user", SocialHubServerResource.class);
+	    router.attach("/services", SocialHubServicesServerResource.class);
 
 	    return router;
 	}

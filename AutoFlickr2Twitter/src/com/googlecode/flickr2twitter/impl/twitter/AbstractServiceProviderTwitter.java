@@ -56,6 +56,7 @@ implements IServiceAuthorizer {
 	@Override
 	public String readyAuthorization(String userEmail, Map<String, Object> data)
 			throws Exception {
+		log.info("User ready for Twitter authorization->" + userEmail + ", data: " + data);
 		if (data == null || data.containsKey(KEY_TOKEN) == false 
 				|| data.containsKey(KEY_TOKEN_SECRET) == false 
 				|| data.containsKey(KEY_OAUTH_VERIFIER) == false) {
@@ -64,6 +65,7 @@ implements IServiceAuthorizer {
 		StringBuffer buf = new StringBuffer();
 		
 		GlobalApplicationConfig globalAppConfig = getGlobalApplicationConfig();
+		log.info("Twitter Global Application Config Data: " + globalAppConfig);
 		String consumerId = null;
 		String consumerSecret = null;
 		if (globalAppConfig instanceof GlobalSourceApplicationService) {
@@ -81,18 +83,21 @@ implements IServiceAuthorizer {
 		Twitter twitter = new TwitterFactory().getOAuthAuthorizedInstance(
 				consumerId,
 				consumerSecret);
+		twitter.setOAuthConsumer(consumerId, consumerSecret);
+		log.info("Initialized Twitter client: " + twitter);
 
 		String token = String.valueOf(data.get(KEY_TOKEN));
 		String secret = String.valueOf(data.get(KEY_TOKEN_SECRET));
 		String oauthVerifier = String.valueOf(data.get(KEY_OAUTH_VERIFIER));
 		RequestToken requestToken = new RequestToken(token, secret);
+		
 		AccessToken accessToken = twitter.getOAuthAccessToken(requestToken, oauthVerifier);
 		
 		buf.append(" User Id: " + accessToken.getUserId());
 		buf.append(" User Screen Name: " + accessToken.getScreenName());
 		buf.append(" Access Token: " + accessToken.getToken());
 		buf.append(" Token Secret: " + accessToken.getTokenSecret());
-
+		log.info("Twitter User Data: " + buf);
 		for (UserServiceConfig service : getUserServiceConfigs(userEmail)) {
 			String aToken = accessToken.getToken();
 			boolean duplicate = false;
@@ -122,6 +127,7 @@ implements IServiceAuthorizer {
 			UserTargetServiceConfig targetConfig = (UserTargetServiceConfig) serviceConfig;
 			targetConfig.setServiceAccessToken(accessToken.getToken());
 			targetConfig.setServiceTokenSecret(accessToken.getTokenSecret());
+			log.info("Adding new user target config to database->" + targetConfig);
 			MyPersistenceManagerFactory.addTargetServiceApp(userEmail, targetConfig);
 		}
 		return buf.toString();

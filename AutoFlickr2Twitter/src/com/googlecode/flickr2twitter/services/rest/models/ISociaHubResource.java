@@ -31,10 +31,6 @@ public interface ISociaHubResource {
 	
 	@Post
 	public List<UserTargetServiceConfigModel> getUserTargetServiceConfigs(String userEmail);
-	
-	@Post
-	public void addUserTargetServiceConfig(String userEmail, 
-			UserTargetServiceConfigModel targetServiceConfig);
 
 	/**
 	 * @param userEmail
