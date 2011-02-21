@@ -243,12 +243,32 @@ public class SocialHubServerResource extends ServerResource implements ISociaHub
 			String userEmail) {
 		return convertTargetData(MyPersistenceManagerFactory.getUserTargetServices(userEmail));
 	}
+	@Put
+	public void addUserTargetServiceConfig(UserTargetServiceConfigModel targetModel) {
+		log.info("Saving user target service config->" + targetModel);
+		if (targetModel != null) {
+			UserTargetServiceConfig targetService = new UserTargetServiceConfig();
+			targetService.setServiceUserId(targetModel.getServiceUserId());
+			targetService.setServiceUserName(targetModel.getServiceUserName());
+			targetService.setServiceProviderId(targetModel.getServiceProviderId());
+			targetService.setUserEmail(targetModel.getUserEmail());
+			try {
+				targetService.setAdditionalParameters(targetModel.getAdditionalParameters());
+			} catch (UnsupportedEncodingException e) {
+				log.throwing(this.getClass().getName(), "addUserTargetServiceConfig", e);
+			}
+			targetService.setUserSiteUrl(targetModel.getUserSiteUrl());
+			targetService.setServiceAccessToken(targetModel.getServiceAccessToken());
+			targetService.setServiceTokenSecret(targetModel.getServiceTokenSecret());
+			MyPersistenceManagerFactory.addTargetServiceApp(targetModel.getUserEmail(), targetService);
+		}
+	}
 
 	/* (non-Javadoc)
 	 * @see com.googlecode.flickr2twitter.services.rest.models.ISociaHubResource#addUserTargetServiceConfig(java.lang.String, com.googlecode.flickr2twitter.services.rest.models.UserTargetServiceConfigModel)
 	 */
-	@Post
-	public void addUserTargetServiceConfig(String userEmail,
+	
+	/*public void addUserTargetServiceConfig(String userEmail,
 			UserTargetServiceConfigModel targetServiceConfig) {
 		log.info("Saving user target service config->" + targetServiceConfig);
 		if (targetServiceConfig != null) {
@@ -268,7 +288,7 @@ public class SocialHubServerResource extends ServerResource implements ISociaHub
 			}
 			MyPersistenceManagerFactory.addTargetServiceApp(userEmail, targetService);
 		}
-	}
+	}*/
 
 	
 
