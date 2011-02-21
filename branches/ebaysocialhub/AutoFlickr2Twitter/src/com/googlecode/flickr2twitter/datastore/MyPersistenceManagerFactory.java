@@ -442,11 +442,9 @@ public final class MyPersistenceManagerFactory {
 		PersistenceManager pm = pmf.getPersistenceManager();
 		try {
 			Query query = pm.newQuery(UserTargetServiceConfig.class);
-			query.setFilter("serviceUserId == currentServiceUserID");
-			query.setFilter("userEmail == userEmailAddress");
+			query.setFilter("serviceUserId == currentServiceUserID and userEmail == userEmailAddress");
 
 			query.declareParameters("String currentServiceUserID, String userEmailAddress");
-			@SuppressWarnings("unchecked")
 			List<?> data = (List<?>) query.execute(userServiceID, userEmail);
 			if (data != null) {
 				log.info("Found target service:" + data.size());
