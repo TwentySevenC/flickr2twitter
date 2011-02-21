@@ -77,14 +77,6 @@ public class OAuthActivity extends Activity {
 //	private OAuthProvider mProvider = null;
 	SharedPreferences mSettings;
 
-	
-	/**
-	 * 
-	 */
-	public OAuthActivity() {
-		super();
-	}
-
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
@@ -155,7 +147,7 @@ public class OAuthActivity extends Activity {
 						Intent intent = new Intent(this, UserProfileActivity.class);
 						//loginActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
 						intent.putExtra(KEY_USER_EMAIL, userEmail);
-						intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 						this.startActivity(intent);
 						finish();
 					}
@@ -229,8 +221,9 @@ public class OAuthActivity extends Activity {
 						e.printStackTrace();
 					} finally {
 						//startActivity(i); // we either authenticated and have the extras or not, but we're going back
-						OAuthActivity.this.startActivity(
-								new Intent(OAuthActivity.this, UserProfileActivity.class));
+					    Intent uIntent = new Intent(OAuthActivity.this,UserProfileActivity.class);
+					    uIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+						OAuthActivity.this.startActivity(uIntent);
 						finish();
 					}
 				}

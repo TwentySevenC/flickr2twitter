@@ -13,6 +13,7 @@ import java.util.Map;
 import org.restlet.resource.ClientResource;
 
 import android.app.Activity;
+import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -100,7 +101,7 @@ public class UserProfileActivity extends Activity {
 			}
 			if (user == null && selfInit == false) {
 				Intent intent = new Intent(this, Login.class);
-				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				UserProfileActivity.this.startActivity(intent);
 				finish();
 			}
@@ -181,14 +182,6 @@ public class UserProfileActivity extends Activity {
 		} catch (Exception e) {
 			Log.e(TAG, e.toString(), e);
 		}
-	}
-	
-	/* (non-Javadoc)
-	 * @see android.app.Activity#onBackPressed()
-	 */
-	@Override
-	public void onBackPressed() {
-		super.onBackPressed();
 	}
 
 	private class ItemAdapter extends ArrayAdapter<UserServiceConfigModel> {
