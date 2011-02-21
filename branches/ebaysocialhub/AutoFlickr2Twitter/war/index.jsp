@@ -16,7 +16,7 @@
 		%>
 		<h1>Welcome to SocialHub</h1>
 		<hr/>
-		<p>You need to sign in first, if you don't have an account here yet, you can use your google or yahoo account to sign in directly.</p>
+		<br/>
 		<div id="left">
 			<form action="/userOperation" method="post" name="frmSign">
 				<table class="border_table">
@@ -39,11 +39,23 @@
 				</table>
 			</form>
 		</div>
+		<img id="or" src="/images/label_or.png" alt=""/>
 		<div id="right">
-		<p>
-			<a href="/openid?op=Google" ><img border="0" src="http://openid.net/images/get-logos/google.png" alt="Google"/></a><br/><br/>
-			<a href="/openid?op=Yahoo" ><img border="0" src="http://openid.net/wordpress-content/uploads/2009/11/yahoo.png" alt="Yahoo"/></a>
-		</p>
+			<table class="border_table">
+				<tr class="first">
+					<td>Sign In by OpenID</td>
+				</tr>
+				<tr>
+					<td>
+						<a href="/openid?op=Google" ><img border="0" src="/images/openid_google.png" alt="Google"/></a>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<a href="/openid?op=Yahoo" ><img border="0" src="/images/openid_yahoo.png" alt="Yahoo"/></a>
+					</td>
+				</tr>
+			</table>
 		</div>
 		<%
 		} else { //user already signed in.
