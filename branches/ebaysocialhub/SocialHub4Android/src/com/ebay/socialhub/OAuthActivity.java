@@ -17,6 +17,7 @@ import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 import oauth.signpost.exception.OAuthNotAuthorizedException;
+import oauth.signpost.http.RequestParameters;
 
 import org.expressme.openid.Association;
 import org.expressme.openid.Endpoint;
@@ -35,7 +36,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.googlecode.flickr2twitter.services.rest.models.GlobalTargetApplicationServiceModel;
-import com.googlecode.flickr2twitter.services.rest.models.ISociaHubResource;
+import com.googlecode.flickr2twitter.services.rest.models.ISociaHubServicesResource;
 import com.googlecode.flickr2twitter.services.rest.models.UserTargetServiceConfigModel;
 
 /**
@@ -46,19 +47,19 @@ public class OAuthActivity extends Activity {
 	public static final String TAG = "SocialHub";
 	public static final String ID_GOOGLE = "Google";
 	public static final String ID_TWITTER = "Twitter";
-	
+
 	public static final String ID_PROVIDER = "providerId";
-	
+
 	private OpenIdManager manager;
-	
+
 	private static final String ID_SCHEME = "socialhub-app";
 	private static final Uri GOOGLE_CALLBACK_URI = Uri.parse(ID_SCHEME + "://google");
 	private static final Uri TWITTER_CALLBACK_URI = Uri.parse(ID_SCHEME + "://twitter");
-	
+
 	private static final String GAE_CALLBACK_URL = "http://ebaysocialhub.appspot.com/google_openid_callback.jsp";
 	public static final String KEY_USER_EMAIL = "userEmail";
-	
-	
+
+
 	//twitter variables
 	public static final String USER_TOKEN = "user_token";
 	public static final String USER_SECRET = "user_secret";
@@ -73,9 +74,16 @@ public class OAuthActivity extends Activity {
 
 	public static final String PREFS = "MyPrefsFile";
 
-//	private OAuthConsumer mConsumer = null;
-//	private OAuthProvider mProvider = null;
+	//	private OAuthConsumer mConsumer = null;
+	//	private OAuthProvider mProvider = null;
 	SharedPreferences mSettings;
+
+	/**
+	 * 
+	 */
+	public OAuthActivity() {
+		super();
+	}
 
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
@@ -137,7 +145,7 @@ public class OAuthActivity extends Activity {
 		try {
 			super.onResume();
 			Uri uri = getIntent().getData();
-			
+
 			if (uri != null && ID_SCHEME.equals(uri.getScheme())) {
 				if (ID_GOOGLE.equalsIgnoreCase(uri.getHost())) {
 					//google open id oauth
@@ -176,7 +184,7 @@ public class OAuthActivity extends Activity {
 
 						// It turns out this was the missing thing to making standard Activity launch mode work
 						mProvider.setOAuth10a(true);
-						
+
 						mConsumer.setTokenWithSecret(token, secret);
 
 						String otoken = uri.getQueryParameter(OAuth.OAUTH_TOKEN);
@@ -192,20 +200,22 @@ public class OAuthActivity extends Activity {
 						// Now we can retrieve the goodies
 						token = mConsumer.getToken();
 						secret = mConsumer.getTokenSecret();
+						RequestParameters params = mConsumer.getRequestParameters();
 						Map<String, String> data = mProvider.getResponseParameters();
-						
+
 						UserTargetServiceConfigModel model = new UserTargetServiceConfigModel();
 						model.setServiceProviderId(ID_TWITTER.toLowerCase(Locale.US));
 						model.setServiceAccessToken(token);
 						model.setServiceTokenSecret(secret);
 						model.setUserEmail(userEmail);
 						model.setServiceUserName(data.get("screen_name"));
+						//user service id for storing the twitter verifier
 						model.setServiceUserId(data.get("user_id"));
 						model.setAdditionalParameters(new HashMap<String, String>(0));
 						model.setUserSiteUrl("http://twitter.com");
-						
+
 						new SaveTwitterTokenTask().execute(model);
-						
+
 						//OAuthActivity.saveAuthInformation(mSettings, token, secret);
 						// Clear the request stuff, now that we have the real thing
 						OAuthActivity.saveRequestInformation(mSettings, null, null, null, null, null);
@@ -232,7 +242,7 @@ public class OAuthActivity extends Activity {
 			Log.e(TAG, e.toString(), e);
 		}
 	}
-	
+
 	public static void saveRequestInformation(SharedPreferences settings, String userEmail, 
 			String token, String secret, 
 			String consumerId, String consumerSecret) {
@@ -246,7 +256,7 @@ public class OAuthActivity extends Activity {
 			editor.putString(KEY_USER_EMAIL, userEmail);
 			Log.d(TAG, "Saving user email: " + userEmail);
 		}
-		
+
 		if(token == null) {
 			editor.remove(OAuthActivity.REQUEST_TOKEN);
 			Log.d(TAG, "Clearing Request Token");
@@ -263,7 +273,7 @@ public class OAuthActivity extends Activity {
 			editor.putString(OAuthActivity.REQUEST_SECRET, secret);
 			Log.d(TAG, "Saving Request Secret: " + secret);
 		}
-		
+
 		if(consumerId == null) {
 			editor.remove(OAuthActivity.CONSUMER_ID);
 			Log.d(TAG, "Clearing Consumer Id");
@@ -272,7 +282,7 @@ public class OAuthActivity extends Activity {
 			editor.putString(OAuthActivity.CONSUMER_ID, consumerId);
 			Log.d(TAG, "Saving Consumer Id: " + consumerId);
 		}
-		
+
 		if(consumerSecret == null) {
 			editor.remove(OAuthActivity.CONSUMER_SECRET);
 			Log.d(TAG, "Clearing Consumer Secret");
@@ -281,7 +291,7 @@ public class OAuthActivity extends Activity {
 			editor.putString(OAuthActivity.CONSUMER_SECRET, consumerSecret);
 			Log.d(TAG, "Saving Consumer Secret: " + consumerSecret);
 		}
-		
+
 		editor.commit();
 
 	}
@@ -308,17 +318,17 @@ public class OAuthActivity extends Activity {
 		editor.commit();
 
 	}
-	
+
 	private class AuthGoogleOpenIDTask extends AsyncTask<Void, Void, String> {
 		ProgressDialog authDialog;
-		 
+
 		@Override
 		protected void onPreExecute() {
 			authDialog = ProgressDialog.show(OAuthActivity.this, 
-				getText(R.string.auth_progress_title), 
-				getText(R.string.google_openid_oauth_message), 
-				true,	// indeterminate duration
-				false); // not cancel-able
+					getText(R.string.auth_progress_title), 
+					getText(R.string.google_openid_oauth_message), 
+					true,	// indeterminate duration
+					false); // not cancel-able
 		}
 
 		/* (non-Javadoc)
@@ -329,8 +339,8 @@ public class OAuthActivity extends Activity {
 			String message = null;
 			try {
 				manager = new OpenIdManager();
-		        manager.setReturnTo(GAE_CALLBACK_URL);
-				
+				manager.setReturnTo(GAE_CALLBACK_URL);
+
 				Intent i = OAuthActivity.this.getIntent();
 				if (i.getData() == null) {
 					Endpoint endpoint = manager.lookupEndpoint(ID_GOOGLE);
@@ -346,28 +356,28 @@ public class OAuthActivity extends Activity {
 			}
 			return message;
 		}
-		
+
 		protected void onPostExecute(String result) {
 			authDialog.dismiss();
 			if (result != null) {
 				Toast.makeText(OAuthActivity.this, 
-					"Google OpenID OAuth - " + result,Toast.LENGTH_LONG).show();
+						"Google OpenID OAuth - " + result,Toast.LENGTH_LONG).show();
 			}
 		}
-		
+
 	}
-	
+
 	private class SaveTwitterTokenTask extends AsyncTask<UserTargetServiceConfigModel, Void, Boolean> {
-		ProgressDialog twitterAuthDialog;
-		 
-		@Override
+		//ProgressDialog twitterAuthDialog;
+
+		/*@Override
 		protected void onPreExecute() {
 			twitterAuthDialog = ProgressDialog.show(OAuthActivity.this, 
 				getText(R.string.auth_progress_title), 
 				"saving twitter oauth token to the server...", 
 				true,	// indeterminate duration
 				false); // not cancel-able
-		}
+		}*/
 
 		/* (non-Javadoc)
 		 * @see android.os.AsyncTask#doInBackground(Params[])
@@ -376,29 +386,46 @@ public class OAuthActivity extends Activity {
 		protected Boolean doInBackground(UserTargetServiceConfigModel... params) {
 			try {
 				UserTargetServiceConfigModel targetServiceConfig = params[0];
-				ClientResource cr = new ClientResource(Login.SERVER_LOCATION);
-				ISociaHubResource resource = cr.wrap(ISociaHubResource.class);
-				resource.addUserTargetServiceConfig(targetServiceConfig.getUserEmail(), 
-						targetServiceConfig);
+				ClientResource cr = new ClientResource("http://ebaysocialhub.appspot.com/rest/services");
+				ISociaHubServicesResource resource = cr.wrap(ISociaHubServicesResource.class);
+				//resource.addUserTargetServiceConfig(targetServiceConfig);
+
+				StringBuffer buf = new StringBuffer();
+				buf.append(targetServiceConfig.getServiceProviderId());
+				buf.append("/");
+				buf.append(targetServiceConfig.getUserEmail());
+				buf.append("/");
+				buf.append(targetServiceConfig.getServiceAccessToken());
+				buf.append("/");
+				buf.append(targetServiceConfig.getServiceTokenSecret());
+				buf.append("/");
+				buf.append(targetServiceConfig.getServiceUserId());
+				buf.append("/");
+				buf.append(targetServiceConfig.getServiceUserName());
+				
+				resource.addUserTargetServiceConfig(buf.toString());
+
+				//				resource.addTwitterTargetServiceConfig(targetServiceConfig.getUserEmail(), 
+				//						targetServiceConfig.getServiceAccessToken(), targetServiceConfig.getServiceTokenSecret());
 				return true;
 			} catch (Exception e) {
 				Log.e(TAG, e.toString(), e);
 			}
 			return false;
 		}
-		
+
 		protected void onPostExecute(Boolean result) {
-			if (twitterAuthDialog != null)
-				twitterAuthDialog.dismiss();
+			/*if (twitterAuthDialog != null)
+				twitterAuthDialog.dismiss();*/
 			if (result != null && result.booleanValue() == true) {
 				Toast.makeText(OAuthActivity.this, 
-					"Successfully saved twitter oauth token to the server", Toast.LENGTH_LONG).show();
+						"Successfully saved twitter oauth token to the server", Toast.LENGTH_LONG).show();
 			} else {
 				Toast.makeText(OAuthActivity.this, 
 						"Failed saving twitter oauth token to the server", Toast.LENGTH_LONG).show();
 			}
 		}
-		
+
 	}
 
 }
