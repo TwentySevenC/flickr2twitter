@@ -36,7 +36,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.googlecode.flickr2twitter.services.rest.models.GlobalTargetApplicationServiceModel;
+import com.googlecode.flickr2twitter.services.rest.models.ISociaHubResource;
 import com.googlecode.flickr2twitter.services.rest.models.ISociaHubServicesResource;
+import com.googlecode.flickr2twitter.services.rest.models.UserModel;
 import com.googlecode.flickr2twitter.services.rest.models.UserTargetServiceConfigModel;
 
 /**
@@ -231,10 +233,10 @@ public class OAuthActivity extends Activity {
 						e.printStackTrace();
 					} finally {
 						//startActivity(i); // we either authenticated and have the extras or not, but we're going back
-					    Intent uIntent = new Intent(OAuthActivity.this,UserProfileActivity.class);
+					   /* Intent uIntent = new Intent(OAuthActivity.this,UserProfileActivity.class);
 					    uIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 						OAuthActivity.this.startActivity(uIntent);
-						finish();
+						finish();*/
 					}
 				}
 			}
@@ -367,23 +369,23 @@ public class OAuthActivity extends Activity {
 
 	}
 
-	private class SaveTwitterTokenTask extends AsyncTask<UserTargetServiceConfigModel, Void, Boolean> {
-		//ProgressDialog twitterAuthDialog;
+	private class SaveTwitterTokenTask extends AsyncTask<UserTargetServiceConfigModel, Void, UserModel> {
+		ProgressDialog twitterAuthDialog;
 
-		/*@Override
+		@Override
 		protected void onPreExecute() {
 			twitterAuthDialog = ProgressDialog.show(OAuthActivity.this, 
 				getText(R.string.auth_progress_title), 
 				"saving twitter oauth token to the server...", 
 				true,	// indeterminate duration
 				false); // not cancel-able
-		}*/
+		}
 
 		/* (non-Javadoc)
 		 * @see android.os.AsyncTask#doInBackground(Params[])
 		 */
 		@Override
-		protected Boolean doInBackground(UserTargetServiceConfigModel... params) {
+		protected UserModel doInBackground(UserTargetServiceConfigModel... params) {
 			try {
 				UserTargetServiceConfigModel targetServiceConfig = params[0];
 				ClientResource cr = new ClientResource("http://ebaysocialhub.appspot.com/rest/services");
@@ -407,19 +409,27 @@ public class OAuthActivity extends Activity {
 
 				//				resource.addTwitterTargetServiceConfig(targetServiceConfig.getUserEmail(), 
 				//						targetServiceConfig.getServiceAccessToken(), targetServiceConfig.getServiceTokenSecret());
-				return true;
+				
+				cr = new ClientResource(Login.SERVER_LOCATION);
+				ISociaHubResource service = cr.wrap(ISociaHubResource.class);
+				return service.retrieve(targetServiceConfig.getUserEmail());
 			} catch (Exception e) {
 				Log.e(TAG, e.toString(), e);
 			}
-			return false;
+			return null;
 		}
 
-		protected void onPostExecute(Boolean result) {
-			/*if (twitterAuthDialog != null)
-				twitterAuthDialog.dismiss();*/
-			if (result != null && result.booleanValue() == true) {
+		protected void onPostExecute(UserModel user) {
+			if (twitterAuthDialog != null)
+				twitterAuthDialog.dismiss();
+			if (user != null) {
 				Toast.makeText(OAuthActivity.this, 
 						"Successfully saved twitter oauth token to the server", Toast.LENGTH_LONG).show();
+				Intent uIntent = new Intent(OAuthActivity.this,UserProfileActivity.class);
+				uIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				OAuthActivity.this.startActivity(uIntent);
+				uIntent.putExtra(UserProfileActivity.TAG_USER, user);
+				OAuthActivity.this.finish();
 			} else {
 				Toast.makeText(OAuthActivity.this, 
 						"Failed saving twitter oauth token to the server", Toast.LENGTH_LONG).show();
