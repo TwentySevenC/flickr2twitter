@@ -8,6 +8,7 @@ import java.util.List;
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
+import org.restlet.resource.Put;
 
 
 /**
@@ -32,9 +33,9 @@ public interface ISociaHubResource {
 	@Post
 	public List<UserTargetServiceConfigModel> getUserTargetServiceConfigs(String userEmail);
 	
-	@Post
-	public void addUserTargetServiceConfig(String userEmail, 
-			UserTargetServiceConfigModel targetServiceConfig);
+	@Put
+	public void addUserTargetServiceConfig(
+			UserTargetServiceConfigModel targetModel);
 
 	/**
 	 * @param userEmail
