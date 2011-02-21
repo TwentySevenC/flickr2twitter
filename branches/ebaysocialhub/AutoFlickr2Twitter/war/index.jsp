@@ -38,8 +38,8 @@
 					</tr>
 				</table>
 			</form>
+			<img id="or" src="/images/label_or.png" alt=""/>
 		</div>
-		<img id="or" src="/images/label_or.png" alt=""/>
 		<div id="right">
 			<table class="border_table">
 				<tr class="first">

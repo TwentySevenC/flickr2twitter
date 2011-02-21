@@ -28,8 +28,7 @@
 		<h1>Manage Accounts</h1>
 		<hr/>
 		<div id="middle">
-			<img src="/images/group_source.png" alt=""/>
-			<br/>
+			<h3 class="source">Source</h3>
 			<br/>
 			<table class="no_border_table">
 			<%
@@ -37,8 +36,8 @@
 				if ( sourceSvcs.size() == 0 ) {
 			%>
 				<tr>
-					<td class="first" bgcolor="#85a157"/>
-					<td bgcolor="#85a157"/>
+					<td bgcolor="#DBFFBF"/>
+					<td bgcolor="#DBFFBF"/>
 				</tr>
 			<%
 				odd = false;
@@ -46,10 +45,10 @@
 				for( UserSourceServiceConfig src : sourceSvcs ) {
 			%>
 				<tr>
-					<td <%if(odd) {%>bgcolor="#85a157"<%}else{%>bgcolor="#FEBE43"<%}%>>
+					<td <%if(odd) {%>bgcolor="#DAFF7F"<%}else{%>bgcolor="#FFE97F"<%}%>>
 						<a target="_new" href="<%=src.getUserSiteUrl()%>"><%=src.getServiceUserName()%>@<%=src.getServiceProviderId().toUpperCase()%></a>
 					</td>
-					<td <%if(odd) {%>bgcolor="#85a157"<%}else{%>bgcolor="#FEBE43"<%}%>>
+					<td <%if(odd) {%>bgcolor="#DAFF7F"<%}else{%>bgcolor="#FFE97F"<%}%>>
 						<a href="srctgtmgr?at=<%=src.getServiceAccessToken()%>&type=0"><%=src.isEnabled()?"Disable":"Enable"%></a>
 					</td>
 				</tr>
@@ -59,7 +58,7 @@
 			%>
 			</table>
 			<p/>
-			<img src="/images/group_target.png" alt=""/>
+			<h3 class="target">Target</h3>
 			<br/>
 			<table class="no_border_table">
 			<%
@@ -67,8 +66,8 @@
 				if ( targetSvcs.size() == 0 ) {
 			%>
 				<tr>
-					<td class="first" bgcolor="#85a157"/>
-					<td bgcolor="#85a157"/>
+					<td bgcolor="#DAFF7F"/>
+					<td bgcolor="#DAFF7F"/>
 				</tr>
 			<%
 				odd = false;
@@ -76,10 +75,10 @@
 				for( UserTargetServiceConfig tgt : targetSvcs ) {
 			%>
 				<tr>
-					<td <%if(odd) {%>bgcolor="#85a157"<%}else{%>bgcolor="#FEBE43"<%}%>>
+					<td <%if(odd) {%>bgcolor="#DAFF7F"<%}else{%>bgcolor="#FFE97F"<%}%>>
 						<a target="_new" href="<%=tgt.getUserSiteUrl()%>"><%=tgt.getServiceUserName()%>@<%=tgt.getServiceProviderId().toUpperCase()%></a>
 					</td>
-					<td <%if(odd) {%>bgcolor="#85a157"<%}else{%>bgcolor="#FEBE43"<%}%>>
+					<td <%if(odd) {%>bgcolor="#DAFF7F"<%}else{%>bgcolor="#FFE97F"<%}%>>
 						<a href="srctgtmgr?at=<%=tgt.getServiceAccessToken()%>&type=1"><%=tgt.isEnabled()?"Disable":"Enable"%></a>
 					</td>
 				</tr>
