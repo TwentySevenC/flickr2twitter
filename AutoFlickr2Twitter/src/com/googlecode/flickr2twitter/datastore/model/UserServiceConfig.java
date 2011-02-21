@@ -176,6 +176,10 @@ public abstract class UserServiceConfig {
 		serializeParams();
 	}
 	
+	public void setAdditionalParamsPersitent(String additionalParamsPersitent) {
+		this.additionalParamsPersitent = additionalParamsPersitent;
+	}
+
 	private void serializeParams() throws UnsupportedEncodingException {
 		StringBuffer buf = new StringBuffer();
 		if (additionalParameters != null && additionalParameters.size() > 0) {
