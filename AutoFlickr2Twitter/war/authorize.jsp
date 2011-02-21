@@ -20,8 +20,7 @@
 		<h1>Authorize/Configure Source and Target Accounts</h1>
 		<hr/>
 		<div id="middle">
-			<img src="/images/group_source.png" alt=""/>
-			<br/>
+			<h3 class="source">Source</h3>
 			<br/>
 			<%
 				List<UserSourceServiceConfig> sourceSvcs = MyPersistenceManagerFactory
@@ -41,20 +40,19 @@
 							.getGlobalSourceAppService(sourceProvider.getId());
 				%>
 				<% if (sourceProvider instanceof IServiceAuthorizer) {%>
-				<a href="/oauth?<%=OAuthServlet.PARA_OPT%>=<%=OAuthServlet.OPT_AUTH_SOURCE%>&<%=OAuthServlet.PARA_PROVIDER_ID%>=<%=currentProviderID%>"
+				<a class="source" href="/oauth?<%=OAuthServlet.PARA_OPT%>=<%=OAuthServlet.OPT_AUTH_SOURCE%>&<%=OAuthServlet.PARA_PROVIDER_ID%>=<%=currentProviderID%>"
 					target="_new"><img src="<%=sourceApp.getImagePath()%>" alt="<%=sourceApp.getDescription()%>"/></a>
 				<% } else if (sourceProvider instanceof IConfigurableService) {
 					IConfigurableService configService = (IConfigurableService)sourceProvider;
 				%>
-				<a href="<%=configService.getConfigPagePath()%>"
+				<a class="source" href="<%=configService.getConfigPagePath()%>"
 					target="_new"><img src="<%=sourceApp.getImagePath()%>" alt="<%=sourceApp.getDescription()%>"/></a>
 				<%
 				   }
 				}
 			%>
 			<p/>
-			<img src="/images/group_target.png" alt=""/>
-			<br/>
+			<h3 class="target">Target</h3>
 			<br/>
 			<%
 				Collection<ITargetServiceProvider> targets = ServiceFactory
@@ -70,7 +68,7 @@
 					GlobalTargetApplicationService targetApp = MyPersistenceManagerFactory
 							.getGlobalTargetAppService(targetProvider.getId());
 				%>
-				<a href="/oauth?<%=OAuthServlet.PARA_OPT%>=<%=OAuthServlet.OPT_AUTH_TARGET%>&<%=OAuthServlet.PARA_PROVIDER_ID%>=<%=currentProviderID%>"
+				<a class="target" href="/oauth?<%=OAuthServlet.PARA_OPT%>=<%=OAuthServlet.OPT_AUTH_TARGET%>&<%=OAuthServlet.PARA_PROVIDER_ID%>=<%=currentProviderID%>"
 				target="_new"><img src="<%=targetApp.getImagePath()%>" alt="<%=targetApp.getDescription()%>"/></a>
 				<%
 				}

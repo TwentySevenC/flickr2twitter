@@ -70,13 +70,12 @@ input {
 	height: 25px;
 }
 .no_border_table {
-	width: 90%;
+	width: 100%;
 }
 .no_border_table td {
-	height: 30px;
-}
-.no_border_table td.first {
 	width: 60%;
+	height: 30px;
+	padding-left: 20px;
 }
 /********************** Header ***************************/
 #header {
@@ -148,18 +147,21 @@ input {
 }
 /********************** Content ***************************/
 #content {
-	padding: 0px 10px 30px 10px;
+	padding: 0px 0px 30px 0px;
 	width: 717px;
-	position: inherit;
-}
-img#or {
-	margin-left: 400px;
-	margin-top: 50px;
-	position: absolute;
 }
 #middle {
 	margin-top: 10px;
 	margin-bottom: 10px;
+}
+#middle a.source, #middle a.target {
+	margin-right: 20px;
+}
+h3.source, h3.target {
+	border: 1px solid #F16736;
+	background-color: #FEBE43;
+	color: white;
+	padding-left: 20px;
 }
 #left {
 	float: left;
@@ -169,8 +171,14 @@ img#or {
 	margin-bottom: 10px;
 	display: inline;
 }
+#left img#or {
+	margin-left: 50px;
+	margin-top: 40px;
+}
 #left .border_table {
-	width: 360px;
+	float: left;
+	width: 320px;
+	height: 140px;
 }
 #left a {
 	color: #28556b;
@@ -185,12 +193,13 @@ img#or {
 	float: right;
 	width: 210px;
 	height: auto;
-	padding: 0px 20px 20px 20px;
+	padding: 0px 40px 20px 20px;
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
 #right .border_table {
 	padding: 0px;
+	height: 140px;
 }
 #right .border_table tr {
 	text-align: center;
