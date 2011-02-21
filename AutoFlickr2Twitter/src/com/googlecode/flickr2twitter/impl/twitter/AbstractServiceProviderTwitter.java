@@ -83,14 +83,12 @@ implements IServiceAuthorizer {
 		Twitter twitter = new TwitterFactory().getOAuthAuthorizedInstance(
 				consumerId,
 				consumerSecret);
-		twitter.setOAuthConsumer(consumerId, consumerSecret);
 		log.info("Initialized Twitter client: " + twitter);
 
 		String token = String.valueOf(data.get(KEY_TOKEN));
 		String secret = String.valueOf(data.get(KEY_TOKEN_SECRET));
 		String oauthVerifier = String.valueOf(data.get(KEY_OAUTH_VERIFIER));
 		RequestToken requestToken = new RequestToken(token, secret);
-		
 		AccessToken accessToken = twitter.getOAuthAccessToken(requestToken, oauthVerifier);
 		
 		buf.append(" User Id: " + accessToken.getUserId());
