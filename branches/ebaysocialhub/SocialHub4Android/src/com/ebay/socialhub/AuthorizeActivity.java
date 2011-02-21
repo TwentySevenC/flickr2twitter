@@ -1,6 +1,7 @@
 /**
  * 
  */
+
 package com.ebay.socialhub;
 
 import java.util.ArrayList;
@@ -47,221 +48,226 @@ import com.googlecode.flickr2twitter.services.rest.models.ISociaHubResource;
 
 /**
  * @author yayu
- *
  */
 public class AuthorizeActivity extends Activity {
-	public static final String TAG = "SocialHub";
-	private static final Map<String, Integer> ICON_MAP;
-	
+    public static final String TAG = "SocialHub";
+
+    private static final Map<String, Integer> ICON_MAP;
+
     private SectionedAdapter servicesAdapter;
-    
+
     public static final String SERVICES_ID = "serviceProviders";
+
     public static final String SERVICE_CONFIG_ID = "serviceConfig";
-	
-	private ListView authorizeServiceListView;
-	
-	static {
-		Map<String, Integer> map = new HashMap<String, Integer>();
-		map.put("flickr", R.drawable.flickr_64);
-		map.put("youtube", R.drawable.youtube_64);
-		map.put("facebook", R.drawable.facebook_64);
-		map.put("twitter", R.drawable.twitter_64);
-		map.put("picasa", R.drawable.picasa_64);
-		map.put("ebay", R.drawable.ebay_64);
-		map.put("sina", R.drawable.sina_64);
-		
-		ICON_MAP = Collections.unmodifiableMap(map);
-	}
-	
-	/**
+
+    private ListView authorizeServiceListView;
+
+    static {
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        map.put("flickr", R.drawable.flickr_64);
+        map.put("youtube", R.drawable.youtube_64);
+        map.put("facebook", R.drawable.facebook_64);
+        map.put("twitter", R.drawable.twitter_64);
+        map.put("picasa", R.drawable.picasa_64);
+        map.put("ebay", R.drawable.ebay_64);
+        map.put("sina", R.drawable.sina_64);
+
+        ICON_MAP = Collections.unmodifiableMap(map);
+    }
+
+    /**
 	 * 
 	 */
-	public AuthorizeActivity() {
-		super();
-	}
+    public AuthorizeActivity() {
+        super();
+    }
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		try {
-			super.onCreate(savedInstanceState);
-			setContentView(R.layout.authorize);
-			
-			final OnLongClickListener longClickListener = new OnLongClickListener() {
-				
-				@Override
-				public boolean onLongClick(View v) {
-					if (v instanceof TextView) {
-						TextView txtV = (TextView)v;
-						Toast.makeText(AuthorizeActivity.this, txtV.getText(),
-								Toast.LENGTH_SHORT).show();
-						return true;
-					}
-					return false;
-				}
-			};
-			this.servicesAdapter = new SectionedAdapter() {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        try {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.authorize);
 
-				@Override
-				protected View getHeaderView(String caption,
-						int index, View convertView, ViewGroup parent) {
-					TextView result = (TextView) convertView;
+            final OnLongClickListener longClickListener = new OnLongClickListener() {
 
-					if (convertView == null) {
-						result = (TextView) getLayoutInflater().inflate(
-								R.layout.header, null);
-					}
+                @Override
+                public boolean onLongClick(View v) {
+                    if (v instanceof TextView) {
+                        TextView txtV = (TextView) v;
+                        Toast.makeText(AuthorizeActivity.this, txtV.getText(), Toast.LENGTH_SHORT)
+                                .show();
+                        return true;
+                    }
+                    return false;
+                }
+            };
+            this.servicesAdapter = new SectionedAdapter() {
 
-					result.setText(caption);
-					result.setOnLongClickListener(longClickListener);
-					return (result);
-				}
-			};
-			
-			this.authorizeServiceListView = (ListView)this.findViewById(R.id.authorizeServiceList);
-			this.authorizeServiceListView.setTextFilterEnabled(true);
+                @Override
+                protected View getHeaderView(String caption, int index, View convertView,
+                        ViewGroup parent) {
+                    TextView result = (TextView) convertView;
 
-			if (getIntent().hasExtra(SERVICES_ID)) {
-				setListData((GlobalApplicationConfigModelList)getIntent().getExtras().getSerializable(SERVICES_ID));
-			} else {
-				new GetAvailableServicesTask().execute();
-			}
-			
-			final String userEmail = getIntent().getExtras().getString(OAuthActivity.KEY_USER_EMAIL);
-			
-			this.authorizeServiceListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-			    public void onItemClick(AdapterView<?> parent, View view,
-			        int position, long id) {
-			    	Object obj = servicesAdapter.getItem(position);
-			    	if (obj instanceof GlobalTargetApplicationServiceModel) {
-			    		GlobalTargetApplicationServiceModel target = (GlobalTargetApplicationServiceModel)obj;
-			    		if ("twitter".equalsIgnoreCase(target.getProviderId())) {
-			    			//we only support twitter for now
-			    			Intent intent = new Intent(AuthorizeActivity.this, 
-			    					OAuthActivity.class);
-			    			intent.putExtra(SERVICE_CONFIG_ID, target);
-			    			intent.putExtra(OAuthActivity.ID_PROVIDER, OAuthActivity.ID_TWITTER);
-			    			intent.putExtra(OAuthActivity.KEY_USER_EMAIL, userEmail);
-			    			AuthorizeActivity.this.startActivity(intent);
-			    		}
-			    	} else {
-			    		Toast.makeText(AuthorizeActivity.this, String.valueOf(obj), Toast.LENGTH_SHORT).show();
-			    	}
-			    }
-			    
-			  });
-		
-		} catch (Exception e) {
-			Log.e(TAG, e.toString(), e);
-		}
-	}
-	
-	private class ItemAdapter extends ArrayAdapter<GlobalApplicationConfigModel> {
-		private List<GlobalApplicationConfigModel> items;
+                    if (convertView == null) {
+                        result = (TextView) getLayoutInflater().inflate(R.layout.header, null);
+                    }
 
-		public ItemAdapter(Context context, int textViewResourceId,
-				List<GlobalApplicationConfigModel> objects) {
-			super(context, textViewResourceId, objects);
-			this.items = objects;
-		}
-		
-		/* (non-Javadoc)
-		 * @see android.widget.BaseAdapter#getViewTypeCount()
-		 */
-		@Override
-		public int getViewTypeCount() {
-			return items != null ? items.size() : 0;
-		}
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			View v = convertView;
-			if (v == null) {
-				LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				v = vi.inflate(R.layout.authorize_row, null);
-			}
-			GlobalApplicationConfigModel serviceModel = items.get(position);
-			if (serviceModel != null) {
-				ImageView image = (ImageView) v.findViewById(R.id.authorizeServiceIcon);
-				String providerId = serviceModel.getProviderId();
-				
-				if (providerId != null && ICON_MAP.containsKey(providerId.toLowerCase(Locale.US))) {
-					image.setImageResource(ICON_MAP.get(providerId.toLowerCase(Locale.US)));
-				}
-				
-				TextView tt = (TextView) v.findViewById(R.id.txtAuthAppName);
-				TextView bt = (TextView) v.findViewById(R.id.txtAuthDescription);
-				if (tt != null) {
-					tt.setText(serviceModel.getAppName());                            }
-				if(bt != null){
-					bt.setText(serviceModel.getDescription());
-				}
-			}
-			return v;
-		}
-	}
-	
-	private void setListData(GlobalApplicationConfigModelList models) {
-		if(models != null && models.getGlobalAppConfigModels() != null) {
-			List<GlobalApplicationConfigModel> sources = 
-				new ArrayList<GlobalApplicationConfigModel>();
-			List<GlobalApplicationConfigModel> targets = 
-				new ArrayList<GlobalApplicationConfigModel>();
-			
-			for (GlobalApplicationConfigModel model : models.getGlobalAppConfigModels()) {
-				if (model instanceof GlobalSourceApplicationServiceModel) {
-					sources.add(model);
-				} else {
-					targets.add(model);
-				}
-			}
-			AuthorizeActivity.this.servicesAdapter.addSection("Source Services", new ItemAdapter(
-					AuthorizeActivity.this, R.layout.row, 
-					sources));
+                    result.setText(caption);
+                    result.setOnLongClickListener(longClickListener);
+                    return (result);
+                }
+            };
 
-			AuthorizeActivity.this.servicesAdapter.addSection("Target Services", new ItemAdapter(
-					AuthorizeActivity.this, R.layout.row, targets));
-			authorizeServiceListView.setAdapter(AuthorizeActivity.this.servicesAdapter);
-			AuthorizeActivity.this.getIntent().putExtra(SERVICES_ID, models);
-		}
-	}
-	
-	private class GetAvailableServicesTask extends AsyncTask<Void, Void, GlobalApplicationConfigModelList> {
-		ProgressDialog authDialog;
-		 
-		@Override
-		protected void onPreExecute() {
-			authDialog = ProgressDialog.show(AuthorizeActivity.this, 
-				"Contacting Server", 
-				"Retrieving supported services from server...", 
-				true,	// indeterminate duration
-				false); // not cancel-able
-		}
-		
-		/* (non-Javadoc)
-		 * @see android.os.AsyncTask#doInBackground(Params[])
-		 */
-		@Override
-		protected GlobalApplicationConfigModelList doInBackground(Void... arg0) {
-			try {
-				ClientResource cr = new ClientResource(Login.SERVER_LOCATION);
-				ISociaHubResource resource = cr.wrap(ISociaHubResource.class);
-				return resource.getSupportedServiceProviders();
-			} catch (Exception e) {
-				Log.e(TAG, e.toString(), e);
-			}
-			return null;
-		}
-		
-		
-		protected void onPostExecute(GlobalApplicationConfigModelList models) {
-			try {
-				authDialog.dismiss();
-				setListData(models);
-			} catch (Exception e) {
-				Log.e(TAG, e.toString(), e);
-			}
-		}
+            this.authorizeServiceListView = (ListView) this.findViewById(R.id.authorizeServiceList);
+            this.authorizeServiceListView.setTextFilterEnabled(true);
 
-	}
+            if (getIntent().hasExtra(SERVICES_ID)) {
+                setListData((GlobalApplicationConfigModelList) getIntent().getExtras()
+                        .getSerializable(SERVICES_ID));
+            } else {
+                new GetAvailableServicesTask().execute();
+            }
+
+            final String userEmail = getIntent().getExtras()
+                    .getString(OAuthActivity.KEY_USER_EMAIL);
+
+            this.authorizeServiceListView
+                    .setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        public void onItemClick(AdapterView<?> parent, View view, int position,
+                                long id) {
+                            Object obj = servicesAdapter.getItem(position);
+                            if (obj instanceof GlobalTargetApplicationServiceModel) {
+                                GlobalTargetApplicationServiceModel target = (GlobalTargetApplicationServiceModel) obj;
+                                if ("twitter".equalsIgnoreCase(target.getProviderId())) {
+                                    // we only support twitter for now
+                                    Intent intent = new Intent(AuthorizeActivity.this,
+                                            OAuthActivity.class);
+                                    intent.putExtra(SERVICE_CONFIG_ID, target);
+                                    intent.putExtra(OAuthActivity.ID_PROVIDER,
+                                            OAuthActivity.ID_TWITTER);
+                                    intent.putExtra(OAuthActivity.KEY_USER_EMAIL, userEmail);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    AuthorizeActivity.this.startActivity(intent);
+                                }
+                            } else {
+                                Toast.makeText(AuthorizeActivity.this, String.valueOf(obj),
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                    });
+
+        } catch (Exception e) {
+            Log.e(TAG, e.toString(), e);
+        }
+    }
+
+    private class ItemAdapter extends ArrayAdapter<GlobalApplicationConfigModel> {
+        private List<GlobalApplicationConfigModel> items;
+
+        public ItemAdapter(Context context, int textViewResourceId,
+                List<GlobalApplicationConfigModel> objects) {
+            super(context, textViewResourceId, objects);
+            this.items = objects;
+        }
+
+        /*
+         * (non-Javadoc)
+         * @see android.widget.BaseAdapter#getViewTypeCount()
+         */
+        @Override
+        public int getViewTypeCount() {
+            return items != null ? items.size() : 0;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View v = convertView;
+            if (v == null) {
+                LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                v = vi.inflate(R.layout.authorize_row, null);
+            }
+            GlobalApplicationConfigModel serviceModel = items.get(position);
+            if (serviceModel != null) {
+                ImageView image = (ImageView) v.findViewById(R.id.authorizeServiceIcon);
+                String providerId = serviceModel.getProviderId();
+
+                if (providerId != null && ICON_MAP.containsKey(providerId.toLowerCase(Locale.US))) {
+                    image.setImageResource(ICON_MAP.get(providerId.toLowerCase(Locale.US)));
+                }
+
+                TextView tt = (TextView) v.findViewById(R.id.txtAuthAppName);
+                TextView bt = (TextView) v.findViewById(R.id.txtAuthDescription);
+                if (tt != null) {
+                    tt.setText(serviceModel.getAppName());
+                }
+                if (bt != null) {
+                    bt.setText(serviceModel.getDescription());
+                }
+            }
+            return v;
+        }
+    }
+
+    private void setListData(GlobalApplicationConfigModelList models) {
+        if (models != null && models.getGlobalAppConfigModels() != null) {
+            List<GlobalApplicationConfigModel> sources = new ArrayList<GlobalApplicationConfigModel>();
+            List<GlobalApplicationConfigModel> targets = new ArrayList<GlobalApplicationConfigModel>();
+
+            for (GlobalApplicationConfigModel model : models.getGlobalAppConfigModels()) {
+                if (model instanceof GlobalSourceApplicationServiceModel) {
+                    sources.add(model);
+                } else {
+                    targets.add(model);
+                }
+            }
+            AuthorizeActivity.this.servicesAdapter.addSection("Source Services", new ItemAdapter(
+                    AuthorizeActivity.this, R.layout.row, sources));
+
+            AuthorizeActivity.this.servicesAdapter.addSection("Target Services", new ItemAdapter(
+                    AuthorizeActivity.this, R.layout.row, targets));
+            authorizeServiceListView.setAdapter(AuthorizeActivity.this.servicesAdapter);
+            AuthorizeActivity.this.getIntent().putExtra(SERVICES_ID, models);
+        }
+    }
+
+    private class GetAvailableServicesTask extends
+            AsyncTask<Void, Void, GlobalApplicationConfigModelList> {
+        ProgressDialog authDialog;
+
+        @Override
+        protected void onPreExecute() {
+            authDialog = ProgressDialog.show(AuthorizeActivity.this, "Contacting Server",
+                    "Retrieving supported services from server...", true, // indeterminate
+                                                                          // duration
+                    false); // not cancel-able
+        }
+
+        /*
+         * (non-Javadoc)
+         * @see android.os.AsyncTask#doInBackground(Params[])
+         */
+        @Override
+        protected GlobalApplicationConfigModelList doInBackground(Void... arg0) {
+            try {
+                ClientResource cr = new ClientResource(Login.SERVER_LOCATION);
+                ISociaHubResource resource = cr.wrap(ISociaHubResource.class);
+                return resource.getSupportedServiceProviders();
+            } catch (Exception e) {
+                Log.e(TAG, e.toString(), e);
+            }
+            return null;
+        }
+
+        protected void onPostExecute(GlobalApplicationConfigModelList models) {
+            try {
+                authDialog.dismiss();
+                setListData(models);
+            } catch (Exception e) {
+                Log.e(TAG, e.toString(), e);
+            }
+        }
+
+    }
 
 }
-
