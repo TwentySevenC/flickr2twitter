@@ -17,11 +17,17 @@
 	  var path = location.pathname;
 	  var headUl = document.getElementById("header_ul");
 	  var links = headUl.getElementsByTagName("a");
+	  var linkWidth = Math.floor((717 / links.length) - 21);
 	  for(i=0; i<links.length; i++) {
 		  link = links[i];
-		  if(path.indexOf(link.getAttribute("href")) != -1){
+		  if(i != (links.length - 1)) {
+		      link.style.width = linkWidth + "px";
+		  } else {
+			  link.id = "last";
+			  link.style.width = 717 - ((linkWidth + 21) * (links.length - 1)) - 20 + "px";
+		  }
+		  if(path.indexOf(link.getAttribute("href")) != -1) {
 			  link.style.backgroundColor="#FEBE43";
-			  break;
 		  }
 	  }
   }
@@ -38,15 +44,9 @@
 %>
 
 <div id="header">
-		<div id="logo_w1">Social Hub
-			<span id="header_span">
-				<a href="https://appengine.google.com/"><img src="http://code.google.com/appengine/images/appengine-silver-120x30.gif" alt="Google App Engine" /></a>
-			</span>
-		</div>
+		<div id="logo_w1">Social Hub</div>
 		<div id="logo_w2"></div>
-		<div id="header_text">
-			
-		</div>
+		<div id="header_text"></div>
 		<ul id="header_ul">
 			<li><a href="index.jsp">Home</a></li>
 			<% if (signedIn == true && MyPersistenceManagerFactory

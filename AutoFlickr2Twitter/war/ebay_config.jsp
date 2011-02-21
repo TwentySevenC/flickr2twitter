@@ -79,11 +79,13 @@
 				} else {
 				// notify user that there is no search result
 		%>
-			<table class="border_table">
+		<h1>Seller Profile</h1>
+		<table class="border_table">
 			<tr>
-				<td>No User found for ID: <%=ebayUserID %></td>
+				<td class="first_ebay">No Seller Found for ID:</td>
+				<td><%=ebayUserID %></td>
 			</tr>
-			</table>
+		</table>
 		<%
 				}
 			}

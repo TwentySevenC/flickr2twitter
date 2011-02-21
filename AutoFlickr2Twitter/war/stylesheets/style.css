@@ -86,11 +86,6 @@ input {
 	height: 288px;
 	position: relative;
 }
-#header_span {
-	position: absolute;
-	top: 0px;
-	left: 510px;
-}
 #header_ul, #header_ul li {
 	list-style: none;
 }
@@ -114,6 +109,9 @@ input {
 	background-color: #85a157;
 	color: #FFFFFF;
 	border-right: 1px solid #FFFFFF;
+}
+#header_ul a#last {
+	border-right: 0px;
 }
 #header_ul a:hover {
 	background-color: #FEBE43;
@@ -152,6 +150,12 @@ input {
 #content {
 	padding: 0px 10px 30px 10px;
 	width: 717px;
+	position: inherit;
+}
+img#or {
+	margin-left: 400px;
+	margin-top: 50px;
+	position: absolute;
 }
 #middle {
 	margin-top: 10px;
@@ -164,6 +168,9 @@ input {
 	margin-top: 10px;
 	margin-bottom: 10px;
 	display: inline;
+}
+#left .border_table {
+	width: 360px;
 }
 #left a {
 	color: #28556b;
@@ -181,7 +188,16 @@ input {
 	padding: 0px 20px 20px 20px;
 	margin-top: 10px;
 	margin-bottom: 10px;
-	border-left: solid 1px #000000;
+}
+#right .border_table {
+	padding: 0px;
+}
+#right .border_table tr {
+	text-align: center;
+	background-color: white;
+}
+#right .border_table tr.first {
+	background-color: #85a157;
 }
 #right a {
 	color: #c77e0c;
@@ -202,4 +218,13 @@ input {
 	width: 717px;
 	text-align: left;
 	padding: 10px 0px;
+}
+#copyleft {
+	float: left;
+	color: gray;
+	margin-top: 12px;
+}
+#supports {
+	float: right;
+	color: gray;
 }
