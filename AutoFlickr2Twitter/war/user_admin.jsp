@@ -36,8 +36,8 @@
 				if ( sourceSvcs.size() == 0 ) {
 			%>
 				<tr>
-					<td bgcolor="#DBFFBF"/>
-					<td bgcolor="#DBFFBF"/>
+					<td bgcolor="#DAFF7F"/>
+					<td bgcolor="#DAFF7F"/>
 				</tr>
 			<%
 				odd = false;
