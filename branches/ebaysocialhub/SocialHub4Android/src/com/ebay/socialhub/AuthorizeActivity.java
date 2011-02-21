@@ -71,7 +71,7 @@ public class AuthorizeActivity extends Activity {
         map.put("picasa", R.drawable.picasa_64);
         map.put("ebay", R.drawable.ebay_64);
         map.put("sina", R.drawable.sina_64);
-
+        map.put("email", R.drawable.gmail_64);
         ICON_MAP = Collections.unmodifiableMap(map);
     }
 
