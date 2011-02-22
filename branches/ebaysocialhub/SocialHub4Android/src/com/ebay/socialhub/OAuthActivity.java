@@ -365,6 +365,7 @@ public class OAuthActivity extends Activity {
 				Toast.makeText(OAuthActivity.this, 
 						"Google OpenID OAuth - " + result,Toast.LENGTH_LONG).show();
 			}
+			finish();
 		}
 
 	}
@@ -429,7 +430,7 @@ public class OAuthActivity extends Activity {
 				uIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				OAuthActivity.this.startActivity(uIntent);
 				uIntent.putExtra(UserProfileActivity.TAG_USER, user);
-				OAuthActivity.this.finish();
+				finish();
 			} else {
 				Toast.makeText(OAuthActivity.this, 
 						"Failed saving twitter oauth token to the server", Toast.LENGTH_LONG).show();

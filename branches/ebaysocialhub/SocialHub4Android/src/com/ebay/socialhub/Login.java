@@ -33,25 +33,17 @@ import com.googlecode.flickr2twitter.services.rest.models.UserModel;
 
 /**
  * @author Toby Yu(yuyang226@gmail.com)
- *
+ * 
  */
 public class Login extends Activity {
 	public static final String TAG = "SocialHub";
 	public static final String SERVER_LOCATION = "http://ebaysocialhub.appspot.com/rest/user";
-	
+
 	private EditText txtUserName;
 	private EditText txtPassword;
 	private Button btnLogin;
 	private ImageButton btnOpenidGoogle;
 	private TextView txtUserScreenName;
-
-
-	/**
-	 * 
-	 */
-	public Login() {
-		super();
-	}
 
 	/** Called when the activity is first created. */
 	@Override
@@ -59,29 +51,34 @@ public class Login extends Activity {
 		try {
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.login);
-			
+
 			Bundle extras = getIntent().getExtras();
 			if (extras != null) {
 				if (extras.containsKey(OAuthActivity.KEY_USER_EMAIL)) {
-					String userEmail = extras.getString(OAuthActivity.KEY_USER_EMAIL);
+					String userEmail = extras
+							.getString(OAuthActivity.KEY_USER_EMAIL);
 					new GetCredentialsTask().execute(userEmail);
 				}
 			}
 			HttpParams parameters = new BasicHttpParams();
 			HttpProtocolParams.setVersion(parameters, HttpVersion.HTTP_1_1);
-			HttpProtocolParams.setContentCharset(parameters, HTTP.DEFAULT_CONTENT_CHARSET);
+			HttpProtocolParams.setContentCharset(parameters,
+					HTTP.DEFAULT_CONTENT_CHARSET);
 			HttpProtocolParams.setUseExpectContinue(parameters, false);
 			HttpConnectionParams.setTcpNoDelay(parameters, true);
 			HttpConnectionParams.setSocketBufferSize(parameters, 8192);
 
 			SchemeRegistry schReg = new SchemeRegistry();
-			schReg.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+			schReg.register(new Scheme("http", PlainSocketFactory
+					.getSocketFactory(), 80));
 
-			txtUserName=(EditText)this.findViewById(R.id.txtUname);
-			txtPassword=(EditText)this.findViewById(R.id.txtPwd);
-			btnLogin=(Button)this.findViewById(R.id.btnLogin);
-			btnOpenidGoogle=(ImageButton)this.findViewById(R.id.btnOpenidGoogle);
-			txtUserScreenName = (TextView)this.findViewById(R.id.textLoginStatus);
+			txtUserName = (EditText) this.findViewById(R.id.txtUname);
+			txtPassword = (EditText) this.findViewById(R.id.txtPwd);
+			btnLogin = (Button) this.findViewById(R.id.btnLogin);
+			btnOpenidGoogle = (ImageButton) this
+					.findViewById(R.id.btnOpenidGoogle);
+			txtUserScreenName = (TextView) this
+					.findViewById(R.id.textLoginStatus);
 
 			btnLogin.setOnClickListener(new OnClickListener() {
 
@@ -90,17 +87,17 @@ public class Login extends Activity {
 					new GetCredentialsTask().execute();
 				}
 			});
-			
+
 			btnOpenidGoogle.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					Intent i = new Intent(Login.this, OAuthActivity.class);
-					i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-					i.putExtra(OAuthActivity.ID_PROVIDER, OAuthActivity.ID_GOOGLE);
+					i.putExtra(OAuthActivity.ID_PROVIDER,
+							OAuthActivity.ID_GOOGLE);
 					startActivity(i);
 				}
 			});
-			
+
 		} catch (Exception e) {
 			Log.e(TAG, e.toString(), e);
 		}
@@ -108,17 +105,19 @@ public class Login extends Activity {
 
 	private class GetCredentialsTask extends AsyncTask<String, Void, UserModel> {
 		ProgressDialog authDialog;
-		 
+
 		@Override
 		protected void onPreExecute() {
-			authDialog = ProgressDialog.show(Login.this, 
-				getText(R.string.auth_progress_title), 
-				getText(R.string.auth_progress_text), 
-				true,	// indeterminate duration
-				false); // not cancel-able
+			authDialog = ProgressDialog.show(Login.this,
+					getText(R.string.auth_progress_title),
+					getText(R.string.auth_progress_text), true, // indeterminate
+																// duration
+					false); // not cancel-able
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see android.os.AsyncTask#doInBackground(Params[])
 		 */
 		@Override
@@ -131,41 +130,42 @@ public class Login extends Activity {
 				if (params != null && params.length == 1) {
 					userEmail = params[0];
 				}
-				
+
 				// Get the remote contact
 				if (userEmail != null) {
 					user = resource.openidLogin(userEmail);
 				} else {
-					user = resource.login(txtUserName.getText().toString()
-							, txtPassword.getText().toString());
+					user = resource.login(txtUserName.getText().toString(),
+							txtPassword.getText().toString());
 				}
 			} catch (Exception e) {
 				Log.e(TAG, e.toString(), e);
 			}
 			return user;
 		}
-		
+
 		protected void onPostExecute(UserModel user) {
 			try {
 				authDialog.dismiss();
-				if(user != null){
+				if (user != null) {
 					txtUserName.setText(user.getUserId());
-					//txtUserScreenName.setText(user.toString());
-					Toast.makeText(Login.this, "Login Successful",Toast.LENGTH_LONG).show();
+					// txtUserScreenName.setText(user.toString());
+					Toast.makeText(Login.this, "Login Successful",
+							Toast.LENGTH_LONG).show();
 					Intent i = new Intent(Login.this, UserProfileActivity.class);
 					i.putExtra(UserProfileActivity.TAG_USER, user);
-					i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					startActivity(i);
 					Login.this.finish();
-				} else{
+				} else {
 					txtUserScreenName.setText("Not Logged In");
-					Toast.makeText(Login.this, "Invalid Login",Toast.LENGTH_LONG).show();
+					Toast.makeText(Login.this, "Invalid Login",
+							Toast.LENGTH_LONG).show();
 				}
 			} catch (Exception e) {
 				Log.e(TAG, e.toString(), e);
 			}
 		}
-		
+
 	}
 
 }
