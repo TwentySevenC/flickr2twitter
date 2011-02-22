@@ -442,7 +442,7 @@ public final class MyPersistenceManagerFactory {
 		PersistenceManager pm = pmf.getPersistenceManager();
 		try {
 			Query query = pm.newQuery(UserTargetServiceConfig.class);
-			query.setFilter("serviceUserId == currentServiceUserID and userEmail == userEmailAddress");
+			query.setFilter("serviceUserId == currentServiceUserID && userEmail == userEmailAddress");
 
 			query.declareParameters("String currentServiceUserID, String userEmailAddress");
 			List<?> data = (List<?>) query.execute(userServiceID, userEmail);
