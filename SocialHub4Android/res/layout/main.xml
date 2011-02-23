@@ -2,27 +2,36 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
-	<TableLayout android:orientation="horizontal"
-		android:layout_width="fill_parent" android:layout_height="wrap_content"
-		android:stretchColumns="0">
-		<TableRow android:layout_width="match_parent"
-			android:layout_height="wrap_content">
-			<ImageView android:id="@+id/userImage"
-				android:src="@drawable/android_avatar"></ImageView>
-			<LinearLayout 
-				android:orientation="vertical" android:layout_width="match_parent"
-				android:layout_height="wrap_content">
-				<TextView android:text="" android:id="@+id/userScreenName" 
-				android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-				<TextView android:text="" android:id="@+id/userEmail" 
-				android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-			</LinearLayout>
-		</TableRow>
-	</TableLayout>
-	
-	<ListView android:id="@+id/sourceServiceList" android:layout_width="fill_parent"
-		android:layout_height="fill_parent" android:drawSelectorOnTop="true" />
-	<TextView android:id="@+id/android:empty"
+	<RelativeLayout android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:padding="5dip">
+		<ImageView android:id="@+id/userImage"
+			android:layout_alignParentLeft="true" android:layout_centerInParent="true"
+			android:layout_marginRight="8dip"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:src="@drawable/android_avatar" />
+		<TextView android:text="" android:id="@+id/userScreenName"
+			android:layout_toRightOf="@id/userImage"
+			android:layout_marginTop="10dip"
+			android:layout_alignParentTop="true" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:gravity="right" android:textStyle="bold"/>
+		<TextView android:text="" android:id="@+id/userEmail"
+			android:layout_below="@id/userScreenName" android:layout_toRightOf="@id/userImage"
+			android:layout_alignLeft="@id/userScreenName"
+			android:layout_marginTop="10dip"
+			android:layout_width="fill_parent" android:layout_height="wrap_content" android:gravity="right"/>
+		<Button android:id="@+id/btnRefreshUserProfile"
+			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:layout_toRightOf="@id/userImage"
+			android:layout_below="@id/userEmail"
+			android:layout_alignLeft="@id/userScreenName"
+			android:layout_marginTop="10dip"
+			android:text="@string/btn_refresh_user_profile_title"/>
+	</RelativeLayout>
+	<ListView android:id="@+id/sourceServiceList"
 		android:layout_width="fill_parent" android:layout_height="fill_parent"
+		android:drawSelectorOnTop="true" />
+	<TextView android:id="@+id/android:empty"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
 		android:text="@string/main_no_items" />
 </LinearLayout>
