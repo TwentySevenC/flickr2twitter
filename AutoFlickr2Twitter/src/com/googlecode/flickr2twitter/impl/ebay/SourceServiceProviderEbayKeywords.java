@@ -102,7 +102,7 @@ public class SourceServiceProviderEbayKeywords extends
 		result.setSourceAppSecret("no_app_api_secret");
 		result.setAuthPagePath(null);
 		result.setConfigPagePath(PAGE_NAME_CONFIG);
-		result.setImagePath("/services/ebay/images/ebay_200.gif");
+		result.setImagePath("/services/ebay/images/ebay_keywords_100.gif");
 		return result;
 	}
 
