@@ -13,7 +13,6 @@ import java.util.Map;
 import org.restlet.resource.ClientResource;
 
 import android.app.Activity;
-import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +25,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -54,7 +54,8 @@ public class UserProfileActivity extends Activity {
 	private TextView txtUserName;
 	private TextView txtUserEmail;
 	private ListView sourceServiceListView;
-	
+	private Button btnRefresh;
+
 	private UserModel user = null;
 	private boolean selfInit = false;
 
@@ -78,12 +79,10 @@ public class UserProfileActivity extends Activity {
 		ICON_MAP = Collections.unmodifiableMap(map);
 	}
 
-	
-	
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if (user == null && !selfInit ) {
+		if (user == null && !selfInit) {
 			Intent intent = new Intent(this, Login.class);
 			intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(intent);
@@ -114,13 +113,20 @@ public class UserProfileActivity extends Activity {
 			this.txtUserName = (TextView) this
 					.findViewById(R.id.userScreenName);
 			this.txtUserEmail = (TextView) this.findViewById(R.id.userEmail);
+			this.btnRefresh = (Button) findViewById(R.id.btnRefreshUserProfile);
 
 			final UserModel userModel = user;
 
 			final OnClickListener clickListener = new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					if (v instanceof TextView) {
+					if (v == btnRefresh) {
+						String userEmail = txtUserEmail.getText().toString();
+						if (userEmail == null || userEmail.trim().length() == 0) {
+							return;
+						}
+						new GetUserProfileTask().execute(userEmail);
+					} else if (v instanceof TextView) {
 						Intent i = new Intent(UserProfileActivity.this,
 								AuthorizeActivity.class);
 						if (UserProfileActivity.this.getIntent().hasExtra(
@@ -141,6 +147,8 @@ public class UserProfileActivity extends Activity {
 					}
 				}
 			};
+
+			btnRefresh.setOnClickListener(clickListener);
 
 			this.sourceServiceListView = (ListView) this
 					.findViewById(R.id.sourceServiceList);
@@ -204,7 +212,7 @@ public class UserProfileActivity extends Activity {
 			Log.e(TAG, e.toString(), e);
 		}
 	}
-	
+
 	private class ItemAdapter extends ArrayAdapter<UserServiceConfigModel> {
 		private List<UserServiceConfigModel> items;
 
@@ -307,8 +315,7 @@ public class UserProfileActivity extends Activity {
 			try {
 				authDialog.dismiss();
 				if (data != null) {
-					Toast.makeText(UserProfileActivity.this,
-							"Login Successful", Toast.LENGTH_LONG).show();
+					//TODO here we don't need to start another instance of this activity,
 					Intent intent = getIntent();
 					intent.putExtra(TAG_USER, data.user);
 					intent.putExtra(AuthorizeActivity.SERVICES_ID,
@@ -316,12 +323,12 @@ public class UserProfileActivity extends Activity {
 					finish();
 					startActivity(intent);
 				} else {
-//					Intent intent = new Intent(UserProfileActivity.this,
-//							Login.class);
-//					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//					UserProfileActivity.this.startActivity(intent);
-//					finish();
-					Toast.makeText(UserProfileActivity.this, "Invalid Login",
+					// Intent intent = new Intent(UserProfileActivity.this,
+					// Login.class);
+					// intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					// UserProfileActivity.this.startActivity(intent);
+					// finish();
+					Toast.makeText(UserProfileActivity.this, "Error to get user profile.",
 							Toast.LENGTH_LONG).show();
 				}
 			} catch (Exception e) {
