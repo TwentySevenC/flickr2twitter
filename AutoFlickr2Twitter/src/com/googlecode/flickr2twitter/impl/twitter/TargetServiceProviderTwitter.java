@@ -22,6 +22,7 @@ import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.googlecode.flickr2twitter.datastore.model.GlobalTargetApplicationService;
 import com.googlecode.flickr2twitter.datastore.model.UserTargetServiceConfig;
 import com.googlecode.flickr2twitter.intf.ITargetServiceProvider;
+import com.googlecode.flickr2twitter.model.IDescriptiveItem;
 import com.googlecode.flickr2twitter.model.IGeoItem;
 import com.googlecode.flickr2twitter.model.IItem;
 import com.googlecode.flickr2twitter.model.IItemList;
@@ -106,6 +107,16 @@ implements ITargetServiceProvider {
 							url = ((IShortUrl) media).getShortUrl();
 						} else if (media.getUrl().length() > 15){
 							url = BitLyUtils.shortenUrl(media.getUrl());
+						}
+						message += " " + url;
+					} else if (item instanceof IDescriptiveItem) {
+						IDescriptiveItem ditem = (IDescriptiveItem)item;
+						message = ditem.getTitle();
+						String url = ditem.getUrl();
+						if (ditem instanceof IShortUrl) {
+							url = ((IShortUrl) ditem).getShortUrl();
+						} else if (ditem.getUrl().length() > 15){
+							url = BitLyUtils.shortenUrl(ditem.getUrl());
 						}
 						message += " " + url;
 					} else if (item instanceof ILinkableItem) {
