@@ -7,10 +7,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -28,13 +32,31 @@ import org.xml.sax.SAXException;
  */
 public class FindItemsDAO {
 
-	private String sellerId = "eforcity";
+	// private String sellerId = "eforcity";
 	
-	public List<EbayItem> findItemsByKeywords() throws IOException, SAXException {
+	private static final String APP_ID_SANDBOX= "eBayb1609-29f8-4684-aadb-6ba5a05a182";
+	private static final String APP_ID_PROD = "eBay929a8-96bf-4ad8-a71c-94de77a7c9e";
+	
+	String EBAY_SANDBOX_SERVICE_SERVER = "svcs.sandbox.ebay.com";
+	String EBAY_SANDBOX_SERVICE_PATH = "/services/search/FindingService/v1";
+	
+	String EBAY_SERVICE_SERVER = "svcs.ebay.com";
+	String EBAY_SERVICE_PATH = "/services/search/FindingService/v1";
+	
+	public List<EbayItem> findItemsByKeywords(
+			boolean isSandbox,
+			String sellerId,
+			String keywords,
+			int entriesPerPage) throws IOException, SAXException {
 
 		Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("SECURITY-APPNAME",
-				"eBay929a8-96bf-4ad8-a71c-94de77a7c9e");
+		
+		if (isSandbox) {
+			parameters.put("SECURITY-APPNAME", APP_ID_SANDBOX);
+		} else {
+			parameters.put("SECURITY-APPNAME", APP_ID_PROD);
+		}
+		
 		parameters.put("OPERATION-NAME", "findItemsByKeywords");
 		parameters.put("SERVICE-VERSION", "1.9.0");
 		parameters.put("RESPONSE-DATA-FORMAT", "XML");
@@ -42,15 +64,35 @@ public class FindItemsDAO {
 		parameters.put("affiliate.networkId", "9");
 		parameters.put("affiliate.trackingId", "1234567890");
 		parameters.put("affiliate.customId", "k-man");
-		parameters.put("sortOrder", "EndTime");
-		parameters.put("paginationInput.entriesPerPage", "20");
+		
+		parameters.put("paginationInput.entriesPerPage", String.valueOf(entriesPerPage));
 		parameters.put("keywords", "watch");
-		parameters.put("itemFilter[0].name", "Seller");
-		parameters.put("itemFilter[0].value", sellerId);
+		
+		if (sellerId != null) {
+			parameters.put("itemFilter[0].name", "Seller");
+			parameters.put("itemFilter[0].value", sellerId);
+		}
+		
+		parameters.put("sortOrder", "StartTimeNewest");
 		parameters.put("descriptionSearch", "true");
 
-		URL url = URLHelper.buildUrl(false, "svcs.ebay.com", 80,
-				"/services/search/FindingService/v1", parameters);
+		URL url = null;
+		
+		if (isSandbox) {
+			url = URLHelper.buildUrl(
+					false, 
+					EBAY_SANDBOX_SERVICE_SERVER, 
+					80,
+					EBAY_SANDBOX_SERVICE_PATH, 
+					parameters);
+		} else {
+			url = URLHelper.buildUrl(
+				false, 
+				EBAY_SERVICE_SERVER, 
+				80,
+				EBAY_SERVICE_PATH, 
+				parameters);
+		}
 
 		System.out.println(url);
 
@@ -129,6 +171,16 @@ public class FindItemsDAO {
 						}
 					} else if ("title".equals(nodeName)) {
 						item.setTitle(nodeValue);
+					} else if ("viewItemURL".equals(nodeName)) {
+						item.setViewItemURL(nodeValue);
+					} else if ("galleryURL".equals(nodeName)) {
+						item.setGalleryURL(nodeValue);
+					} else if ("listingInfo".equals(nodeName)) {
+						generateItem(firstLevelNode.getChildNodes(), item);
+					} else if ("startTime".equals(nodeName)) {
+						item.setStartTime(toDate(nodeValue));
+					}  else if ("endTime".equals(nodeName)) {
+						item.setEndTime(toDate(nodeValue));
 					}
 				}
 
@@ -137,7 +189,21 @@ public class FindItemsDAO {
 		}
 	}
 	
-	
+	private Date toDate(String strDate) {
+		if (strDate == null) {
+			return null;
+		}
+		
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+		
+			return sdf.parse(strDate);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
 	private String getNodeValue(Node node) {
 
@@ -151,7 +217,8 @@ public class FindItemsDAO {
 
 	public static void main(String args[]) throws Exception {
 		FindItemsDAO ItemDAO = new FindItemsDAO();
-		System.out.println(ItemDAO.findItemsByKeywords());
+		System.out.println(ItemDAO.findItemsByKeywords(false,"eforcity","iphone", 10));
+		System.out.println(ItemDAO.findItemsByKeywords(true,null,"iphone", 10));
 	}
 
 }
