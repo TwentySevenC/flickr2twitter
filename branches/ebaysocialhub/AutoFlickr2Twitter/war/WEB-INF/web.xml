@@ -83,6 +83,15 @@
 		<servlet-name>ebayConfig</servlet-name>
 		<url-pattern>/ebayConfig</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>ebayConfigkeywords</servlet-name>
+		<servlet-class>com.googlecode.flickr2twitter.servlet.EbayConfigKeywordsServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ebayConfigkeywords</servlet-name>
+		<url-pattern>/ebayConfigkeywords</url-pattern>
+	</servlet-mapping>
 
 	<security-constraint>
 		<web-resource-collection>

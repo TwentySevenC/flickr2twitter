@@ -6,10 +6,11 @@ package com.googlecode.flickr2twitter.impl.ebay;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +25,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
 
 
 /**
@@ -43,12 +46,51 @@ public class FindItemsDAO {
 	String EBAY_SERVICE_SERVER = "svcs.ebay.com";
 	String EBAY_SERVICE_PATH = "/services/search/FindingService/v1";
 	
-	public List<EbayItem> findItemsByKeywords(
-			boolean isSandbox,
-			String sellerId,
+	public List<EbayItem> findItemsByKeywordsFromSandbox(
 			String keywords,
 			int entriesPerPage) throws IOException, SAXException {
-
+		
+		return findItemsByKeywords(true, null, encodeKeywords(keywords), entriesPerPage);
+	}
+	
+	public URL buildSearchItemsUrl(boolean isSandbox, String keywords) throws MalformedURLException {
+		keywords = encodeKeywords(keywords);
+		Map<String, String> parameters = generateSearchParameters(isSandbox, keywords, null, 10);
+		URL url = null;
+		if (isSandbox) {
+			url = URLHelper.buildUrl(
+					false, 
+					EBAY_SANDBOX_SERVICE_SERVER, 
+					80,
+					EBAY_SANDBOX_SERVICE_PATH, 
+					parameters);
+		} else {
+			url = URLHelper.buildUrl(
+				false, 
+				EBAY_SERVICE_SERVER, 
+				80,
+				EBAY_SERVICE_PATH, 
+				parameters);
+		}
+		
+		return url;
+	}
+	
+	private String encodeKeywords(String keywords) {
+		try {
+			String encoding = System.getProperty("file.encoding");
+			if (StringUtils.isNotBlank(encoding)) {
+				keywords = URLEncoder.encode(keywords, encoding);
+			}
+		} catch (Exception e) {
+			//ignore
+			e.printStackTrace();
+		}
+		return keywords;
+	}
+	
+	private Map<String, String> generateSearchParameters(boolean isSandbox, String keywords, 
+			String sellerId, int entriesPerPage) {
 		Map<String, String> parameters = new HashMap<String, String>();
 		
 		if (isSandbox) {
@@ -66,7 +108,7 @@ public class FindItemsDAO {
 		parameters.put("affiliate.customId", "k-man");
 		
 		parameters.put("paginationInput.entriesPerPage", String.valueOf(entriesPerPage));
-		parameters.put("keywords", "watch");
+		parameters.put("keywords", keywords);
 		
 		if (sellerId != null) {
 			parameters.put("itemFilter[0].name", "Seller");
@@ -75,24 +117,16 @@ public class FindItemsDAO {
 		
 		parameters.put("sortOrder", "StartTimeNewest");
 		parameters.put("descriptionSearch", "true");
-
-		URL url = null;
+		return parameters;
 		
-		if (isSandbox) {
-			url = URLHelper.buildUrl(
-					false, 
-					EBAY_SANDBOX_SERVICE_SERVER, 
-					80,
-					EBAY_SANDBOX_SERVICE_PATH, 
-					parameters);
-		} else {
-			url = URLHelper.buildUrl(
-				false, 
-				EBAY_SERVICE_SERVER, 
-				80,
-				EBAY_SERVICE_PATH, 
-				parameters);
-		}
+	}
+	
+	public List<EbayItem> findItemsByKeywords(
+			boolean isSandbox,
+			String sellerId,
+			String keywords,
+			int entriesPerPage) throws IOException, SAXException {
+		URL url = buildSearchItemsUrl(isSandbox, keywords);
 
 		System.out.println(url);
 
@@ -217,8 +251,8 @@ public class FindItemsDAO {
 
 	public static void main(String args[]) throws Exception {
 		FindItemsDAO ItemDAO = new FindItemsDAO();
-		System.out.println(ItemDAO.findItemsByKeywords(false,"eforcity","iphone", 10));
-		System.out.println(ItemDAO.findItemsByKeywords(true,null,"iphone", 10));
+		//System.out.println(ItemDAO.findItemsByKeywords(false,"eforcity","iphone", 10));
+		System.out.println(ItemDAO.findItemsByKeywords(false,null,"nikon d80", 10));
 	}
 
 }

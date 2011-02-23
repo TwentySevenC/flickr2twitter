@@ -12,6 +12,7 @@ import com.googlecode.flickr2twitter.datastore.model.GlobalTargetApplicationServ
 import com.googlecode.flickr2twitter.datastore.model.User;
 import com.googlecode.flickr2twitter.datastore.model.UserTargetServiceConfig;
 import com.googlecode.flickr2twitter.intf.ITargetServiceProvider;
+import com.googlecode.flickr2twitter.model.IDescriptiveItem;
 import com.googlecode.flickr2twitter.model.IItem;
 import com.googlecode.flickr2twitter.model.IItemList;
 import com.googlecode.flickr2twitter.model.ILinkableItem;
@@ -165,6 +166,10 @@ public class TargetServiceProviderFacebook implements ITargetServiceProvider {
 					message = "My new post: " + media.getTitle();
 					String url = media.getUrl();
 					message += " " + url;
+				}  else if (item instanceof IDescriptiveItem) {
+					IDescriptiveItem ditem = (IDescriptiveItem)item;
+					message = ditem.getTitle();
+					message += " " + ditem.getUrl();
 				} else if (item instanceof ILinkableItem) {
 					ILinkableItem litem = (ILinkableItem) item;
 					message = "My new item: " + item.getTitle();

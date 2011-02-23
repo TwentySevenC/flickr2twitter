@@ -14,6 +14,7 @@ import javax.jdo.PersistenceManagerFactory;
 
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.googlecode.flickr2twitter.impl.ebay.SourceServiceProviderEbay;
+import com.googlecode.flickr2twitter.impl.ebay.SourceServiceProviderEbayKeywords;
 import com.googlecode.flickr2twitter.impl.email.TargetServiceProviderEmail;
 import com.googlecode.flickr2twitter.impl.facebook.TargetServiceProviderFacebook;
 import com.googlecode.flickr2twitter.impl.flickr.SourceServiceProviderFlickr;
@@ -38,7 +39,8 @@ public class ServiceFactory {
 	private static final Collection<ITargetServiceProvider> TARGET_PROVIDERS_List;
 
 	private static final Class<?>[] PROVIDER_CLASSES = {
-		SourceServiceProviderEbay.class, SourceServiceProviderFlickr.class, 
+		SourceServiceProviderEbay.class, SourceServiceProviderEbayKeywords.class, 
+		SourceServiceProviderFlickr.class, 
 		TargetServiceProviderFacebook.class,
 		TargetServiceProviderTwitter.class, TargetServiceProviderSina.class, 
 		TargetServiceProviderEmail.class};

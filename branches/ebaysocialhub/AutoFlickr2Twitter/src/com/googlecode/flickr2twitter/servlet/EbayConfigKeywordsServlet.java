@@ -5,31 +5,29 @@
 package com.googlecode.flickr2twitter.servlet;
 
 import java.io.IOException;
+import java.net.URL;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.xml.sax.SAXException;
-
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.googlecode.flickr2twitter.datastore.model.User;
 import com.googlecode.flickr2twitter.datastore.model.UserSourceServiceConfig;
-import com.googlecode.flickr2twitter.impl.ebay.EbayUser;
-import com.googlecode.flickr2twitter.impl.ebay.GetUserProfileDAO;
-import com.googlecode.flickr2twitter.impl.ebay.SourceServiceProviderEbay;
+import com.googlecode.flickr2twitter.impl.ebay.FindItemsDAO;
+import com.googlecode.flickr2twitter.impl.ebay.SourceServiceProviderEbayKeywords;
 
 /**
  * @author Emac Shen (shen.bin.1983@gmail.com)
  */
-public class EbayConfigServlet extends HttpServlet {
+public class EbayConfigKeywordsServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	public static final String PARA_SELLER_ID = "seller_id";
+	public static final String PARA_KEYWORDS = "keywords";
 
-	public static final String PARA_SEARCH_SELLER_ID = "search_seller_id";
+	public static final String PARA_SEARCH_KEYWORDS = "search_keywords";
 
 	/*
 	 * (non-Javadoc)
@@ -51,36 +49,22 @@ public class EbayConfigServlet extends HttpServlet {
 		}
 
 		String userEmail = user.getUserId().getEmail();
-		String sellerId = req.getParameter(PARA_SELLER_ID);
-
-		GetUserProfileDAO getUserProfileDAO = new GetUserProfileDAO();
-
-		EbayUser ebayUser = null;
-		try {
-			ebayUser = getUserProfileDAO.getUserProfile(true, sellerId);
-		} catch (SAXException e) {
-			throw new ServletException("Unable to found user profile for id: "
-					+ sellerId, e);
-		}
+		String keywords = req.getParameter(PARA_KEYWORDS);
 
 		UserSourceServiceConfig serviceConfig = new UserSourceServiceConfig();
-		// TODO#EMAC.P1 store seller id in user id temporarily
-		serviceConfig.setServiceUserId(sellerId);
+		// TODO store the keywords in user id
+		serviceConfig.setServiceUserId(keywords);
 
-		String userDisplayName = sellerId;
-		String storeName = ebayUser.getStoreName();
-		if ((storeName != null) && (storeName.length() > 0)) {
-			userDisplayName += " (" + storeName + ")";
-		}
+		String userDisplayName = keywords;
 		serviceConfig.setServiceUserName(userDisplayName);
-		serviceConfig.setServiceProviderId(SourceServiceProviderEbay.ID);
+		serviceConfig.setServiceProviderId(SourceServiceProviderEbayKeywords.ID);
 		serviceConfig.setUserEmail(userEmail);
-
-		if (ebayUser.getStoreURL() != null) {
-			serviceConfig.setUserSiteUrl(ebayUser.getStoreURL());
-		} else {
-			serviceConfig.setUserSiteUrl(ebayUser.getMyWorldURL());
+		//http://shop.ebay.com/i.html?_trkparms=65%253A12%257C66%253A2%257C39%253A1%257C72%253A4831&rt=nc&_nkw=nikon+d700&_sticky=1&_trksid=p3286.c0.m14&_sop=10&_sc=1
+		URL url = new FindItemsDAO().buildSearchItemsUrl(false, keywords);
+		if (url != null) {
+			serviceConfig.setUserSiteUrl(url.toString());
 		}
+		
 		MyPersistenceManagerFactory.addSourceServiceApp(userEmail,
 				serviceConfig);
 
