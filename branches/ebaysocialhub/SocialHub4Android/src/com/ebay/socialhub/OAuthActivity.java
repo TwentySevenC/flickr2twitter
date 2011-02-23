@@ -428,8 +428,8 @@ public class OAuthActivity extends Activity {
 						"Successfully saved twitter oauth token to the server", Toast.LENGTH_LONG).show();
 				Intent uIntent = new Intent(OAuthActivity.this,UserProfileActivity.class);
 				uIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				OAuthActivity.this.startActivity(uIntent);
 				uIntent.putExtra(UserProfileActivity.TAG_USER, user);
+				OAuthActivity.this.startActivity(uIntent);
 				finish();
 			} else {
 				Toast.makeText(OAuthActivity.this, 
