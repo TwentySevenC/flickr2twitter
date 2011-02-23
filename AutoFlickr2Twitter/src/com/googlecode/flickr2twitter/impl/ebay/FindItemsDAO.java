@@ -76,7 +76,7 @@ public class FindItemsDAO {
 		return url;
 	}
 	
-	private String encodeKeywords(String keywords) {
+	public String encodeKeywords(String keywords) {
 		try {
 			String encoding = System.getProperty("file.encoding");
 			if (StringUtils.isNotBlank(encoding)) {

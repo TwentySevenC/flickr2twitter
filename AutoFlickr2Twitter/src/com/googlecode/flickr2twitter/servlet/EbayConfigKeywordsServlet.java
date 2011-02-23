@@ -5,7 +5,6 @@
 package com.googlecode.flickr2twitter.servlet;
 
 import java.io.IOException;
-import java.net.URL;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -60,10 +59,16 @@ public class EbayConfigKeywordsServlet extends HttpServlet {
 		serviceConfig.setServiceProviderId(SourceServiceProviderEbayKeywords.ID);
 		serviceConfig.setUserEmail(userEmail);
 		//http://shop.ebay.com/i.html?_trkparms=65%253A12%257C66%253A2%257C39%253A1%257C72%253A4831&rt=nc&_nkw=nikon+d700&_sticky=1&_trksid=p3286.c0.m14&_sop=10&_sc=1
-		URL url = new FindItemsDAO().buildSearchItemsUrl(false, keywords);
+		//http://shop.sandbox.ebay.com/i.html?_trkparms=65%253A1%257C66%253A2%257C39%253A1&rt=nc&_nkw=android+mini+collectible&_ipg=&_sc=1&_sticky=1&_trksid=p3286.c0.m14&_sop=10&_sc=1
+		/*URL url = new FindItemsDAO().buildSearchItemsUrl(false, keywords);
 		if (url != null) {
 			serviceConfig.setUserSiteUrl(url.toString());
-		}
+		}*/
+		
+		serviceConfig.setUserSiteUrl(
+				"http://shop.sandbox.ebay.com/i.html?_trkparms=65%253A1%257C66%253A2%257C39%253A1&rt=nc&_nkw=" +
+				new FindItemsDAO().encodeKeywords(keywords) + 
+				"&_ipg=&_sc=1&_sticky=1&_trksid=p3286.c0.m14&_sop=10&_sc=1");
 		
 		MyPersistenceManagerFactory.addSourceServiceApp(userEmail,
 				serviceConfig);
