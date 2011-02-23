@@ -39,7 +39,7 @@
 		<%
 			if (hasKeywords) {
 				FindItemsDAO findItemsDao = new FindItemsDAO();
-				List<EbayItem> items = findItemsDao.findItemsByKeywordsFromProduction(keywords, 10);
+				List<EbayItem> items = findItemsDao.findItemsByKeywordsFromSandbox(keywords, 10);
 				// show user details if found a user
 				if (items != null) {
 				%>
