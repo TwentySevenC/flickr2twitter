@@ -34,4 +34,6 @@
     <string name="authorize_app_name">Authorize Services</string>
     <string name="menu_refresh">Refresh</string>
     <string name="menu_help">Help</string>
+    <string name="btn_add_more">Add More</string>
+    <string name="menu_add_more">Add More</string>
 </resources>

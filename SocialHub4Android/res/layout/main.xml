@@ -9,8 +9,11 @@
 		<ImageView style="@style/TitleBarSeparator" />
 		<ImageButton style="@style/TitleBarAction" 
 			android:id="@+id/btnRefreshUserProfile"
-			android:contentDescription="@string/btn_refresh_user_profile_title" android:src="@drawable/ic_title_refresh" />
-
+			android:contentDescription="@string/btn_refresh_user_profile_title" android:src="@drawable/refresh" />
+		<ImageView style="@style/TitleBarSeparator" />
+		<ImageButton style="@style/TitleBarAction" 
+			android:id="@+id/btnAddMore"
+			android:contentDescription="@string/btn_add_more" android:src="@drawable/more" />
 	</LinearLayout>
 	<RelativeLayout android:layout_width="fill_parent"
 		android:layout_height="wrap_content" android:padding="5dip">
