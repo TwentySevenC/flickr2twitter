@@ -99,39 +99,7 @@ public class OAuthActivity extends Activity {
 				if (ID_GOOGLE.equalsIgnoreCase(providerId)) {
 					new AuthGoogleOpenIDTask().execute();
 				} else if (ID_TWITTER.equalsIgnoreCase(providerId)) {
-					GlobalTargetApplicationServiceModel target = null;
-					if (getIntent().hasExtra(AuthorizeActivity.SERVICE_CONFIG_ID)) {
-						target = (GlobalTargetApplicationServiceModel)getIntent().getExtras().get(AuthorizeActivity.SERVICE_CONFIG_ID);
-					} else {
-						finish();
-					}
-					// We don't need to worry about any saved states: we can reconstruct the state
-					OAuthConsumer mConsumer = new CommonsHttpOAuthConsumer(
-							target.getTargetAppConsumerId(), 
-							target.getTargetAppConsumerSecret());
-
-					OAuthProvider mProvider = new CommonsHttpOAuthProvider (
-							TWITTER_REQUEST_TOKEN_URL, 
-							TWITTER_ACCESS_TOKEN_URL,
-							TWITTER_AUTHORIZE_URL);
-
-					// It turns out this was the missing thing to making standard Activity launch mode work
-					mProvider.setOAuth10a(true);
-
-					mSettings = this.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
-
-					Intent i = this.getIntent();
-					if (i.getData() == null) {
-						// This is really important. If you were able to register your real callback Uri with Twitter, and not some fake Uri
-						// like I registered when I wrote this example, you need to send null as the callback Uri in this function call. Then
-						// Twitter will correctly process your callback redirection
-						String authUrl = mProvider.retrieveRequestToken(mConsumer, TWITTER_CALLBACK_URI.toString());
-						saveRequestInformation(mSettings, getIntent().getExtras().getString(KEY_USER_EMAIL), 
-								mConsumer.getToken(), mConsumer.getTokenSecret(), 
-								target.getTargetAppConsumerId(), 
-								target.getTargetAppConsumerSecret());
-						this.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(authUrl)));
-					}
+					new AuthTwitterOpenIDTask().execute();
 				}
 			}
 		} catch (Exception e) {
@@ -369,6 +337,75 @@ public class OAuthActivity extends Activity {
 		}
 
 	}
+	
+	private class AuthTwitterOpenIDTask extends AsyncTask<Void, Void, String> {
+		ProgressDialog authDialog;
+
+		@Override
+		protected void onPreExecute() {
+			authDialog = ProgressDialog.show(OAuthActivity.this, 
+					getText(R.string.auth_progress_title), 
+					"Redirecting to twitter for oauth...", 
+					true,	// indeterminate duration
+					false); // not cancel-able
+		}
+
+		/* (non-Javadoc)
+		 * @see android.os.AsyncTask#doInBackground(Params[])
+		 */
+		@Override
+		protected String doInBackground(Void... params) {
+			GlobalTargetApplicationServiceModel target = null;
+			if (getIntent().hasExtra(AuthorizeActivity.SERVICE_CONFIG_ID)) {
+				target = (GlobalTargetApplicationServiceModel)getIntent().getExtras().get(AuthorizeActivity.SERVICE_CONFIG_ID);
+			} else {
+				finish();
+			}
+			// We don't need to worry about any saved states: we can reconstruct the state
+			OAuthConsumer mConsumer = new CommonsHttpOAuthConsumer(
+					target.getTargetAppConsumerId(), 
+					target.getTargetAppConsumerSecret());
+
+			OAuthProvider mProvider = new CommonsHttpOAuthProvider (
+					TWITTER_REQUEST_TOKEN_URL, 
+					TWITTER_ACCESS_TOKEN_URL,
+					TWITTER_AUTHORIZE_URL);
+
+			// It turns out this was the missing thing to making standard Activity launch mode work
+			mProvider.setOAuth10a(true);
+
+			mSettings = OAuthActivity.this.getSharedPreferences(PREFS, Context.MODE_PRIVATE);
+
+			Intent i = OAuthActivity.this.getIntent();
+			if (i.getData() == null) {
+				try {
+					// This is really important. If you were able to register your real callback Uri with Twitter, and not some fake Uri
+					// like I registered when I wrote this example, you need to send null as the callback Uri in this function call. Then
+					// Twitter will correctly process your callback redirection
+					String authUrl = mProvider.retrieveRequestToken(mConsumer, TWITTER_CALLBACK_URI.toString());
+					saveRequestInformation(mSettings, getIntent().getExtras().getString(KEY_USER_EMAIL), 
+							mConsumer.getToken(), mConsumer.getTokenSecret(), 
+							target.getTargetAppConsumerId(), 
+							target.getTargetAppConsumerSecret());
+					OAuthActivity.this.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(authUrl)));
+				} catch (Exception e) {
+					Log.e(TAG, e.toString(), e);
+					return e.toString();
+				}
+			}
+			return null;
+		}
+
+		protected void onPostExecute(String result) {
+			authDialog.dismiss();
+			if (result != null) {
+				Toast.makeText(OAuthActivity.this, 
+						"Twitter OAuth request failed-> " + result,Toast.LENGTH_LONG).show();
+			}
+			finish();
+		}
+
+	}
 
 	private class SaveTwitterTokenTask extends AsyncTask<UserTargetServiceConfigModel, Void, UserModel> {
 		ProgressDialog twitterAuthDialog;
@@ -376,8 +413,8 @@ public class OAuthActivity extends Activity {
 		@Override
 		protected void onPreExecute() {
 			twitterAuthDialog = ProgressDialog.show(OAuthActivity.this, 
-				getText(R.string.auth_progress_title), 
-				"saving twitter oauth token to the server...", 
+				"Saving", 
+				"Saving twitter oauth token to the server...", 
 				true,	// indeterminate duration
 				false); // not cancel-able
 		}
