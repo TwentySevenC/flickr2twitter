@@ -3,9 +3,11 @@
  */
 package com.ebay.socialhub;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import com.googlecode.flickr2twitter.services.rest.models.GlobalApplicationConfigModel;
+import com.googlecode.flickr2twitter.services.rest.models.GlobalApplicationConfigModelList;
+import com.googlecode.flickr2twitter.services.rest.models.ISociaHubResource;
+import com.googlecode.flickr2twitter.services.rest.models.UserModel;
+import com.googlecode.flickr2twitter.services.rest.models.UserServiceConfigModel;
 
 import org.restlet.resource.ClientResource;
 
@@ -25,17 +27,15 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.googlecode.flickr2twitter.services.rest.models.GlobalApplicationConfigModel;
-import com.googlecode.flickr2twitter.services.rest.models.GlobalApplicationConfigModelList;
-import com.googlecode.flickr2twitter.services.rest.models.ISociaHubResource;
-import com.googlecode.flickr2twitter.services.rest.models.UserModel;
-import com.googlecode.flickr2twitter.services.rest.models.UserServiceConfigModel;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * @author yayu
@@ -58,6 +58,7 @@ public class UserProfileActivity extends Activity {
 
 	private UserModel user = null;
 	private boolean selfInit = false;
+    private ImageButton btnRefresh;
 
 	/*static {
 		Map<String, Integer> map = new HashMap<String, Integer>();
@@ -113,7 +114,12 @@ public class UserProfileActivity extends Activity {
 			this.txtUserName = (TextView) this
 					.findViewById(R.id.userScreenName);
 			this.txtUserEmail = (TextView) this.findViewById(R.id.userEmail);
-			//this.btnRefresh = (Button) findViewById(R.id.btnRefreshUserProfile);
+			this.btnRefresh = (ImageButton) findViewById(R.id.btnRefreshUserProfile);
+			btnRefresh.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    refresh();
+                }});
 
 			final UserModel userModel = user;
 
