@@ -22,9 +22,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,15 +42,16 @@ public class Login extends Activity {
 	private EditText txtUserName;
 	private EditText txtPassword;
 	private Button btnLogin;
-	private ImageButton btnOpenidGoogle;
+	private Button btnOpenidGoogle;
 	private TextView txtUserScreenName;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		try {
 			super.onCreate(savedInstanceState);
-			setContentView(R.layout.login);
+			setContentView(R.layout.login_new);
 
 			Bundle extras = getIntent().getExtras();
 			if (extras != null) {
@@ -75,7 +76,7 @@ public class Login extends Activity {
 			txtUserName = (EditText) this.findViewById(R.id.txtUname);
 			txtPassword = (EditText) this.findViewById(R.id.txtPwd);
 			btnLogin = (Button) this.findViewById(R.id.btnLogin);
-			btnOpenidGoogle = (ImageButton) this
+			btnOpenidGoogle = (Button) this
 					.findViewById(R.id.btnOpenidGoogle);
 			txtUserScreenName = (TextView) this
 					.findViewById(R.id.textLoginStatus);
