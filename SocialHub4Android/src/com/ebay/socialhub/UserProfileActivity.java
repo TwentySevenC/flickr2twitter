@@ -259,6 +259,15 @@ public class UserProfileActivity extends Activity {
 			super(context, textViewResourceId, objects);
 			this.items = objects;
 		}
+		
+		/*
+         * (non-Javadoc)
+         * @see android.widget.BaseAdapter#getViewTypeCount()
+         */
+        @Override
+        public int getViewTypeCount() {
+            return items != null ? items.size() : 0;
+        }
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
