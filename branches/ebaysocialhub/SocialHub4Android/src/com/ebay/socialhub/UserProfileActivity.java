@@ -3,11 +3,9 @@
  */
 package com.ebay.socialhub;
 
-import com.googlecode.flickr2twitter.services.rest.models.GlobalApplicationConfigModel;
-import com.googlecode.flickr2twitter.services.rest.models.GlobalApplicationConfigModelList;
-import com.googlecode.flickr2twitter.services.rest.models.ISociaHubResource;
-import com.googlecode.flickr2twitter.services.rest.models.UserModel;
-import com.googlecode.flickr2twitter.services.rest.models.UserServiceConfigModel;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import org.restlet.resource.ClientResource;
 
@@ -34,9 +32,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import com.googlecode.flickr2twitter.services.rest.models.GlobalApplicationConfigModel;
+import com.googlecode.flickr2twitter.services.rest.models.GlobalApplicationConfigModelList;
+import com.googlecode.flickr2twitter.services.rest.models.ISociaHubResource;
+import com.googlecode.flickr2twitter.services.rest.models.UserModel;
+import com.googlecode.flickr2twitter.services.rest.models.UserServiceConfigModel;
 
 /**
  * @author yayu
@@ -55,31 +55,12 @@ public class UserProfileActivity extends Activity {
 	private TextView txtUserName;
 	private TextView txtUserEmail;
 	private ListView sourceServiceListView;
-	//private Button btnRefresh;
 
 	private UserModel user = null;
 	private boolean selfInit = false;
     private ImageButton btnRefresh;
+    private ImageButton btnAddMore;
 
-	/*static {
-		Map<String, Integer> map = new HashMap<String, Integer>();
-		
-		 * map.put("flickr", R.drawable.flickr_32); map.put("youtube",
-		 * R.drawable.youtube_32); map.put("facebook", R.drawable.facebook_32);
-		 * map.put("twitter", R.drawable.twitter_32); map.put("picasa",
-		 * R.drawable.picasa_32); map.put("ebay", R.drawable.ebay_32);
-		 * map.put("sina", R.drawable.sina_32);
-		 
-		map.put("flickr", R.drawable.flickr_64);
-		map.put("youtube", R.drawable.youtube_64);
-		map.put("facebook", R.drawable.facebook_64);
-		map.put("twitter", R.drawable.twitter_64);
-		map.put("picasa", R.drawable.picasa_64);
-		map.put("ebay", R.drawable.ebay_64);
-		map.put("sina", R.drawable.sina_64);
-		map.put("email", R.drawable.gmail_64);
-		ICON_MAP = Collections.unmodifiableMap(map);
-	}*/
 
 	@Override
 	protected void onResume() {
@@ -122,35 +103,35 @@ public class UserProfileActivity extends Activity {
                 public void onClick(View v) {
                     refresh();
                 }});
+			
 
 			final UserModel userModel = user;
-
 			final OnClickListener clickListener = new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					if (v instanceof TextView) {
-						Intent i = new Intent(UserProfileActivity.this,
-								AuthorizeActivity.class);
-						if (UserProfileActivity.this.getIntent().hasExtra(
-								AuthorizeActivity.SERVICES_ID)) {
-							i.putExtra(
-									AuthorizeActivity.SERVICES_ID,
-									UserProfileActivity.this
-											.getIntent()
-											.getExtras()
-											.getSerializable(
-													AuthorizeActivity.SERVICES_ID));
-						}
-						if (userModel != null) {
-							i.putExtra(OAuthActivity.KEY_USER_EMAIL,
-									userModel.getUserId());
-						}
-						UserProfileActivity.this.startActivity(i);
+					addMore();
+					/*Intent i = new Intent(UserProfileActivity.this,
+							AuthorizeActivity.class);
+					if (UserProfileActivity.this.getIntent().hasExtra(
+							AuthorizeActivity.SERVICES_ID)) {
+						i.putExtra(
+								AuthorizeActivity.SERVICES_ID,
+								UserProfileActivity.this
+								.getIntent()
+								.getExtras()
+								.getSerializable(
+										AuthorizeActivity.SERVICES_ID));
 					}
+					if (userModel != null) {
+						i.putExtra(OAuthActivity.KEY_USER_EMAIL,
+								userModel.getUserId());
+					}
+					UserProfileActivity.this.startActivity(i);*/
 				}
 			};
-
-			//btnRefresh.setOnClickListener(clickListener);
+			
+			this.btnAddMore = (ImageButton) findViewById(R.id.btnAddMore);
+			btnAddMore.setOnClickListener(clickListener);
 
 			this.sourceServiceListView = (ListView) this
 					.findViewById(R.id.sourceServiceList);
@@ -168,7 +149,6 @@ public class UserProfileActivity extends Activity {
 						}
 
 						result.setText(caption);
-						result.setOnClickListener(clickListener);
 						return (result);
 					}
 				};
@@ -222,6 +202,26 @@ public class UserProfileActivity extends Activity {
 		}
 		new GetUserProfileTask().execute(userEmail);
 	}
+	
+	private void addMore() {
+		Intent i = new Intent(UserProfileActivity.this,
+				AuthorizeActivity.class);
+		if (UserProfileActivity.this.getIntent().hasExtra(
+				AuthorizeActivity.SERVICES_ID)) {
+			i.putExtra(
+					AuthorizeActivity.SERVICES_ID,
+					UserProfileActivity.this
+					.getIntent()
+					.getExtras()
+					.getSerializable(
+							AuthorizeActivity.SERVICES_ID));
+		}
+		if (this.user != null) {
+			i.putExtra(OAuthActivity.KEY_USER_EMAIL,
+					this.user.getUserId());
+		}
+		UserProfileActivity.this.startActivity(i);
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -241,6 +241,9 @@ public class UserProfileActivity extends Activity {
 	    	Toast.makeText(UserProfileActivity.this, "Android rocks, iOS sucks!",
 					Toast.LENGTH_LONG).show();
 	        return true;
+	    case R.id.itemAddMore:
+	    	addMore();
+	    	return true;
 	    default:
 	        return super.onOptionsItemSelected(item);
 	    }
