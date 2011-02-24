@@ -4,11 +4,8 @@
 package com.ebay.socialhub;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import org.restlet.resource.ClientResource;
 
@@ -20,6 +17,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -43,7 +43,7 @@ import com.googlecode.flickr2twitter.services.rest.models.UserServiceConfigModel
  */
 public class UserProfileActivity extends Activity {
 	public static final String TAG = "SocialHub";
-	private static final Map<String, Integer> ICON_MAP;
+	//private static final Map<String, Integer> ICON_MAP;
 	public static final String TAG_USER = "user";
 
 	private static final String HEADER_SOURCE = "Authroized Source Services";
@@ -54,20 +54,20 @@ public class UserProfileActivity extends Activity {
 	private TextView txtUserName;
 	private TextView txtUserEmail;
 	private ListView sourceServiceListView;
-	private Button btnRefresh;
+	//private Button btnRefresh;
 
 	private UserModel user = null;
 	private boolean selfInit = false;
 
-	static {
+	/*static {
 		Map<String, Integer> map = new HashMap<String, Integer>();
-		/*
+		
 		 * map.put("flickr", R.drawable.flickr_32); map.put("youtube",
 		 * R.drawable.youtube_32); map.put("facebook", R.drawable.facebook_32);
 		 * map.put("twitter", R.drawable.twitter_32); map.put("picasa",
 		 * R.drawable.picasa_32); map.put("ebay", R.drawable.ebay_32);
 		 * map.put("sina", R.drawable.sina_32);
-		 */
+		 
 		map.put("flickr", R.drawable.flickr_64);
 		map.put("youtube", R.drawable.youtube_64);
 		map.put("facebook", R.drawable.facebook_64);
@@ -77,7 +77,7 @@ public class UserProfileActivity extends Activity {
 		map.put("sina", R.drawable.sina_64);
 		map.put("email", R.drawable.gmail_64);
 		ICON_MAP = Collections.unmodifiableMap(map);
-	}
+	}*/
 
 	@Override
 	protected void onResume() {
@@ -113,20 +113,14 @@ public class UserProfileActivity extends Activity {
 			this.txtUserName = (TextView) this
 					.findViewById(R.id.userScreenName);
 			this.txtUserEmail = (TextView) this.findViewById(R.id.userEmail);
-			this.btnRefresh = (Button) findViewById(R.id.btnRefreshUserProfile);
+			//this.btnRefresh = (Button) findViewById(R.id.btnRefreshUserProfile);
 
 			final UserModel userModel = user;
 
 			final OnClickListener clickListener = new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					if (v == btnRefresh) {
-						String userEmail = txtUserEmail.getText().toString();
-						if (userEmail == null || userEmail.trim().length() == 0) {
-							return;
-						}
-						new GetUserProfileTask().execute(userEmail);
-					} else if (v instanceof TextView) {
+					if (v instanceof TextView) {
 						Intent i = new Intent(UserProfileActivity.this,
 								AuthorizeActivity.class);
 						if (UserProfileActivity.this.getIntent().hasExtra(
@@ -148,7 +142,7 @@ public class UserProfileActivity extends Activity {
 				}
 			};
 
-			btnRefresh.setOnClickListener(clickListener);
+			//btnRefresh.setOnClickListener(clickListener);
 
 			this.sourceServiceListView = (ListView) this
 					.findViewById(R.id.sourceServiceList);
@@ -212,6 +206,39 @@ public class UserProfileActivity extends Activity {
 			Log.e(TAG, e.toString(), e);
 		}
 	}
+	
+	private void refresh() {
+		String userEmail = String.valueOf(txtUserEmail.getText());
+		if (userEmail == null || userEmail.trim().length() == 0) {
+			return;
+		}
+		new GetUserProfileTask().execute(userEmail);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.user_profile_menu, menu);
+	    return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle item selection
+	    switch (item.getItemId()) {
+	    case R.id.itemRefresh:
+	    	refresh();
+	        return true;
+	    case R.id.itemHelp:
+	    	Toast.makeText(UserProfileActivity.this, "Android rocks, iOS sucks!",
+					Toast.LENGTH_LONG).show();
+	        return true;
+	    default:
+	        return super.onOptionsItemSelected(item);
+	    }
+
+	}
+
 
 	private class ItemAdapter extends ArrayAdapter<UserServiceConfigModel> {
 		private List<UserServiceConfigModel> items;
@@ -235,9 +262,9 @@ public class UserProfileActivity extends Activity {
 				String providerId = serviceModel.getServiceProviderId();
 
 				if (providerId != null
-						&& ICON_MAP.containsKey(providerId
+						&& AuthorizeActivity.ICON_MAP.containsKey(providerId
 								.toLowerCase(Locale.US))) {
-					image.setImageResource(ICON_MAP.get(providerId
+					image.setImageResource(AuthorizeActivity.ICON_MAP.get(providerId
 							.toLowerCase(Locale.US)));
 				}
 

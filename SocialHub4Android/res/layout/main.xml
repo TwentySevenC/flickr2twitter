@@ -14,19 +14,13 @@
 			android:layout_toRightOf="@id/userImage"
 			android:layout_marginTop="10dip"
 			android:layout_alignParentTop="true" android:layout_width="fill_parent"
+			 android:textColor="#aaaa00"
 			android:layout_height="wrap_content" android:gravity="right" android:textStyle="bold"/>
 		<TextView android:text="" android:id="@+id/userEmail"
 			android:layout_below="@id/userScreenName" android:layout_toRightOf="@id/userImage"
 			android:layout_alignLeft="@id/userScreenName"
 			android:layout_marginTop="10dip"
 			android:layout_width="fill_parent" android:layout_height="wrap_content" android:gravity="right"/>
-		<Button android:id="@+id/btnRefreshUserProfile"
-			android:layout_width="fill_parent" android:layout_height="wrap_content"
-			android:layout_toRightOf="@id/userImage"
-			android:layout_below="@id/userEmail"
-			android:layout_alignLeft="@id/userScreenName"
-			android:layout_marginTop="10dip"
-			android:text="@string/btn_refresh_user_profile_title"/>
 	</RelativeLayout>
 	<ListView android:id="@+id/sourceServiceList"
 		android:layout_width="fill_parent" android:layout_height="fill_parent"

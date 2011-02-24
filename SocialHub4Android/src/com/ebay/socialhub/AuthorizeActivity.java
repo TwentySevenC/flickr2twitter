@@ -11,15 +11,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.http.HttpVersion;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.params.HttpProtocolParams;
-import org.apache.http.protocol.HTTP;
 import org.restlet.resource.ClientResource;
 
 import android.app.Activity;
@@ -52,7 +43,7 @@ import com.googlecode.flickr2twitter.services.rest.models.ISociaHubResource;
 public class AuthorizeActivity extends Activity {
     public static final String TAG = "SocialHub";
 
-    private static final Map<String, Integer> ICON_MAP;
+    public static final Map<String, Integer> ICON_MAP;
 
     private SectionedAdapter servicesAdapter;
 
@@ -70,6 +61,7 @@ public class AuthorizeActivity extends Activity {
         map.put("twitter", R.drawable.twitter_64);
         map.put("picasa", R.drawable.picasa_64);
         map.put("ebay", R.drawable.ebay_64);
+        map.put("ebay_keywords", R.drawable.ebay_64);
         map.put("sina", R.drawable.sina_64);
         map.put("email", R.drawable.gmail_64);
         ICON_MAP = Collections.unmodifiableMap(map);

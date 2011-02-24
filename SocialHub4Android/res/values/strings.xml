@@ -32,4 +32,6 @@
     <string name="hello">Hello World, SoftwarePassionView!</string>
     <string name="main_no_items">No orders to display</string>
     <string name="authorize_app_name">Authorize Services</string>
+    <string name="menu_refresh">Refresh</string>
+    <string name="menu_help">Help</string>
 </resources>
