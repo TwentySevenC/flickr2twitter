@@ -15,7 +15,6 @@ import javax.jdo.PersistenceManagerFactory;
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.googlecode.flickr2twitter.impl.ebay.SourceServiceProviderEbay;
 import com.googlecode.flickr2twitter.impl.ebay.SourceServiceProviderEbayKeywords;
-import com.googlecode.flickr2twitter.impl.email.TargetServiceProviderEmail;
 import com.googlecode.flickr2twitter.impl.facebook.TargetServiceProviderFacebook;
 import com.googlecode.flickr2twitter.impl.flickr.SourceServiceProviderFlickr;
 import com.googlecode.flickr2twitter.impl.sina.TargetServiceProviderSina;
@@ -42,8 +41,7 @@ public class ServiceFactory {
 		SourceServiceProviderEbay.class, SourceServiceProviderEbayKeywords.class, 
 		SourceServiceProviderFlickr.class, 
 		TargetServiceProviderFacebook.class,
-		TargetServiceProviderTwitter.class, TargetServiceProviderSina.class, 
-		TargetServiceProviderEmail.class};
+		TargetServiceProviderTwitter.class, TargetServiceProviderSina.class};
 
 	static {
 		Map<String, ISourceServiceProvider<IItem>> sourceData = new LinkedHashMap<String, ISourceServiceProvider<IItem>>(

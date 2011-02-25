@@ -10,6 +10,5 @@
 		<a href="http://twitter.com/"><img border="0" src="/services/twitter/images/twitter_icon_25.gif"></a>
 		<a href="http://www.flickr.com/"><img border="0" src="/services/flickr/images/flickr_icon_25.gif"></a>
 		<a href="http://t.sina.com.cn/"><img border="0" src="/services/sina/images/sina_icon_25.gif"></a>
-		<a href="http://www.gmail.com/"><img border="0" src="/services/email/images/gmail_icon_25.png"></a>
 	</div>
 </div>	
