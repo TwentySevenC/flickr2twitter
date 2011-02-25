@@ -44,7 +44,7 @@ import com.googlecode.flickr2twitter.services.rest.models.UserServiceConfigModel
  */
 public class UserProfileActivity extends Activity {
 	public static final String TAG = "SocialHub";
-	//private static final Map<String, Integer> ICON_MAP;
+	// private static final Map<String, Integer> ICON_MAP;
 	public static final String TAG_USER = "user";
 
 	private static final String HEADER_SOURCE = "Authroized Source Services";
@@ -58,9 +58,8 @@ public class UserProfileActivity extends Activity {
 
 	private UserModel user = null;
 	private boolean selfInit = false;
-    private ImageButton btnRefresh;
-    private ImageButton btnAddMore;
-
+	private ImageButton btnRefresh;
+	private ImageButton btnAddMore;
 
 	@Override
 	protected void onResume() {
@@ -75,7 +74,7 @@ public class UserProfileActivity extends Activity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-	    requestWindowFeature(Window.FEATURE_NO_TITLE);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		try {
 			super.onCreate(savedInstanceState);
 			Bundle extras = getIntent().getExtras();
@@ -99,102 +98,87 @@ public class UserProfileActivity extends Activity {
 			this.txtUserEmail = (TextView) this.findViewById(R.id.userEmail);
 			this.btnRefresh = (ImageButton) findViewById(R.id.btnRefreshUserProfile);
 			btnRefresh.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    refresh();
-                }});
-			
+				@Override
+				public void onClick(View v) {
+					refresh();
+				}
+			});
 
-			final UserModel userModel = user;
 			final OnClickListener clickListener = new OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					addMore();
-					/*Intent i = new Intent(UserProfileActivity.this,
-							AuthorizeActivity.class);
-					if (UserProfileActivity.this.getIntent().hasExtra(
-							AuthorizeActivity.SERVICES_ID)) {
-						i.putExtra(
-								AuthorizeActivity.SERVICES_ID,
-								UserProfileActivity.this
-								.getIntent()
-								.getExtras()
-								.getSerializable(
-										AuthorizeActivity.SERVICES_ID));
-					}
-					if (userModel != null) {
-						i.putExtra(OAuthActivity.KEY_USER_EMAIL,
-								userModel.getUserId());
-					}
-					UserProfileActivity.this.startActivity(i);*/
 				}
 			};
-			
+
 			this.btnAddMore = (ImageButton) findViewById(R.id.btnAddMore);
 			btnAddMore.setOnClickListener(clickListener);
 
 			this.sourceServiceListView = (ListView) this
 					.findViewById(R.id.sourceServiceList);
-			if (user != null) {
-				this.sourceAdapter = new SectionedAdapter() {
-
-					@Override
-					protected View getHeaderView(String caption, int index,
-							View convertView, ViewGroup parent) {
-						TextView result = (TextView) convertView;
-
-						if (convertView == null) {
-							result = (TextView) getLayoutInflater().inflate(
-									R.layout.header, null);
-						}
-
-						result.setText(caption);
-						return (result);
-					}
-				};
-
-				sourceAdapter.addSection(HEADER_SOURCE, new ItemAdapter(this,
-						R.layout.row, new ArrayList<UserServiceConfigModel>(
-								user.getSourceServices())));
-
-				sourceAdapter.addSection(HEADER_TARGET, new ItemAdapter(this,
-						R.layout.row, new ArrayList<UserServiceConfigModel>(
-								user.getTargetServices())));
-				sourceServiceListView.setAdapter(this.sourceAdapter);
-			}
-			this.sourceServiceListView.setTextFilterEnabled(true);
-
-			this.sourceServiceListView
-					.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-						public void onItemClick(AdapterView<?> parent,
-								View view, int position, long id) {
-							Object obj = sourceAdapter.getItem(position);
-							Toast.makeText(UserProfileActivity.this,
-									String.valueOf(obj), Toast.LENGTH_SHORT)
-									.show();
-							/*
-							 * UserServiceConfigModel serviceModel =
-							 * sourceAdapter.items.get(position); if
-							 * (serviceModel != null &&
-							 * serviceModel.getUserSiteUrl() != null) {
-							 * UserProfileActivity.this.startActivity( new
-							 * Intent(Intent.ACTION_VIEW,
-							 * Uri.parse(serviceModel.getUserSiteUrl()))); }
-							 */
-						}
-
-					});
-
-			if (user != null) {
-				txtUserName.setText(user.getScreenName());
-				txtUserEmail.setText(user.getUserId());
-			}
+			populateSourceTargetData();
 
 		} catch (Exception e) {
 			Log.e(TAG, e.toString(), e);
 		}
 	}
-	
+
+	protected void populateSourceTargetData() {
+		if (user == null) {
+			return;
+		}
+
+		txtUserName.setText(user.getScreenName());
+		txtUserEmail.setText(user.getUserId());
+		
+		if( sourceAdapter != null ) {
+			sourceAdapter.refresh();
+			return;
+		}
+		
+		this.sourceAdapter = new SectionedAdapter() {
+
+			@Override
+			protected View getHeaderView(String caption, int index,
+					View convertView, ViewGroup parent) {
+				TextView result = (TextView) convertView;
+
+				if (convertView == null) {
+					result = (TextView) getLayoutInflater().inflate(
+							R.layout.header, null);
+				}
+
+				result.setText(caption);
+				return (result);
+			}
+		};
+
+		sourceAdapter.addSection(
+				HEADER_SOURCE,
+				new ItemAdapter(this, R.layout.row,
+						new ArrayList<UserServiceConfigModel>(user
+								.getSourceServices())));
+
+		sourceAdapter.addSection(
+				HEADER_TARGET,
+				new ItemAdapter(this, R.layout.row,
+						new ArrayList<UserServiceConfigModel>(user
+								.getTargetServices())));
+		sourceServiceListView.setAdapter(this.sourceAdapter);
+		this.sourceServiceListView.setTextFilterEnabled(true);
+
+		this.sourceServiceListView
+				.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+					public void onItemClick(AdapterView<?> parent, View view,
+							int position, long id) {
+						Object obj = sourceAdapter.getItem(position);
+						Toast.makeText(UserProfileActivity.this,
+								String.valueOf(obj), Toast.LENGTH_SHORT).show();
+					}
+
+				});
+	}
+
 	private void refresh() {
 		String userEmail = String.valueOf(txtUserEmail.getText());
 		if (userEmail == null || userEmail.trim().length() == 0) {
@@ -202,54 +186,47 @@ public class UserProfileActivity extends Activity {
 		}
 		new GetUserProfileTask().execute(userEmail);
 	}
-	
+
 	private void addMore() {
-		Intent i = new Intent(UserProfileActivity.this,
-				AuthorizeActivity.class);
+		Intent i = new Intent(this, AuthorizeActivity.class);
 		if (UserProfileActivity.this.getIntent().hasExtra(
 				AuthorizeActivity.SERVICES_ID)) {
-			i.putExtra(
-					AuthorizeActivity.SERVICES_ID,
-					UserProfileActivity.this
-					.getIntent()
-					.getExtras()
-					.getSerializable(
-							AuthorizeActivity.SERVICES_ID));
+			i.putExtra(AuthorizeActivity.SERVICES_ID,
+					UserProfileActivity.this.getIntent().getExtras()
+							.getSerializable(AuthorizeActivity.SERVICES_ID));
 		}
 		if (this.user != null) {
-			i.putExtra(OAuthActivity.KEY_USER_EMAIL,
-					this.user.getUserId());
+			i.putExtra(OAuthActivity.KEY_USER_EMAIL, this.user.getUserId());
 		}
-		UserProfileActivity.this.startActivity(i);
+		startActivity(i);
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
-	    inflater.inflate(R.menu.user_profile_menu, menu);
-	    return true;
+		inflater.inflate(R.menu.user_profile_menu, menu);
+		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle item selection
-	    switch (item.getItemId()) {
-	    case R.id.itemRefresh:
-	    	refresh();
-	        return true;
-	    case R.id.itemHelp:
-	    	Toast.makeText(UserProfileActivity.this, "Android rocks, iOS sucks!",
-					Toast.LENGTH_LONG).show();
-	        return true;
-	    case R.id.itemAddMore:
-	    	addMore();
-	    	return true;
-	    default:
-	        return super.onOptionsItemSelected(item);
-	    }
+		switch (item.getItemId()) {
+		case R.id.itemRefresh:
+			refresh();
+			return true;
+		case R.id.itemHelp:
+			Toast.makeText(UserProfileActivity.this,
+					"Android rocks, iOS sucks!", Toast.LENGTH_LONG).show();
+			return true;
+		case R.id.itemAddMore:
+			addMore();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 
 	}
-
 
 	private class ItemAdapter extends ArrayAdapter<UserServiceConfigModel> {
 		private List<UserServiceConfigModel> items;
@@ -259,15 +236,16 @@ public class UserProfileActivity extends Activity {
 			super(context, textViewResourceId, objects);
 			this.items = objects;
 		}
-		
+
 		/*
-         * (non-Javadoc)
-         * @see android.widget.BaseAdapter#getViewTypeCount()
-         */
-        @Override
-        public int getViewTypeCount() {
-            return items != null ? items.size() : 0;
-        }
+		 * (non-Javadoc)
+		 * 
+		 * @see android.widget.BaseAdapter#getViewTypeCount()
+		 */
+		@Override
+		public int getViewTypeCount() {
+			return items != null ? items.size() : 0;
+		}
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
@@ -284,8 +262,8 @@ public class UserProfileActivity extends Activity {
 				if (providerId != null
 						&& AuthorizeActivity.ICON_MAP.containsKey(providerId
 								.toLowerCase(Locale.US))) {
-					image.setImageResource(AuthorizeActivity.ICON_MAP.get(providerId
-							.toLowerCase(Locale.US)));
+					image.setImageResource(AuthorizeActivity.ICON_MAP
+							.get(providerId.toLowerCase(Locale.US)));
 				}
 
 				TextView tt = (TextView) v.findViewById(R.id.toptext);
@@ -362,21 +340,12 @@ public class UserProfileActivity extends Activity {
 			try {
 				authDialog.dismiss();
 				if (data != null) {
-					//TODO here we don't need to start another instance of this activity,
-					Intent intent = getIntent();
-					intent.putExtra(TAG_USER, data.user);
-					intent.putExtra(AuthorizeActivity.SERVICES_ID,
-							data.serviceProviders);
-					finish();
-					startActivity(intent);
+					user = data.user;
+					populateSourceTargetData();
 				} else {
-					// Intent intent = new Intent(UserProfileActivity.this,
-					// Login.class);
-					// intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-					// UserProfileActivity.this.startActivity(intent);
-					// finish();
-					Toast.makeText(UserProfileActivity.this, "Error to get user profile.",
-							Toast.LENGTH_LONG).show();
+					Toast.makeText(UserProfileActivity.this,
+							"Error to get user profile.", Toast.LENGTH_LONG)
+							.show();
 				}
 			} catch (Exception e) {
 				Log.e(TAG, e.toString(), e);
