@@ -9,6 +9,7 @@ import java.util.List;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 
 /**
@@ -24,6 +25,12 @@ abstract public class SectionedAdapter extends BaseAdapter {
 
 	public SectionedAdapter() {
 		super();
+	}
+	
+	public void refresh() {
+		for( Section section : sections ) {
+			((ArrayAdapter)section.adapter).notifyDataSetChanged();
+		}
 	}
 
 	public void addSection(String caption, Adapter adapter) {
