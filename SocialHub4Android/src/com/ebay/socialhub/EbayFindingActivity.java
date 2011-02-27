@@ -131,7 +131,7 @@ public class EbayFindingActivity extends Activity {
             }
             EbayItem ebayItem = items.get(position);
             if (ebayItem != null) {
-            	 TextView title = (TextView) v.findViewById(R.id.title);
+            	 TextView title = (TextView) v.findViewById(R.id.item_title);
                  
                  if (title != null) {
                  	title.setText(ebayItem.getTitle());                            
