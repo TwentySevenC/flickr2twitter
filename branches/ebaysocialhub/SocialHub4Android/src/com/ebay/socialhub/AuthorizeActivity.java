@@ -142,8 +142,21 @@ public class AuthorizeActivity extends Activity {
                                     AuthorizeActivity.this.startActivity(intent);
                                 }
                             } else {
-                                Toast.makeText(AuthorizeActivity.this, String.valueOf(obj),
-                                        Toast.LENGTH_SHORT).show();
+                            	GlobalSourceApplicationServiceModel source = (GlobalSourceApplicationServiceModel) obj;
+                            	 if ("ebay".equalsIgnoreCase(source.getProviderId()) 
+                                 		|| "ebay_keywords".equalsIgnoreCase(source.getProviderId())) {
+                                 	Intent intent = new Intent(AuthorizeActivity.this,
+                                 			EbayFindingActivity.class);
+                                 	intent.putExtra(SERVICE_CONFIG_ID, source);
+                                 	intent.putExtra(OAuthActivity.ID_PROVIDER,
+                                 			OAuthActivity.ID_TWITTER);
+                                 	intent.putExtra(OAuthActivity.KEY_USER_EMAIL, userEmail);
+                                 	intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                 	AuthorizeActivity.this.startActivity(intent);
+                                 } else {
+                                	 Toast.makeText(AuthorizeActivity.this, String.valueOf(obj),
+                                             Toast.LENGTH_SHORT).show();
+                                 }
                             }
                         }
 

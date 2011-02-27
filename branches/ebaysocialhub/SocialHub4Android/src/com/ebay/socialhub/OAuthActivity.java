@@ -60,7 +60,7 @@ public class OAuthActivity extends Activity {
 	private static final Uri YAHOO_CALLBACK_URI = Uri.parse(ID_SCHEME + "://yahoo");
 	private static final Uri TWITTER_CALLBACK_URI = Uri.parse(ID_SCHEME + "://twitter");
 
-	private static final String GAE_CALLBACK_URL = "http://ebaysocialhub.appspot.com/google_openid_callback.jsp";
+	private static final String GAE_CALLBACK_URL = "http://ebaysocialhub.appspot.com/openid_callback.jsp";
 	public static final String KEY_USER_EMAIL = "userEmail";
 
 
@@ -374,7 +374,7 @@ public class OAuthActivity extends Activity {
 			String message = null;
 			try {
 				manager = new OpenIdManager();
-				manager.setReturnTo(YAHOO_CALLBACK_URI.toString());
+				manager.setReturnTo(GAE_CALLBACK_URL);
 
 				Intent i = OAuthActivity.this.getIntent();
 				if (i.getData() == null) {
