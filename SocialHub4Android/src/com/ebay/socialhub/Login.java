@@ -52,7 +52,7 @@ public class Login extends Activity {
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		try {
 			super.onCreate(savedInstanceState);
-			setContentView(R.layout.login_new);
+			setContentView(R.layout.login);
 
 			Bundle extras = getIntent().getExtras();
 			if (extras != null) {
