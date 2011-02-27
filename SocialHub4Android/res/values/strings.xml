@@ -24,6 +24,7 @@
     <string name="textPassword">Password</string>
     <string name="google_openid_oauth">OAuth</string>
     <string name="google_openid_oauth_message">Redirecting to Google for Authentication</string>
+    <string name="yahoo_openid_oauth_message">Redirecting to Yahoo for Authentication</string>
     <string name="user_profile_view_name">User Profile</string>
     <string name="btn_refresh_user_profile_title">Refresh</string>
     
