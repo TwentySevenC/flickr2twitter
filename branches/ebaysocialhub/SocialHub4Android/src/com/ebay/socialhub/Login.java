@@ -43,6 +43,7 @@ public class Login extends Activity {
 	private EditText txtPassword;
 	private Button btnLogin;
 	private Button btnOpenidGoogle;
+	private Button btnOpenidYahoo;
 	private TextView txtUserScreenName;
 
 	/** Called when the activity is first created. */
@@ -78,8 +79,10 @@ public class Login extends Activity {
 			btnLogin = (Button) this.findViewById(R.id.btnLogin);
 			btnOpenidGoogle = (Button) this
 					.findViewById(R.id.btnOpenidGoogle);
+			btnOpenidYahoo = (Button) this
+					.findViewById(R.id.btnOpenidYahoo);
 			txtUserScreenName = (TextView) this
-					.findViewById(R.id.textLoginStatus);
+					.findViewById(R.id.txtUname);
 
 			btnLogin.setOnClickListener(new OnClickListener() {
 
@@ -99,6 +102,15 @@ public class Login extends Activity {
 				}
 			});
 
+			btnOpenidYahoo.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Intent i = new Intent(Login.this, OAuthActivity.class);
+					i.putExtra(OAuthActivity.ID_PROVIDER,
+							OAuthActivity.ID_YAHOO);
+					startActivity(i);
+				}
+			});
 		} catch (Exception e) {
 			Log.e(TAG, e.toString(), e);
 		}

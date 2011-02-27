@@ -48,6 +48,7 @@ import com.googlecode.flickr2twitter.services.rest.models.UserTargetServiceConfi
 public class OAuthActivity extends Activity {
 	public static final String TAG = "SocialHub";
 	public static final String ID_GOOGLE = "Google";
+	public static final String ID_YAHOO = "Yahoo";
 	public static final String ID_TWITTER = "Twitter";
 
 	public static final String ID_PROVIDER = "providerId";
@@ -56,6 +57,7 @@ public class OAuthActivity extends Activity {
 
 	private static final String ID_SCHEME = "socialhub-app";
 	private static final Uri GOOGLE_CALLBACK_URI = Uri.parse(ID_SCHEME + "://google");
+	private static final Uri YAHOO_CALLBACK_URI = Uri.parse(ID_SCHEME + "://yahoo");
 	private static final Uri TWITTER_CALLBACK_URI = Uri.parse(ID_SCHEME + "://twitter");
 
 	private static final String GAE_CALLBACK_URL = "http://ebaysocialhub.appspot.com/google_openid_callback.jsp";
@@ -100,6 +102,8 @@ public class OAuthActivity extends Activity {
 					new AuthGoogleOpenIDTask().execute();
 				} else if (ID_TWITTER.equalsIgnoreCase(providerId)) {
 					new AuthTwitterOpenIDTask().execute();
+				}  else if (ID_YAHOO.equalsIgnoreCase(providerId)) {
+					new AuthYahooOpenIDTask().execute();
 				}
 			}
 		} catch (Exception e) {
@@ -206,7 +210,19 @@ public class OAuthActivity extends Activity {
 						OAuthActivity.this.startActivity(uIntent);
 						finish();*/
 					}
-				}
+				} else if (ID_YAHOO.equalsIgnoreCase(uri.getHost())) {
+					//yahoo open id oauth
+					String query = uri.getQuery();
+					if (query.startsWith(KEY_USER_EMAIL)) {
+						String userEmail = query.substring(KEY_USER_EMAIL.length() + 1, query.length());
+						Intent intent = new Intent(this, UserProfileActivity.class);
+						//loginActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK );
+						intent.putExtra(KEY_USER_EMAIL, userEmail);
+						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+						this.startActivity(intent);
+						finish();
+					}
+				} 
 			}
 		} catch (Exception e) {
 			Log.e(TAG, e.toString(), e);
@@ -317,6 +333,55 @@ public class OAuthActivity extends Activity {
 					Association association = manager.lookupAssociation(endpoint);
 					String authUrl = manager.getAuthenticationUrl(endpoint, association);
 					Log.i(TAG, "Google OpenID AuthURL: " + authUrl);
+					OAuthActivity.this.startActivity(
+							new Intent(Intent.ACTION_VIEW, Uri.parse(authUrl)));
+				}
+			} catch (Exception e) {
+				Log.e(TAG, e.toString(), e);
+				message = e.toString();
+			}
+			return message;
+		}
+
+		protected void onPostExecute(String result) {
+			authDialog.dismiss();
+			if (result != null) {
+				Toast.makeText(OAuthActivity.this, 
+						"Google OpenID OAuth - " + result,Toast.LENGTH_LONG).show();
+			}
+			finish();
+		}
+
+	}
+	
+	private class AuthYahooOpenIDTask extends AsyncTask<Void, Void, String> {
+		ProgressDialog authDialog;
+
+		@Override
+		protected void onPreExecute() {
+			authDialog = ProgressDialog.show(OAuthActivity.this, 
+					getText(R.string.auth_progress_title), 
+					getText(R.string.yahoo_openid_oauth_message), 
+					true,	// indeterminate duration
+					false); // not cancel-able
+		}
+
+		/* (non-Javadoc)
+		 * @see android.os.AsyncTask#doInBackground(Params[])
+		 */
+		@Override
+		protected String doInBackground(Void... params) {
+			String message = null;
+			try {
+				manager = new OpenIdManager();
+				manager.setReturnTo(YAHOO_CALLBACK_URI.toString());
+
+				Intent i = OAuthActivity.this.getIntent();
+				if (i.getData() == null) {
+					Endpoint endpoint = manager.lookupEndpoint(ID_YAHOO);
+					Association association = manager.lookupAssociation(endpoint);
+					String authUrl = manager.getAuthenticationUrl(endpoint, association);
+					Log.i(TAG, "Yahoo OpenID AuthURL: " + authUrl);
 					OAuthActivity.this.startActivity(
 							new Intent(Intent.ACTION_VIEW, Uri.parse(authUrl)));
 				}
