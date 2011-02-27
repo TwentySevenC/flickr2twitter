@@ -16,7 +16,7 @@
   			<EditText android:id="@+id/edit_input"
     			android:layout_width="fill_parent" 
     			android:layout_height="wrap_content" 
-    			android:text="nikon"
+    			android:hint="Keywords"
     			android:singleLine="true"
     		/>
     		<Button android:id="@+id/cmd_search"
@@ -24,12 +24,6 @@
     			android:layout_height="wrap_content"
     			android:drawableLeft="@drawable/btn_search"
     		/>
-    		<!-- Button android:id="@+id/cmd_search_mebay"
-    			android:layout_width="wrap_content" 
-    			android:layout_height="wrap_content"
-    			android:text="m.ebay"
-    			android:drawableLeft="@drawable/btn_search"
-    		/-->
   		</TableRow>
     </TableLayout>
 <ListView
