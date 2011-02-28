@@ -5,8 +5,10 @@
 package com.ebay.socialhub;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -44,6 +46,7 @@ public class AuthorizeActivity extends Activity {
     public static final String TAG = "SocialHub";
 
     public static final Map<String, Integer> ICON_MAP;
+    public static final Collection<String> SUPPORTED_SERVICES;
 
     private SectionedAdapter servicesAdapter;
 
@@ -65,6 +68,12 @@ public class AuthorizeActivity extends Activity {
         map.put("sina", R.drawable.sina_64);
         map.put("email", R.drawable.gmail_64);
         ICON_MAP = Collections.unmodifiableMap(map);
+        
+        Collection<String> data = new HashSet<String>();
+        data.add("ebay");
+        data.add("ebay_keywords");
+        data.add("twitter");
+        SUPPORTED_SERVICES = Collections.unmodifiableCollection(data);
     }
 
     /**
@@ -220,6 +229,10 @@ public class AuthorizeActivity extends Activity {
             List<GlobalApplicationConfigModel> targets = new ArrayList<GlobalApplicationConfigModel>();
 
             for (GlobalApplicationConfigModel model : models.getGlobalAppConfigModels()) {
+            	if (SUPPORTED_SERVICES.contains(model.getProviderId()) == false) {
+            		//only show those that could be supported by this mobile app
+            		continue;
+            	}
                 if (model instanceof GlobalSourceApplicationServiceModel) {
                     sources.add(model);
                 } else {
