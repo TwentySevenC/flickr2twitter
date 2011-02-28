@@ -53,6 +53,13 @@ public class FindItemsDAO {
 		return findItemsByKeywords(true, null, encodeKeywords(keywords), entriesPerPage);
 	}
 	
+	public List<EbayItem> findItemsByKeywordsFromProduction(
+			String keywords,
+			int entriesPerPage) throws IOException, SAXException {
+		
+		return findItemsByKeywords(false, null, encodeKeywords(keywords), entriesPerPage);
+	}
+	
 	public URL buildSearchItemsUrl(boolean isSandbox, String keywords) throws MalformedURLException {
 		keywords = encodeKeywords(keywords);
 		Map<String, String> parameters = generateSearchParameters(isSandbox, keywords, null, 10);

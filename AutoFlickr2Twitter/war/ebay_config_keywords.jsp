@@ -14,15 +14,17 @@
 <body>
 <div id="container"><%@ include file="header.jsp"%>
 <div id="content">
-	<h1>Enter the keywords you want to search and follow</h1>
-	<hr/>
-	<div id="middle">
 		<%
 			String keywords = request
 					.getParameter(EbayConfigKeywordsServlet.PARA_SEARCH_KEYWORDS);
 			boolean hasKeywords = (keywords != null) && (keywords.length() > 0);
+			boolean isSandbox = Boolean.valueOf(request.getParameter(EbayConfigServlet.PARA_SANDBOX));
 		%>
-		<form action="/ebay_config_keywords.jsp" method="post" name="searchebaykeywords">
+	<h1>Enter the eBay <%if (isSandbox) {%>Sandbox <% } else { %> <%} %>keywords you want to search and follow</h1>
+	<hr/>
+	<div id="middle">
+		
+		<form action="/ebay_config_keywords.jsp?sandbox=<%=isSandbox%>" method="post" name="searchebaykeywords">
 			<table class="border_table">
 				<tr>
 					<td class="first_ebay"">Keywords:</td>
@@ -39,13 +41,14 @@
 		<%
 			if (hasKeywords) {
 				FindItemsDAO findItemsDao = new FindItemsDAO();
-				List<EbayItem> items = findItemsDao.findItemsByKeywordsFromSandbox(keywords, 10);
+				List<EbayItem> items = isSandbox ? findItemsDao.findItemsByKeywordsFromSandbox(keywords, 10) 
+						: findItemsDao.findItemsByKeywordsFromProduction(keywords, 10);
 				// show user details if found a user
 				if (items != null) {
 				%>
 			
 				<h1>Search Result for '<%=keywords%>'</h1>
-				<form action="/ebayConfigkeywords" method="post" name="showebaykeywords">
+				<form action="/ebayConfigkeywords?sandbox=<%=isSandbox%>" method="post" name="showebaykeywords">
 					<input type="hidden" value="<%=keywords%>" name="<%=EbayConfigKeywordsServlet.PARA_KEYWORDS%>"/>
 					<table class="border_table">
 					<tr>

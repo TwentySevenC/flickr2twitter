@@ -65,9 +65,11 @@ public class SourceServiceProviderEbayKeywords extends
 		long newTime = now.getTime().getTime() - globalConfig.getMinUploadTime();
 		past.setTimeInMillis(newTime);
 		
-		log.info("Fetching latest listing for eBay keywords->" + keywords 
+		String env = isSandbox() ? "sandbox " : "";
+		log.info("Fetching latest listing for eBay keywords " + env + "->" + keywords 
 				+ " from " + past.getTime() + " to " + now.getTime());
-		List<EbayItem> ebayItems = dao.findItemsByKeywordsFromSandbox(keywords, 1);
+		List<EbayItem> ebayItems = isSandbox() ? dao.findItemsByKeywordsFromSandbox(keywords, 1) 
+				: dao.findItemsByKeywordsFromProduction(keywords, 1);
 		
 		log.info("found " + ebayItems.size() + " items being listed recently");
 		List<IItem> items = new ArrayList<IItem>(1);
@@ -95,15 +97,27 @@ public class SourceServiceProviderEbayKeywords extends
 	@Override
 	public GlobalSourceApplicationService createDefaultGlobalApplicationConfig() {
 		GlobalSourceApplicationService result = new GlobalSourceApplicationService();
-		result.setAppName(DISPLAY_NAME);
-		result.setProviderId(ID);
+		result.setAppName(getDisplayName());
+		result.setProviderId(getId());
 		result.setDescription("The world's leading e-commerce site");
 		result.setSourceAppApiKey("no_app_api_key");
 		result.setSourceAppSecret("no_app_api_secret");
 		result.setAuthPagePath(null);
-		result.setConfigPagePath(PAGE_NAME_CONFIG);
-		result.setImagePath("/services/ebay/images/ebay_keywords_100.gif");
+		result.setConfigPagePath(getConfigPagePath());
+		result.setImagePath(getImagePath());
 		return result;
+	}
+	
+	protected String getDisplayName() {
+		return DISPLAY_NAME;
+	}
+	
+	protected String getImagePath() {
+		return "/services/ebay/images/ebay_keywords_100.gif";
+	}
+	
+	protected boolean isSandbox() {
+		return false;
 	}
 
 }

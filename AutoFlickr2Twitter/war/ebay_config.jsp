@@ -14,15 +14,17 @@
 <body>
 <div id="container"><%@ include file="header.jsp"%>
 <div id="content">
-	<h1>Set the eBay Seller's ID you want to follow</h1>
-	<hr/>
-	<div id="middle">
-		<%
+	<%
 			String ebayUserID = request
 					.getParameter(EbayConfigServlet.PARA_SEARCH_SELLER_ID);
 			boolean hasUserID = (ebayUserID != null) && (ebayUserID.length() > 0);
+			boolean isSandbox = Boolean.valueOf(request.getParameter(EbayConfigServlet.PARA_SANDBOX));
 		%>
-		<form action="/ebay_config.jsp" method="post" name="searchebayuser">
+	<h1>Set the eBay <%if (isSandbox) {%>Sandbox <% } else { %> <%} %>Seller's ID you want to follow</h1>
+	<hr/>
+	<div id="middle">
+		
+		<form action="/ebay_config.jsp?sandbox=<%= isSandbox %>" method="post" name="searchebayuser">
 			<table class="border_table">
 				<tr>
 					<td class="first_ebay"">Seller ID:</td>
@@ -39,14 +41,14 @@
 		<%
 			if (hasUserID) {
 				GetUserProfileDAO getUserProfileDAO = new GetUserProfileDAO();
-				EbayUser ebayUser = getUserProfileDAO.getUserProfile(true,
+				EbayUser ebayUser = getUserProfileDAO.getUserProfile(isSandbox,
 						ebayUserID);
 				// show user details if found a user
 				if (ebayUser != null) {
 		%>
 	
 		<h1>Seller Profile</h1>
-		<form action="/ebayConfig" method="post" name="showebayuserprofile">
+		<form action="/ebayConfig?sandbox=<%= isSandbox %>" method="post" name="showebayuserprofile">
 			<input type="hidden" value="<%=ebayUserID%>" name="<%=EbayConfigServlet.PARA_SELLER_ID%>"/>
 			<table class="border_table">
 				<tr>

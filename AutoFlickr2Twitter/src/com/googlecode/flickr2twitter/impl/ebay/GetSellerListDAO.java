@@ -309,5 +309,10 @@ public class GetSellerListDAO {
 			String userId, Date from, Date to) throws IOException, SAXException {
 		return getSellerList(true, APP_ID_SANDBOX, TOKEN_SANDBOX, userId, from, to, 100);
 	}
+	
+	public List<EbayItem> getSellerListFromProduction(
+			String userId, Date from, Date to) throws IOException, SAXException {
+		return getSellerList(false, APP_ID, TOKEN, userId, from, to, 100);
+	}
 
 }

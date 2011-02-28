@@ -16,6 +16,7 @@ import com.googlecode.flickr2twitter.datastore.model.User;
 import com.googlecode.flickr2twitter.datastore.model.UserSourceServiceConfig;
 import com.googlecode.flickr2twitter.impl.ebay.FindItemsDAO;
 import com.googlecode.flickr2twitter.impl.ebay.SourceServiceProviderEbayKeywords;
+import com.googlecode.flickr2twitter.impl.ebay.SourceServiceProviderEbayKeywordsSandbox;
 
 /**
  * @author Emac Shen (shen.bin.1983@gmail.com)
@@ -49,6 +50,7 @@ public class EbayConfigKeywordsServlet extends HttpServlet {
 
 		String userEmail = user.getUserId().getEmail();
 		String keywords = req.getParameter(PARA_KEYWORDS);
+		boolean isSandbox = Boolean.valueOf(req.getParameter(EbayConfigServlet.PARA_SANDBOX));
 
 		UserSourceServiceConfig serviceConfig = new UserSourceServiceConfig();
 		// TODO store the keywords in user id
@@ -56,7 +58,7 @@ public class EbayConfigKeywordsServlet extends HttpServlet {
 
 		String userDisplayName = keywords;
 		serviceConfig.setServiceUserName(userDisplayName);
-		serviceConfig.setServiceProviderId(SourceServiceProviderEbayKeywords.ID);
+		serviceConfig.setServiceProviderId(isSandbox ? SourceServiceProviderEbayKeywordsSandbox.ID : SourceServiceProviderEbayKeywords.ID);
 		serviceConfig.setUserEmail(userEmail);
 		//http://shop.ebay.com/i.html?_trkparms=65%253A12%257C66%253A2%257C39%253A1%257C72%253A4831&rt=nc&_nkw=nikon+d700&_sticky=1&_trksid=p3286.c0.m14&_sop=10&_sc=1
 		//http://shop.sandbox.ebay.com/i.html?_trkparms=65%253A1%257C66%253A2%257C39%253A1&rt=nc&_nkw=android+mini+collectible&_ipg=&_sc=1&_sticky=1&_trksid=p3286.c0.m14&_sop=10&_sc=1
@@ -65,10 +67,14 @@ public class EbayConfigKeywordsServlet extends HttpServlet {
 			serviceConfig.setUserSiteUrl(url.toString());
 		}*/
 		
-		serviceConfig.setUserSiteUrl(
-				"http://shop.sandbox.ebay.com/i.html?_trkparms=65%253A1%257C66%253A2%257C39%253A1&rt=nc&_nkw=" +
+		String userSiteUrl = isSandbox ? "http://shop.sandbox.ebay.com/i.html?_trkparms=65%253A1%257C66%253A2%257C39%253A1&rt=nc&_nkw=" +
 				new FindItemsDAO().encodeKeywords(keywords) + 
-				"&_ipg=&_sc=1&_sticky=1&_trksid=p3286.c0.m14&_sop=10&_sc=1");
+				"&_ipg=&_sc=1&_sticky=1&_trksid=p3286.c0.m14&_sop=10&_sc=1"
+				: "http://shop.ebay.com/i.html?_trkparms=65%253A12%257C66%253A2%257C39%253A1%257C72%253A4831&rt=nc&_nkw=" +
+				new FindItemsDAO().encodeKeywords(keywords) + 
+				"&_ipg=&_sc=1&_sticky=1&_trksid=p3286.c0.m14&_sop=10&_sc=1";
+				
+		serviceConfig.setUserSiteUrl(userSiteUrl);
 		
 		MyPersistenceManagerFactory.addSourceServiceApp(userEmail,
 				serviceConfig);
