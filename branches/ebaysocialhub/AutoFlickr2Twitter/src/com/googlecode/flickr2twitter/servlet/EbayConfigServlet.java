@@ -19,6 +19,7 @@ import com.googlecode.flickr2twitter.datastore.model.UserSourceServiceConfig;
 import com.googlecode.flickr2twitter.impl.ebay.EbayUser;
 import com.googlecode.flickr2twitter.impl.ebay.GetUserProfileDAO;
 import com.googlecode.flickr2twitter.impl.ebay.SourceServiceProviderEbay;
+import com.googlecode.flickr2twitter.impl.ebay.SourceServiceProviderEbaySandbox;
 
 /**
  * @author Emac Shen (shen.bin.1983@gmail.com)
@@ -28,6 +29,7 @@ public class EbayConfigServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	public static final String PARA_SELLER_ID = "seller_id";
+	public static final String PARA_SANDBOX = "sandbox";
 
 	public static final String PARA_SEARCH_SELLER_ID = "search_seller_id";
 
@@ -52,19 +54,19 @@ public class EbayConfigServlet extends HttpServlet {
 
 		String userEmail = user.getUserId().getEmail();
 		String sellerId = req.getParameter(PARA_SELLER_ID);
-
+		boolean isSandbox = Boolean.valueOf(req.getParameter(EbayConfigServlet.PARA_SANDBOX));
+		
 		GetUserProfileDAO getUserProfileDAO = new GetUserProfileDAO();
 
 		EbayUser ebayUser = null;
 		try {
-			ebayUser = getUserProfileDAO.getUserProfile(true, sellerId);
+			ebayUser = getUserProfileDAO.getUserProfile(isSandbox, sellerId);
 		} catch (SAXException e) {
 			throw new ServletException("Unable to found user profile for id: "
 					+ sellerId, e);
 		}
 
 		UserSourceServiceConfig serviceConfig = new UserSourceServiceConfig();
-		// TODO#EMAC.P1 store seller id in user id temporarily
 		serviceConfig.setServiceUserId(sellerId);
 
 		String userDisplayName = sellerId;
@@ -73,7 +75,8 @@ public class EbayConfigServlet extends HttpServlet {
 			userDisplayName += " (" + storeName + ")";
 		}
 		serviceConfig.setServiceUserName(userDisplayName);
-		serviceConfig.setServiceProviderId(SourceServiceProviderEbay.ID);
+		serviceConfig.setServiceProviderId(isSandbox ? SourceServiceProviderEbay.ID 
+				: SourceServiceProviderEbaySandbox.ID);
 		serviceConfig.setUserEmail(userEmail);
 
 		if (ebayUser.getStoreURL() != null) {

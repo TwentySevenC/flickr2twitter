@@ -25,7 +25,7 @@ public class SourceServiceProviderEbay extends BaseSourceProvider<IItem>implemen
 		IConfigurableService {
 	public static final String ID = "ebay";
 	public static final String DISPLAY_NAME = "eBay";
-	public static final String PAGE_NAME_CONFIG = "ebay_config.jsp";;
+	public static final String PAGE_NAME_CONFIG = "ebay_config.jsp";
 
 	private static final Logger log = Logger.getLogger(SourceServiceProviderEbay.class.getName());
 	/**
@@ -51,14 +51,14 @@ public class SourceServiceProviderEbay extends BaseSourceProvider<IItem>implemen
 	@Override
 	public GlobalSourceApplicationService createDefaultGlobalApplicationConfig() {
 		GlobalSourceApplicationService result = new GlobalSourceApplicationService();
-		result.setAppName(DISPLAY_NAME);
-		result.setProviderId(ID);
+		result.setAppName(getDisplayName());
+		result.setProviderId(getId());
 		result.setDescription("The world's leading e-commerce site");
 		result.setSourceAppApiKey("no_app_api_key");
 		result.setSourceAppSecret("no_app_api_secret");
 		result.setAuthPagePath(null);
-		result.setConfigPagePath(PAGE_NAME_CONFIG);
-		result.setImagePath("/services/ebay/images/ebay_100.gif");
+		result.setConfigPagePath(getConfigPagePath());
+		result.setImagePath(getImagePath());
 		return result;
 	}
 
@@ -78,9 +78,11 @@ public class SourceServiceProviderEbay extends BaseSourceProvider<IItem>implemen
 		long newTime = now.getTime().getTime() - globalConfig.getMinUploadTime();
 		past.setTimeInMillis(newTime);
 		
-		log.info("Fetching latest listing for eBay user->" + sellerId 
+		String env = isSandbox() ? "sandbox " : "";
+		log.info("Fetching latest listing for eBay " + env + "user->" + sellerId 
 				+ " from " + past.getTime() + " to " + now.getTime());
-		List<EbayItem> ebayItems = dao.getSellerListFromSandBox(sellerId, past.getTime(), now.getTime());
+		List<EbayItem> ebayItems = isSandbox() ? dao.getSellerListFromSandBox(sellerId, past.getTime(), now.getTime())
+				: dao.getSellerListFromProduction(sellerId, past.getTime(), now.getTime());
 		
 		log.info("found " + ebayItems.size() + " items updated recently");
 		
@@ -95,6 +97,18 @@ public class SourceServiceProviderEbay extends BaseSourceProvider<IItem>implemen
 		}
 		
 		return items;
+	}
+	
+	protected String getDisplayName() {
+		return DISPLAY_NAME;
+	}
+	
+	protected String getImagePath() {
+		return "/services/ebay/images/ebay_100.gif";
+	}
+	
+	protected boolean isSandbox() {
+		return false;
 	}
 
 	private GetSellerListDAO dao = new GetSellerListDAO();
