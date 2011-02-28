@@ -46,7 +46,8 @@ public class FacebookUtil {
 	public static final String TOKEN_PARAM = "access_token";
 
 	public static final String AUTH_URL = "https://www.facebook.com/dialog/oauth?client_id="
-			+ APP_ID + "&redirect_uri={0}&&scope=status_update,publish_stream";
+			+ APP_ID
+			+ "&redirect_uri={0}&&scope=status_update,publish_stream,offline_access";
 
 	public static final String TOKEN_URL = "https://graph.facebook.com/oauth/access_token?"
 			+ "client_id="
