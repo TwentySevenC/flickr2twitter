@@ -17,6 +17,13 @@ public interface ISociaHubServicesResource {
 	 */
 	@Post
 	public void addUserTargetServiceConfig(String data);
+	
+	/**
+	 * currently only support ebay keywords/seller
+	 * @param data The format is {providerId}/{userEmail}/{keywords}
+	 */
+	@Post
+	public void addUserSourceServiceConfig(String data);
 
 
 }
