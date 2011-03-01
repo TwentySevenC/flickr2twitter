@@ -157,8 +157,6 @@ public class AuthorizeActivity extends Activity {
                                  	Intent intent = new Intent(AuthorizeActivity.this,
                                  			EbayFindingActivity.class);
                                  	intent.putExtra(SERVICE_CONFIG_ID, source);
-                                 	intent.putExtra(OAuthActivity.ID_PROVIDER,
-                                 			OAuthActivity.ID_TWITTER);
                                  	intent.putExtra(OAuthActivity.KEY_USER_EMAIL, userEmail);
                                  	intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                  	AuthorizeActivity.this.startActivity(intent);
@@ -191,7 +189,7 @@ public class AuthorizeActivity extends Activity {
          */
         @Override
         public int getViewTypeCount() {
-            return items != null ? items.size() : 0;
+            return items != null ? items.size() : 1;
         }
 
         @Override

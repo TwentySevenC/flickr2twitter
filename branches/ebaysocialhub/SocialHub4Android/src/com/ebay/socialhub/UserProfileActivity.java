@@ -244,7 +244,7 @@ public class UserProfileActivity extends Activity {
 		 */
 		@Override
 		public int getViewTypeCount() {
-			return items != null ? items.size() : 0;
+			return items != null ? items.size() : 1;
 		}
 
 		@Override
