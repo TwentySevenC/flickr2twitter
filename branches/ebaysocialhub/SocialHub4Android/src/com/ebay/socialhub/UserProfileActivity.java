@@ -6,6 +6,7 @@ package com.ebay.socialhub;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.TreeSet;
 
 import org.restlet.resource.ClientResource;
 
@@ -229,22 +230,13 @@ public class UserProfileActivity extends Activity {
 	}
 
 	private class ItemAdapter extends ArrayAdapter<UserServiceConfigModel> {
+
 		private List<UserServiceConfigModel> items;
 
 		public ItemAdapter(Context context, int textViewResourceId,
 				List<UserServiceConfigModel> objects) {
 			super(context, textViewResourceId, objects);
 			this.items = objects;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see android.widget.BaseAdapter#getViewTypeCount()
-		 */
-		@Override
-		public int getViewTypeCount() {
-			return items != null ? items.size() : 1;
 		}
 
 		@Override

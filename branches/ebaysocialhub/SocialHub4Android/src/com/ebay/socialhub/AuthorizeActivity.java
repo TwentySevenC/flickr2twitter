@@ -183,15 +183,6 @@ public class AuthorizeActivity extends Activity {
             this.items = objects;
         }
 
-        /*
-         * (non-Javadoc)
-         * @see android.widget.BaseAdapter#getViewTypeCount()
-         */
-        @Override
-        public int getViewTypeCount() {
-            return items != null ? items.size() : 1;
-        }
-
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View v = convertView;
