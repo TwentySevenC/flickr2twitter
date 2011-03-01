@@ -24,6 +24,11 @@
     			android:layout_height="wrap_content"
     			android:drawableLeft="@drawable/btn_search"
     		/>
+    		<Button android:id="@+id/cmd_save"
+    			android:layout_width="wrap_content" 
+    			android:layout_height="wrap_content"
+    			android:drawableLeft="@drawable/btn_save"
+    		/>
   		</TableRow>
     </TableLayout>
 <ListView

@@ -59,9 +59,9 @@ public class FindItemsDAO {
 		return findItemsByKeywords(false, null, encodeKeywords(keywords), entriesPerPage);
 	}
 	
-	public URL buildSearchItemsUrl(boolean isSandbox, String keywords) throws MalformedURLException {
+	public URL buildSearchItemsUrl(boolean isSandbox, String keywords, int entriesPerPage) throws MalformedURLException {
 		keywords = encodeKeywords(keywords);
-		Map<String, String> parameters = generateSearchParameters(isSandbox, keywords, null, 10);
+		Map<String, String> parameters = generateSearchParameters(isSandbox, keywords, null, entriesPerPage);
 		URL url = null;
 		if (isSandbox) {
 			url = URLHelper.buildUrl(
@@ -132,7 +132,7 @@ public class FindItemsDAO {
 			String sellerId,
 			String keywords,
 			int entriesPerPage) throws IOException, SAXException {
-		URL url = buildSearchItemsUrl(isSandbox, keywords);
+		URL url = buildSearchItemsUrl(isSandbox, keywords, entriesPerPage);
 
 		System.out.println(url);
 
