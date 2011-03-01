@@ -21,7 +21,7 @@ abstract public class SectionedAdapter extends BaseAdapter {
 			View convertView, ViewGroup parent);
 
 	private List<Section> sections = new ArrayList<Section>();
-	private static int TYPE_SECTION_HEADER = 1;
+	private static int TYPE_SECTION_HEADER = 0;
 
 	public SectionedAdapter() {
 		super();
