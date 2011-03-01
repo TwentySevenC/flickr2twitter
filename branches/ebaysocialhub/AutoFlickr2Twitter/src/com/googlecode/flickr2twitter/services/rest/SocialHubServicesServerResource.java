@@ -3,19 +3,17 @@
  */
 package com.googlecode.flickr2twitter.services.rest;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import org.restlet.resource.Post;
 import org.restlet.resource.ServerResource;
 
-import com.googlecode.flickr2twitter.core.ServiceFactory;
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
-import com.googlecode.flickr2twitter.datastore.model.GlobalTargetApplicationService;
+import com.googlecode.flickr2twitter.datastore.model.UserSourceServiceConfig;
 import com.googlecode.flickr2twitter.datastore.model.UserTargetServiceConfig;
+import com.googlecode.flickr2twitter.impl.ebay.FindItemsDAO;
+import com.googlecode.flickr2twitter.impl.ebay.SourceServiceProviderEbayKeywords;
 import com.googlecode.flickr2twitter.impl.twitter.AbstractServiceProviderTwitter;
-import com.googlecode.flickr2twitter.intf.ITargetServiceProvider;
 import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
 import com.googlecode.flickr2twitter.services.rest.models.ISociaHubServicesResource;
 
@@ -52,7 +50,8 @@ public class SocialHubServicesServerResource extends ServerResource implements I
 		log.info("user target service config data->" + data);
 		if (data != null) {
 			String[] values = StringUtils.split(data, "/");
-			if (values.length >= 6 && values[0].equalsIgnoreCase("twitter")) {
+			if (values.length >= 6 && values[0].equalsIgnoreCase(
+					AbstractServiceProviderTwitter.ID)) {
 				String providerId = values[0];
 				String userEmail = values[1];
 				String token = values[2];
@@ -70,6 +69,36 @@ public class SocialHubServicesServerResource extends ServerResource implements I
 				targetConfig.setServiceTokenSecret(tokenSecret);
 				log.info("Adding new user target config to database->" + targetConfig);
 				MyPersistenceManagerFactory.addTargetServiceApp(userEmail, targetConfig);
+			
+				
+			}
+		}
+	}
+	
+	@Post
+	public void addUserSourceServiceConfig(String data) {
+		log.info("user source service config data->" + data);
+		if (data != null) {
+			String[] values = StringUtils.split(data, "/");
+			if (values.length >= 3 && values[0].equalsIgnoreCase(
+					SourceServiceProviderEbayKeywords.ID)) {
+				String providerId = values[0];
+				String userEmail = values[1];
+				String keywords = values[2];
+				
+				
+				UserSourceServiceConfig sourceConfig = new UserSourceServiceConfig();
+				sourceConfig.setServiceProviderId(providerId);
+				sourceConfig.setUserEmail(userEmail);
+				sourceConfig.setServiceUserId(keywords);
+				String userSiteUrl = "http://shop.ebay.com/i.html?_trkparms=65%253A12%257C66%253A2%257C39%253A1%257C72%253A4831&rt=nc&_nkw=" +
+						new FindItemsDAO().encodeKeywords(keywords) + 
+						"&_ipg=&_sc=1&_sticky=1&_trksid=p3286.c0.m14&_sop=10&_sc=1";
+						
+				sourceConfig.setUserSiteUrl(userSiteUrl);
+				sourceConfig.setServiceUserName(keywords);
+				log.info("Adding new user target config to database->" + sourceConfig);
+				MyPersistenceManagerFactory.addSourceServiceApp(userEmail, sourceConfig);
 			
 				
 			}
