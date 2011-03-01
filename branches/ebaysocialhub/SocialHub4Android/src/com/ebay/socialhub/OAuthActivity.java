@@ -508,7 +508,7 @@ public class OAuthActivity extends Activity {
 				buf.append("/");
 				buf.append(targetServiceConfig.getServiceUserName());
 				
-				resource.addUserTargetServiceConfig(buf.toString());
+				resource.addUserServiceConfig(buf.toString());
 
 				//				resource.addTwitterTargetServiceConfig(targetServiceConfig.getUserEmail(), 
 				//						targetServiceConfig.getServiceAccessToken(), targetServiceConfig.getServiceTokenSecret());

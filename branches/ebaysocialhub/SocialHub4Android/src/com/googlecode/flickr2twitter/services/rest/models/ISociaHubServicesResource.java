@@ -13,17 +13,13 @@ import org.restlet.resource.Post;
 public interface ISociaHubServicesResource {
 	
 	/**
-	 * @param data The format is {providerId}/{userEmail}/{token}/{tokenSecret}/{verifier}
+	 * The format for twitter is {providerId}/{userEmail}/{token}/{tokenSecret}/{verifier}
+	 * The format for eBay keywords {providerId}/{userEmail}/{keywords}
+	 * 
+	 * @param data 
 	 */
 	@Post
-	public void addUserTargetServiceConfig(String data);
-	
-	/**
-	 * currently only support ebay keywords/seller
-	 * @param data The format is {providerId}/{userEmail}/{keywords}
-	 */
-	@Post
-	public void addUserSourceServiceConfig(String data);
+	public void addUserServiceConfig(String data);
 
 
 }

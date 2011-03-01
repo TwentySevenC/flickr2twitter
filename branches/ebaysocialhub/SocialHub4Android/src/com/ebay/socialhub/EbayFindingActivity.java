@@ -179,7 +179,7 @@ public class EbayFindingActivity extends Activity {
 				buf.append("/");
 				buf.append(keywords);
 				
-				resource.addUserSourceServiceConfig(buf.toString());
+				resource.addUserServiceConfig(buf.toString());
 			} catch (Exception e) {
 				Log.e(TAG, e.toString(), e);
 				return Boolean.FALSE;
