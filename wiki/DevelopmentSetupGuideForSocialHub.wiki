@@ -1,0 +1,12 @@
+#summary this guide walks you through how to setup the development environment for SocialHub.
+
+= Introduction =
+The SocialHub leverages the power of Google App Engine for providing the runtime environment, as well as an Android native application for configuration on the go. This guide would walk you through how to setup the development environment for SocialHub.
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
