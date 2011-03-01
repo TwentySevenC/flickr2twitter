@@ -3,7 +3,6 @@ package com.googlecode.flickr2twitter.utils;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.text.MessageFormat;
@@ -76,17 +75,24 @@ public class FacebookUtil {
 			log.info("Post message url is: " + fullURL);
 
 			URL url = new URL(fullURL);
+			log.info("URL Created");
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
 					url.openStream()));
+			log.info("Stream opened");
 			String line;
 
 			while ((line = reader.readLine()) != null) {
+				log.info("Read line...");
 				sb.append(line + "\r\n");
 			}
 			reader.close();
-			return sb.toString();
-		} catch (MalformedURLException e) {
-		} catch (IOException e) {
+			log.info("Facebook post message success: " + message);
+			String ret = sb.toString();
+			log.info(ret);
+			return ret;
+		} catch (Exception e) {
+			log.warning("Exception found during post facebook status: "
+					+ e.toString());
 		}
 
 		return null;
@@ -114,8 +120,9 @@ public class FacebookUtil {
 			}
 			reader.close();
 
-		} catch (MalformedURLException e) {
-		} catch (IOException e) {
+		} catch (Exception e) {
+			log.warning("Got exception while retriving token from fb:"
+					+ e.toString());
 		}
 
 		String tokenString = sb.toString();
