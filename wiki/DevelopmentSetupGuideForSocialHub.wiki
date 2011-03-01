@@ -7,7 +7,7 @@ The SocialHub leverages the power of Google App Engine for providing the runtime
 = Details =
 
 ==Download the Source Code==
-First of all, you would also need a SVN client for playing with the source code. You can try with [TortiseSVN|http://tortoisesvn.net/downloads.html] and [SubClipse|http://subclipse.tigris.org/download.html] for working with Eclipse.
+First of all, you would also need a SVN client for playing with the source code. You can try with [http://tortoisesvn.net/downloads.html TortiseSVN] and [http://subclipse.tigris.org/download.html SubClipse] for working with Eclipse.
 
 You can check this page for where download the source code: http://code.google.com/p/flickr2twitter/source/checkout. If you also intend to make contribution to our project, please do let me know(yuyang226@gmail.com) and I will consider if we can enroll you as a commiter for the project. 
 
