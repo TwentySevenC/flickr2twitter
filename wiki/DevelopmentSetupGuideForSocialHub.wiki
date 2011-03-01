@@ -4,7 +4,6 @@
 = Introduction =
 The SocialHub leverages the power of Google App Engine for providing the runtime environment, as well as an Android native application for configuration on the go. This guide would walk you through how to setup the development environment for SocialHub.
 
-
 = Details =
 
 ==Download the Source Code==
@@ -14,7 +13,7 @@ Then you can check out the code from https://flickr2twitter.googlecode.com/svn/b
 
 Please remember that checking in changes would require a generated password from http://code.google.com/hosting/settings. Your gmail password would not work in this case.
 
-We currently have two projects SocialHub(folder=AutoFlickr2Twitter) for the GAE runtime, and the SocialHub4Android android project. 
+We currently have two projects SocialHub(folder name is actually AutoFlickr2Twitter) for the GAE runtime, and the SocialHub4Android android project. 
 
 ==Setup Your Environment==
 For working with the SocialHub GAE version, please install the latest version of GAE from http://code.google.com/appengine/downloads.html#Google_App_Engine_SDK_for_Java. Make sure you install Java version and not the Python version.
