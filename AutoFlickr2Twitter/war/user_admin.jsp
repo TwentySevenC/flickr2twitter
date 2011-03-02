@@ -40,6 +40,7 @@
 				<tr>
 					<td bgcolor="#DAFF7F"/>
 					<td bgcolor="#DAFF7F"/>
+					<td bgcolor="#DAFF7F"/>
 				</tr>
 			<%
 				odd = false;
@@ -52,6 +53,9 @@
 					</td>
 					<td <%if(odd) {%>bgcolor="#DAFF7F"<%}else{%>bgcolor="#FFE97F"<%}%>>
 						<a href="srctgtmgr?at=<%=src.getServiceAccessToken()%>&type=0"><%=src.isEnabled()?"Disable":"Enable"%></a>
+					</td>
+					<td <%if(odd) {%>bgcolor="#DAFF7F"<%}else{%>bgcolor="#FFE97F"<%}%>>
+						<a href="delete?at=<%=src.getServiceAccessToken()%>&type=0">Delete</a>
 					</td>
 				</tr>
 			<%
@@ -70,6 +74,7 @@
 				<tr>
 					<td bgcolor="#DAFF7F"/>
 					<td bgcolor="#DAFF7F"/>
+					<td bgcolor="#DAFF7F"/>
 				</tr>
 			<%
 				odd = false;
@@ -82,6 +87,9 @@
 					</td>
 					<td <%if(odd) {%>bgcolor="#DAFF7F"<%}else{%>bgcolor="#FFE97F"<%}%>>
 						<a href="srctgtmgr?at=<%=tgt.getServiceAccessToken()%>&type=1"><%=tgt.isEnabled()?"Disable":"Enable"%></a>
+					</td>
+					<td <%if(odd) {%>bgcolor="#DAFF7F"<%}else{%>bgcolor="#FFE97F"<%}%>>
+						<a href="delete?at=<%=tgt.getServiceAccessToken()%>&type=1">Delete</a>
 					</td>
 				</tr>
 			<%

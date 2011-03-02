@@ -154,6 +154,70 @@ public final class MyPersistenceManagerFactory {
 		}
 	}
 
+	/**
+	 * @param user
+	 *            the login user
+	 * @param accessToken
+	 *            the access token of the service.
+	 * @param type
+	 *            0: Source service; 1: target service
+	 */
+	public static void deleteUserService(User user, String accessToken, int type)
+			throws Exception {
+		String userEmail = user.getUserId().getEmail();
+		log.info("Deleting user service of user " + userEmail);
+		PersistenceManagerFactory pmf = MyPersistenceManagerFactory
+				.getInstance();
+		PersistenceManager pm = pmf.getPersistenceManager();
+		try {
+			javax.jdo.Query query = null;
+			if (type == 0) {
+				log.info("Deleting source...");
+				query = pm.newQuery(UserSourceServiceConfig.class);
+			} else {
+				query = pm.newQuery(UserTargetServiceConfig.class);
+				log.info("Deleting target service...");
+			}
+			query.setFilter("serviceAccessToken == atoken && userEmail == userEmailStr");
+			query.declareParameters("String atoken, String userEmailStr");
+			List<UserServiceConfig> result = (List<UserServiceConfig>) query
+					.execute(accessToken, userEmail);
+
+			if (result.isEmpty()) {
+				throw new Exception("Can not find this service.");
+			}
+			log.info("Deleting target service...");
+			UserServiceConfig service = result.get(0);
+			pm.deletePersistent(service);
+			if (type == 0) {
+				List<UserSourceServiceConfig> sources = user
+						.getSourceServices();
+				UserSourceServiceConfig delSource = null;
+				for (UserSourceServiceConfig src : sources) {
+					if (src.getServiceAccessToken().equals(accessToken)) {
+						delSource = src;
+					}
+				}
+				if (delSource != null) {
+					sources.remove(delSource);
+				}
+			} else {
+				UserTargetServiceConfig delTarget = null;
+				List<UserTargetServiceConfig> targets = user
+						.getTargetServices();
+				for (UserTargetServiceConfig tgt : targets) {
+					if (tgt.getServiceAccessToken().equals(accessToken)) {
+						delTarget = tgt;
+					}
+				}
+				targets.remove(delTarget);
+			}
+
+		} finally {
+			pm.close();
+		}
+	}
+
 	public static UserSourceServiceConfig addSourceServiceApp(String userEmail,
 			UserSourceServiceConfig srcService) {
 		return addSourceServiceApp(getUser(userEmail), srcService);
