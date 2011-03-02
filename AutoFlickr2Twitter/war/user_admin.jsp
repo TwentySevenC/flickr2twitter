@@ -38,7 +38,7 @@
 				if ( sourceSvcs.size() == 0 ) {
 			%>
 				<tr>
-					<td bgcolor="#DAFF7F"/>
+					<td class="first" bgcolor="#DAFF7F"/>
 					<td bgcolor="#DAFF7F"/>
 					<td bgcolor="#DAFF7F"/>
 				</tr>
@@ -48,7 +48,7 @@
 				for( UserSourceServiceConfig src : sourceSvcs ) {
 			%>
 				<tr>
-					<td <%if(odd) {%>bgcolor="#DAFF7F"<%}else{%>bgcolor="#FFE97F"<%}%>>
+					<td class="first" <%if(odd) {%>bgcolor="#DAFF7F"<%}else{%>bgcolor="#FFE97F"<%}%>>
 						<a target="_new" href="<%=src.getUserSiteUrl()%>"><%=src.getServiceUserName()%>@<%=src.getServiceProviderId().toUpperCase()%></a>
 					</td>
 					<td <%if(odd) {%>bgcolor="#DAFF7F"<%}else{%>bgcolor="#FFE97F"<%}%>>
@@ -72,7 +72,7 @@
 				if ( targetSvcs.size() == 0 ) {
 			%>
 				<tr>
-					<td bgcolor="#DAFF7F"/>
+					<td class="first" bgcolor="#DAFF7F"/>
 					<td bgcolor="#DAFF7F"/>
 					<td bgcolor="#DAFF7F"/>
 				</tr>
@@ -82,7 +82,7 @@
 				for( UserTargetServiceConfig tgt : targetSvcs ) {
 			%>
 				<tr>
-					<td <%if(odd) {%>bgcolor="#DAFF7F"<%}else{%>bgcolor="#FFE97F"<%}%>>
+					<td class="first" <%if(odd) {%>bgcolor="#DAFF7F"<%}else{%>bgcolor="#FFE97F"<%}%>>
 						<a target="_new" href="<%=tgt.getUserSiteUrl()%>"><%=tgt.getServiceUserName()%>@<%=tgt.getServiceProviderId().toUpperCase()%></a>
 					</td>
 					<td <%if(odd) {%>bgcolor="#DAFF7F"<%}else{%>bgcolor="#FFE97F"<%}%>>
