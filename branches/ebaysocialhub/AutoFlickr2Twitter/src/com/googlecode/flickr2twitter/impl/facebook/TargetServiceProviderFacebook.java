@@ -98,8 +98,8 @@ public class TargetServiceProviderFacebook implements ITargetServiceProvider {
 		log.info("Writing data to database...");
 		UserTargetServiceConfig service = new UserTargetServiceConfig();
 		service.setServiceProviderId(ID);
-		service.setServiceAccessToken(code);
-		service.setServiceTokenSecret("NO SECRET FOR THIS AUTH.");
+		service.setServiceAccessToken(token);
+		service.setServiceTokenSecret(code);
 		service.setServiceUserId(userDetails[0]);
 		service.setServiceUserName(userDetails[1]);
 		service.setUserSiteUrl("http://www.facebook.com");
@@ -143,8 +143,7 @@ public class TargetServiceProviderFacebook implements ITargetServiceProvider {
 			return;
 		}
 
-		String facebookCode = targetConfig.getServiceAccessToken();
-		String token = FacebookUtil.gaeGetToken(facebookCode);
+		String token = targetConfig.getServiceAccessToken();
 		if (token == null || token.length() == 0) {
 			log.info("Failed To Retrieve Facebook Token!");
 		}
@@ -166,8 +165,8 @@ public class TargetServiceProviderFacebook implements ITargetServiceProvider {
 					message = "My new post: " + media.getTitle();
 					String url = media.getUrl();
 					message += " " + url;
-				}  else if (item instanceof IDescriptiveItem) {
-					IDescriptiveItem ditem = (IDescriptiveItem)item;
+				} else if (item instanceof IDescriptiveItem) {
+					IDescriptiveItem ditem = (IDescriptiveItem) item;
 					message = ditem.getTitle();
 					message += " " + ditem.getUrl();
 				} else if (item instanceof ILinkableItem) {

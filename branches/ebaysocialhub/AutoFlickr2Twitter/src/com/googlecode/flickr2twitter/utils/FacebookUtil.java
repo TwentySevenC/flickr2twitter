@@ -63,12 +63,11 @@ public class FacebookUtil {
 	public static String gaePostMessage(String message, String token)
 			throws HttpException, IOException {
 		// https://api.facebook.com/method/status.set?status=asdfasdfasdfasdfasdfasdfasdfasdf&access_token=199812620030608|2920b2600e1a0ac4f29428f4-100001872430428|tMMmzsAv_4noicwf6nQakNULrCQ&format=json
+		log.info("Trying to update user status using token: \"" + token
+				+ "\". Message is" + message);
 		StringBuffer sb = new StringBuffer();
 		message = URLEncoder.encode(message, "UTF-8");
 		try {
-			log.info("Trying to update user status using token: \"" + token
-					+ "\". Message is" + message);
-
 			String fullURL = MessageFormat.format(POST_STATUS_URL, message,
 					token);
 
