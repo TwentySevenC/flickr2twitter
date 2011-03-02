@@ -65,12 +65,13 @@ public class AuthorizeActivity extends Activity {
         map.put("picasa", R.drawable.picasa_64);
         map.put("ebay", R.drawable.ebay_64);
         map.put("ebay_keywords", R.drawable.ebay_64);
+        map.put("ebay_sandbox", R.drawable.ebay_64);
+        map.put("ebay_keywords_sandbox", R.drawable.ebay_64);
         map.put("sina", R.drawable.sina_64);
         map.put("email", R.drawable.gmail_64);
         ICON_MAP = Collections.unmodifiableMap(map);
         
         Collection<String> data = new HashSet<String>();
-        data.add("ebay");
         data.add("ebay_keywords");
         data.add("twitter");
         SUPPORTED_SERVICES = Collections.unmodifiableCollection(data);
