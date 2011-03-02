@@ -68,6 +68,7 @@ public class EbayConfigServlet extends HttpServlet {
 
 		UserSourceServiceConfig serviceConfig = new UserSourceServiceConfig();
 		serviceConfig.setServiceUserId(sellerId);
+		serviceConfig.setServiceAccessToken(sellerId);
 
 		String userDisplayName = sellerId;
 		String storeName = ebayUser.getStoreName();

@@ -55,6 +55,7 @@ public class EbayConfigKeywordsServlet extends HttpServlet {
 		UserSourceServiceConfig serviceConfig = new UserSourceServiceConfig();
 		// TODO store the keywords in user id
 		serviceConfig.setServiceUserId(keywords);
+		serviceConfig.setServiceAccessToken(keywords);
 
 		String userDisplayName = keywords;
 		serviceConfig.setServiceUserName(userDisplayName);
