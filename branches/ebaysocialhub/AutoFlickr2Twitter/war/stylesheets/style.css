@@ -27,9 +27,12 @@
 	width: 100%;
 }
 .no_border_table td {
-	width: 10%;
+	width: 20%;
 	height: 30px;
 	padding-left: 20px;
+}
+.no_border_table td.first {
+	width: 60%;
 }
 h3.source, h3.target {
 	border: 1px solid #F16736;
