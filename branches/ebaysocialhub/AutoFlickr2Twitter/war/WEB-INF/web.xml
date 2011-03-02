@@ -29,6 +29,15 @@
 		<servlet-name>sinacallback</servlet-name>
 		<url-pattern>/sinacallback</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>delete</servlet-name>
+		<servlet-class>com.googlecode.flickr2twitter.servlet.DeleteSourceTargetServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>delete</servlet-name>
+		<url-pattern>/delete</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<servlet-name>userOperation</servlet-name>
