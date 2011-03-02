@@ -28,6 +28,9 @@ public class EbayConfigKeywordsServlet extends HttpServlet {
 	public static final String PARA_KEYWORDS = "keywords";
 
 	public static final String PARA_SEARCH_KEYWORDS = "search_keywords";
+	public static final String PARA_SEARCH_PRICE_LOW = "search_price_low";
+	public static final String PARA_SEARCH_PRICE_HIGH = "search_price_high";
+	public static final String PARA_SEARCH_MAX_NOTIFICATION = "search_max_notification";
 
 	/*
 	 * (non-Javadoc)
@@ -50,7 +53,8 @@ public class EbayConfigKeywordsServlet extends HttpServlet {
 
 		String userEmail = user.getUserId().getEmail();
 		String keywords = req.getParameter(PARA_KEYWORDS);
-		boolean isSandbox = Boolean.valueOf(req.getParameter(EbayConfigServlet.PARA_SANDBOX));
+		boolean isSandbox = Boolean.valueOf(req
+				.getParameter(EbayConfigServlet.PARA_SANDBOX));
 
 		UserSourceServiceConfig serviceConfig = new UserSourceServiceConfig();
 		// TODO store the keywords in user id
@@ -59,24 +63,26 @@ public class EbayConfigKeywordsServlet extends HttpServlet {
 
 		String userDisplayName = keywords;
 		serviceConfig.setServiceUserName(userDisplayName);
-		serviceConfig.setServiceProviderId(isSandbox ? SourceServiceProviderEbayKeywordsSandbox.ID : SourceServiceProviderEbayKeywords.ID);
+		serviceConfig
+				.setServiceProviderId(isSandbox ? SourceServiceProviderEbayKeywordsSandbox.ID
+						: SourceServiceProviderEbayKeywords.ID);
 		serviceConfig.setUserEmail(userEmail);
-		//http://shop.ebay.com/i.html?_trkparms=65%253A12%257C66%253A2%257C39%253A1%257C72%253A4831&rt=nc&_nkw=nikon+d700&_sticky=1&_trksid=p3286.c0.m14&_sop=10&_sc=1
-		//http://shop.sandbox.ebay.com/i.html?_trkparms=65%253A1%257C66%253A2%257C39%253A1&rt=nc&_nkw=android+mini+collectible&_ipg=&_sc=1&_sticky=1&_trksid=p3286.c0.m14&_sop=10&_sc=1
-		/*URL url = new FindItemsDAO().buildSearchItemsUrl(false, keywords);
-		if (url != null) {
-			serviceConfig.setUserSiteUrl(url.toString());
-		}*/
-		
-		String userSiteUrl = isSandbox ? "http://shop.sandbox.ebay.com/i.html?_trkparms=65%253A1%257C66%253A2%257C39%253A1&rt=nc&_nkw=" +
-				new FindItemsDAO().encodeKeywords(keywords) + 
-				"&_ipg=&_sc=1&_sticky=1&_trksid=p3286.c0.m14&_sop=10&_sc=1"
-				: "http://shop.ebay.com/i.html?_trkparms=65%253A12%257C66%253A2%257C39%253A1%257C72%253A4831&rt=nc&_nkw=" +
-				new FindItemsDAO().encodeKeywords(keywords) + 
-				"&_ipg=&_sc=1&_sticky=1&_trksid=p3286.c0.m14&_sop=10&_sc=1";
-				
+		// http://shop.ebay.com/i.html?_trkparms=65%253A12%257C66%253A2%257C39%253A1%257C72%253A4831&rt=nc&_nkw=nikon+d700&_sticky=1&_trksid=p3286.c0.m14&_sop=10&_sc=1
+		// http://shop.sandbox.ebay.com/i.html?_trkparms=65%253A1%257C66%253A2%257C39%253A1&rt=nc&_nkw=android+mini+collectible&_ipg=&_sc=1&_sticky=1&_trksid=p3286.c0.m14&_sop=10&_sc=1
+		/*
+		 * URL url = new FindItemsDAO().buildSearchItemsUrl(false, keywords); if
+		 * (url != null) { serviceConfig.setUserSiteUrl(url.toString()); }
+		 */
+
+		String userSiteUrl = isSandbox ? "http://shop.sandbox.ebay.com/i.html?_trkparms=65%253A1%257C66%253A2%257C39%253A1&rt=nc&_nkw="
+				+ new FindItemsDAO().encodeKeywords(keywords)
+				+ "&_ipg=&_sc=1&_sticky=1&_trksid=p3286.c0.m14&_sop=10&_sc=1"
+				: "http://shop.ebay.com/i.html?_trkparms=65%253A12%257C66%253A2%257C39%253A1%257C72%253A4831&rt=nc&_nkw="
+						+ new FindItemsDAO().encodeKeywords(keywords)
+						+ "&_ipg=&_sc=1&_sticky=1&_trksid=p3286.c0.m14&_sop=10&_sc=1";
+
 		serviceConfig.setUserSiteUrl(userSiteUrl);
-		
+
 		MyPersistenceManagerFactory.addSourceServiceApp(userEmail,
 				serviceConfig);
 
