@@ -14,6 +14,7 @@ import org.json.JSONObject;
 
 import com.googlecode.flickr2twitter.core.GlobalDefaultConfiguration;
 import com.googlecode.flickr2twitter.impl.facebook.TargetServiceProviderFacebook;
+import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
 
 public class FacebookUtil {
 
@@ -124,7 +125,7 @@ public class FacebookUtil {
 					+ e.toString());
 		}
 
-		String tokenString = sb.toString();
+		String tokenString = StringUtils.trim(sb.toString());
 		log.info("Token String from facebook: " + tokenString);
 		String[] parameters = tokenString.split("&");
 		for (String paraPair : parameters) {
@@ -139,7 +140,7 @@ public class FacebookUtil {
 				value = paraPair.substring(index + 1);
 			}
 			log.info("Token Value is: " + value);
-			return value;
+			return StringUtils.trim(value.trim());
 		}
 
 		return null;
