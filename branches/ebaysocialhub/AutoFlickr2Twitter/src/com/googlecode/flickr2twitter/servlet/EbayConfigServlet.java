@@ -75,8 +75,8 @@ public class EbayConfigServlet extends HttpServlet {
 			userDisplayName += " (" + storeName + ")";
 		}
 		serviceConfig.setServiceUserName(userDisplayName);
-		serviceConfig.setServiceProviderId(isSandbox ? SourceServiceProviderEbay.ID 
-				: SourceServiceProviderEbaySandbox.ID);
+		serviceConfig.setServiceProviderId(isSandbox ? SourceServiceProviderEbaySandbox.ID 
+				: SourceServiceProviderEbay.ID);
 		serviceConfig.setUserEmail(userEmail);
 
 		if (ebayUser.getStoreURL() != null) {
