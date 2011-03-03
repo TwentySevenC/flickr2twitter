@@ -34,10 +34,10 @@
 					name="<%=EbayConfigKeywordsServlet.PARA_SEARCH_KEYWORDS%>" /></td>
 			</tr>
 			<tr>
-				<td class="td.first_ebay">Price (US $):</td>
-				<td><input type="text"
-					name="<%=EbayConfigKeywordsServlet.PARA_SEARCH_PRICE_LOW%>" /> to <input
-					type="text"
+				<td class="td.first_ebay">Price:</td>
+				<td>from $ <input type="text" size="8"
+					name="<%=EbayConfigKeywordsServlet.PARA_SEARCH_PRICE_LOW%>" /> to $ <input
+					type="text" size="8"
 					name="<%=EbayConfigKeywordsServlet.PARA_SEARCH_PRICE_HIGH%>" /></td>
 			</tr>
 			<tr>
@@ -80,9 +80,13 @@
 			%>
 			<tr>
 				<%
-					if (item.getGalleryURL() != null) {
+					String imgUrl = item.getGalleryURL();
+					if(isSandbox) {
+					    imgUrl = "/images/sample.png";
+					}
+					if (imgUrl != null) {
 				%>
-				<td><img src="<%=item.getGalleryURL()%>"
+				<td><img src="<%=imgUrl%>"
 					alt="<%=item.getTitle()%>" /></a></td>
 				<%
 					} else {
