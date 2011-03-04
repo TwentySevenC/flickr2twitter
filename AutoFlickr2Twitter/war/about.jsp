@@ -19,6 +19,8 @@
 			Please visit our <a href="http://code.google.com/p/flickr2twitter/">project site</a> and <a href="http://groups.google.com/group/flickr2twitter">project discussion group</a>.
 		</p>
 	</div>
+	
+	<iframe title="Social Hub on Youtube" width="640" height="510" src="http://www.youtube.com/embed/UnDkR3NhND4" frameborder="0" allowfullscreen></iframe>
 	<%@ include file="footer.jsp"%>
 </div>
 </body>
