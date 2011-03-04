@@ -19,6 +19,8 @@ public class EbayItem {
 	private String viewItemURL;
 	private Date startTime;
 	private Date endTime;
+	private Double currentPrice;
+	private Double buyItNowPrice;
 
 	public EbayItem(String sellerId) {
 		this.sellerId = sellerId;
@@ -131,6 +133,34 @@ public class EbayItem {
 		this.endTime = endTime;
 	}
 
+	/**
+	 * @return the currentPrice
+	 */
+	public Double getCurrentPrice() {
+		return currentPrice;
+	}
+
+	/**
+	 * @param currentPrice the currentPrice to set
+	 */
+	public void setCurrentPrice(Double currentPrice) {
+		this.currentPrice = currentPrice;
+	}
+
+	/**
+	 * @return the buyItNowPrice
+	 */
+	public Double getBuyItNowPrice() {
+		return buyItNowPrice;
+	}
+
+	/**
+	 * @param buyItNowPrice the buyItNowPrice to set
+	 */
+	public void setBuyItNowPrice(Double buyItNowPrice) {
+		this.buyItNowPrice = buyItNowPrice;
+	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
@@ -139,8 +169,11 @@ public class EbayItem {
 		return "EbayItem [sellerId=" + sellerId + ", itemId=" + itemId
 				+ ", title=" + title + ", description=" + description
 				+ ", galleryURL=" + galleryURL + ", viewItemURL=" + viewItemURL
-				+ ", startTime=" + startTime + ", endTime=" + endTime + "]";
+				+ ", startTime=" + startTime + ", endTime=" + endTime
+				+ ", currentPrice=" + currentPrice + ", buyItNowPrice="
+				+ buyItNowPrice + "]";
 	}
+
 
 
 
