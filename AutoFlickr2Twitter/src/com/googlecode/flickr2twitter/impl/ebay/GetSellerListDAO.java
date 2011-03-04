@@ -212,7 +212,7 @@ public class GetSellerListDAO {
 				String nodeValue = getNodeValue(firstLevelNode);
 				
 				if (nodeName != null) {
-					if ("ItemID".equals(nodeName)) {
+					if ("ItemID".equals(nodeName) && nodeValue != null) {
 						try {
 							item.setItemId(Long.parseLong(nodeValue));
 						} catch (NumberFormatException nfe) {
@@ -228,12 +228,48 @@ public class GetSellerListDAO {
 						generateItem(firstLevelNode.getChildNodes(), item);
 					} else if ("GalleryURL".equals(nodeName)) {
 						item.setGalleryURL(nodeValue);
+					} else if ("ListingDetails".equals(nodeName)) {
+						generateItem(firstLevelNode.getChildNodes(), item);
+					} else if ("ConvertedBuyItNowPrice".equals(nodeName) && nodeValue != null) {
+						try {
+							item.setBuyItNowPrice(Double.parseDouble(nodeValue));
+						} catch (NumberFormatException nfe) {
+
+						}
+					} else if ("StartTime".equals(nodeName) && nodeValue != null) {
+						item.setStartTime(toDate(nodeValue));
+					}  else if ("EndTime".equals(nodeName) && nodeValue != null) {
+						item.setEndTime(toDate(nodeValue));
+					} else if ("SellingStatus".equals(nodeName)) {
+						generateItem(firstLevelNode.getChildNodes(), item);
+					} else if ("ConvertedCurrentPrice".equals(nodeName) && nodeValue != null) {
+						try {
+							item.setCurrentPrice(Double.parseDouble(nodeValue));
+						} catch (NumberFormatException nfe) {
+
+						}
 					} 
 				}
 
 			}
 
 		}
+	}
+	
+	private Date toDate(String strDate) {
+		if (strDate == null) {
+			return null;
+		}
+		
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+		
+			return sdf.parse(strDate);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	private String getInputStream(InputStream is) throws IOException {
@@ -267,7 +303,7 @@ public class GetSellerListDAO {
 		GetSellerListDAO sessionDao = new GetSellerListDAO();
 		
 		System.out.println("*************** from product");
-		/*System.out.println(
+		System.out.println(
 				sessionDao.getSellerList(
 				false,
 				APP_ID,
@@ -276,7 +312,7 @@ public class GetSellerListDAO {
 				EFORCITY,
 				tenMinBeforecurrentTime.getTime(), 
 				currentTime.getTime(),
-				100));*/
+				10));
 		
 
 		System.out.println("*************** from sandBox");

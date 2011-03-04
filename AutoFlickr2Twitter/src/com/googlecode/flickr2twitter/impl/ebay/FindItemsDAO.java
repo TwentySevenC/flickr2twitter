@@ -204,7 +204,7 @@ public class FindItemsDAO {
 				String nodeValue = getNodeValue(firstLevelNode);
 				
 				if (nodeName != null) {
-					if ("itemId".equals(nodeName)) {
+					if ("itemId".equals(nodeName) && nodeValue != null) {
 						try {
 							item.setItemId(Long.parseLong(nodeValue));
 						} catch (NumberFormatException nfe) {
@@ -220,8 +220,22 @@ public class FindItemsDAO {
 						generateItem(firstLevelNode.getChildNodes(), item);
 					} else if ("startTime".equals(nodeName)) {
 						item.setStartTime(toDate(nodeValue));
-					}  else if ("endTime".equals(nodeName)) {
+					} else if ("endTime".equals(nodeName)) {
 						item.setEndTime(toDate(nodeValue));
+					} else if ("convertedBuyItNowPrice".equals(nodeName) && nodeValue != null) {
+						try {
+							item.setBuyItNowPrice(Double.parseDouble(nodeValue));
+						} catch (NumberFormatException nfe) {
+
+						}
+					} else if ("sellingStatus".equals(nodeName)) {
+						generateItem(firstLevelNode.getChildNodes(), item);
+					} else if ("convertedCurrentPrice".equals(nodeName) && nodeValue != null) {
+						try {
+							item.setCurrentPrice(Double.parseDouble(nodeValue));
+						} catch (NumberFormatException nfe) {
+
+						}
 					}
 				}
 
