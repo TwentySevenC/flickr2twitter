@@ -5,7 +5,10 @@ package com.googlecode.flickr2twitter.datastore;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -149,6 +152,29 @@ public final class MyPersistenceManagerFactory {
 				}
 			}
 
+		} finally {
+			pm.close();
+		}
+	}
+	
+	public static void updateUserLoginTime(String userEmail, Date loginTime) throws Exception {
+		PersistenceManagerFactory pmf = MyPersistenceManagerFactory
+				.getInstance();
+		PersistenceManager pm = pmf.getPersistenceManager();
+		try {
+			javax.jdo.Query query = null;
+				query = pm.newQuery(User.class);
+			query.setFilter("userId == email");
+			query.declareParameters("String email");
+			List<User> result = (List<User>) query
+					.execute(userEmail);
+
+			if (result.isEmpty()) {
+				throw new Exception("Can not find this user->" + userEmail);
+			}
+			User user = result.get(0);
+			user.setLastLoginTime(loginTime);
+			pm.makePersistent(user);
 		} finally {
 			pm.close();
 		}
@@ -381,6 +407,14 @@ public final class MyPersistenceManagerFactory {
 			if (data != null && data.isEmpty() == false) {
 				User u = (User) data.get(0);
 				log.log(Level.INFO, u.toString());
+				try {
+					updateUserLoginTime(u.getUserId().getEmail(), 
+							Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime());
+				} catch (Exception e) {
+					log.warning("Failed to update the user(" 
+							+ u.getUserId().getEmail() + 
+							")'s last login time=>" + e);
+				}
 				return u;
 			}
 		} catch (NoSuchAlgorithmException e) {
