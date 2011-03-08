@@ -5,6 +5,7 @@ package com.googlecode.flickr2twitter.impl.ebay;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -12,7 +13,7 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
@@ -48,21 +49,29 @@ public class FindItemsDAO {
 	
 	public List<EbayItem> findItemsByKeywordsFromSandbox(
 			String keywords,
+			String minPrice,
+			String maxPrice,
 			int entriesPerPage) throws IOException, SAXException {
 		
-		return findItemsByKeywords(true, null, encodeKeywords(keywords), entriesPerPage);
+		return findItemsByKeywords(true, null, encodeKeywords(keywords), minPrice, maxPrice, entriesPerPage);
 	}
 	
 	public List<EbayItem> findItemsByKeywordsFromProduction(
 			String keywords,
+			String minPrice,
+			String maxPrice,
 			int entriesPerPage) throws IOException, SAXException {
 		
-		return findItemsByKeywords(false, null, encodeKeywords(keywords), entriesPerPage);
+		return findItemsByKeywords(false, null, encodeKeywords(keywords), minPrice, maxPrice, entriesPerPage);
 	}
 	
-	public URL buildSearchItemsUrl(boolean isSandbox, String keywords) throws MalformedURLException {
+	public URL buildSearchItemsUrl(
+			boolean isSandbox, 
+			String keywords,
+			String minPrice,
+			String maxPrice) throws MalformedURLException {
 		keywords = encodeKeywords(keywords);
-		Map<String, String> parameters = generateSearchParameters(isSandbox, keywords, null, 10);
+		Map<String, String> parameters = generateSearchParameters(isSandbox, keywords, null, minPrice, maxPrice, 10);
 		URL url = null;
 		if (isSandbox) {
 			url = URLHelper.buildUrl(
@@ -96,9 +105,14 @@ public class FindItemsDAO {
 		return keywords;
 	}
 	
-	private Map<String, String> generateSearchParameters(boolean isSandbox, String keywords, 
-			String sellerId, int entriesPerPage) {
-		Map<String, String> parameters = new HashMap<String, String>();
+	private Map<String, String> generateSearchParameters(
+			boolean isSandbox, 
+			String keywords, 
+			String sellerId, 
+			String minPrice,
+			String maxPrice,
+			int entriesPerPage) {
+		Map<String, String> parameters = new LinkedHashMap<String, String>();
 		
 		if (isSandbox) {
 			parameters.put("SECURITY-APPNAME", APP_ID_SANDBOX);
@@ -117,9 +131,43 @@ public class FindItemsDAO {
 		parameters.put("paginationInput.entriesPerPage", String.valueOf(entriesPerPage));
 		parameters.put("keywords", keywords);
 		
+		int i=0;
+		
 		if (sellerId != null) {
-			parameters.put("itemFilter[0].name", "Seller");
-			parameters.put("itemFilter[0].value", sellerId);
+			parameters.put("itemFilter["+i +"].name", "Seller");
+			parameters.put("itemFilter["+i +"].value", sellerId);
+			i++;
+		}
+		
+		
+		Double minPrice2 = null;
+		try {
+			if (minPrice != null) {
+				minPrice2 = new Double(minPrice);
+			}
+		} catch (NumberFormatException nfe) {
+
+		}
+		
+		Double maxPrice2 = null;
+		try {
+			if (maxPrice != null) {
+				maxPrice2 = new Double(maxPrice);
+			}
+		} catch (NumberFormatException nfe) {
+
+		}
+		
+		if (minPrice2 != null) {
+			parameters.put("itemFilter["+i +"].name", "MinPrice");
+			parameters.put("itemFilter["+i +"].value", String.valueOf(minPrice2));
+			i++;
+		}
+		
+		if (maxPrice2 != null) {
+			parameters.put("itemFilter["+ i +"].name", "MaxPrice");
+			parameters.put("itemFilter["+ i +"].value", String.valueOf(maxPrice2));
+			i++;
 		}
 		
 		parameters.put("sortOrder", "StartTimeNewest");
@@ -132,8 +180,10 @@ public class FindItemsDAO {
 			boolean isSandbox,
 			String sellerId,
 			String keywords,
+			String minPrice,
+			String maxPrice,
 			int entriesPerPage) throws IOException, SAXException {
-		URL url = buildSearchItemsUrl(isSandbox, keywords);
+		URL url = buildSearchItemsUrl(isSandbox, keywords, minPrice, maxPrice);
 
 		System.out.println(url);
 
@@ -273,7 +323,8 @@ public class FindItemsDAO {
 	public static void main(String args[]) throws Exception {
 		FindItemsDAO ItemDAO = new FindItemsDAO();
 		//System.out.println(ItemDAO.findItemsByKeywords(false,"eforcity","iphone", 10));
-		System.out.println(ItemDAO.findItemsByKeywords(false,null,"nikon d80", 10));
+		System.out.println(ItemDAO.findItemsByKeywords(false,null,"nikon d80", "100.00111", "", 10));
+		
 	}
 
 }
