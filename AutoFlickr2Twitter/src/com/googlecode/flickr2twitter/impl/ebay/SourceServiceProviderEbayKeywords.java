@@ -5,6 +5,7 @@ package com.googlecode.flickr2twitter.impl.ebay;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -60,14 +61,18 @@ public class SourceServiceProviderEbayKeywords extends
 				SourceServiceProviderFlickr.TIMEZONE_GMT));
 		now.setTimeInMillis(currentTime);
 		log.info("Converted current time: " + now.getTime());
-			
-		Calendar past = Calendar.getInstance(TimeZone.getTimeZone(SourceServiceProviderFlickr.TIMEZONE_GMT));
-		long newTime = now.getTime().getTime() - globalConfig.getMinUploadTime();
-		past.setTimeInMillis(newTime);
+		
+		Date pastTime = sourceService.getLastUpdateTime();
+		if (pastTime == null) {
+			Calendar past = Calendar.getInstance(TimeZone.getTimeZone(SourceServiceProviderFlickr.TIMEZONE_GMT));
+			long newTime = now.getTime().getTime() - globalConfig.getMinUploadTime();
+			past.setTimeInMillis(newTime);
+			pastTime = past.getTime();
+		}
 		
 		String env = isSandbox() ? "sandbox " : "";
 		log.info("Fetching latest listing for eBay keywords " + env + "->" + keywords 
-				+ " from " + past.getTime() + " to " + now.getTime());
+				+ " from " + pastTime + " to " + now.getTime());
 		List<EbayItem> ebayItems = isSandbox() ? dao.findItemsByKeywordsFromSandbox(keywords, 1) 
 				: dao.findItemsByKeywordsFromProduction(keywords, 1);
 		
@@ -76,11 +81,25 @@ public class SourceServiceProviderEbayKeywords extends
 		if (ebayItems.isEmpty() == false) {
 			EbayItem ebayItem = ebayItems.get(0);
 			log.info("The most recent listed ebay item->" + ebayItem);
-			if (ebayItem.getStartTime().after(past.getTime())) {
+			if (ebayItem.getStartTime().after(pastTime)) {
 				items.add(new EbayKeywordsItem(sourceService.getUserSiteUrl(), keywords, 
 					"Found new listing for keywords: " + keywords, null));
 			}
 		}
+		
+		EbayItem item = new EbayItem("yayu");
+		item.setStartTime(Calendar.getInstance(TimeZone.getTimeZone(SourceServiceProviderFlickr.TIMEZONE_GMT)).getTime());
+		item.setDescription("dddd");
+		item.setTitle("adsdf");
+		item.setViewItemURL("http://www.ebay.com");
+		items.add(new EbayItemAdapter(item));
+		
+		item = new EbayItem("yayu22");
+		item.setStartTime(new Date(111111L));
+		item.setDescription("ddsdfsdfdd");
+		item.setTitle("sdfsdfsdf");
+		item.setViewItemURL("http://www.ebay.com");
+		items.add(new EbayItemAdapter(item));
 		return items;
 	}
 

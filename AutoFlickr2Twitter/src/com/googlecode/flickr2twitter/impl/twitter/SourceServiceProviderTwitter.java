@@ -5,6 +5,7 @@ package com.googlecode.flickr2twitter.impl.twitter;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.TimeZone;
@@ -71,23 +72,27 @@ implements ISourceServiceProvider<IItem>, IAdminServiceProvider, IServiceAuthori
 				globalSvcConfig.getSourceAppSecret(), accessToken);
 		Twitter twitter = new TwitterFactory().getInstance(auth);
 		
-		Calendar cstTime = Calendar.getInstance(TimeZone.getTimeZone(ServiceRunner.TIMEZONE_UTC));
-		cstTime.setTimeInMillis(currentTime);
-		log.info("Converted current time: " + cstTime.getTime());
-		Calendar past = Calendar.getInstance(TimeZone.getTimeZone(ServiceRunner.TIMEZONE_UTC));
-		long newTime = cstTime.getTime().getTime() - globalConfig.getMinUploadTime();
-		past.setTimeInMillis(newTime);
+		Date pastTime = sourceService.getLastUpdateTime();
+		if (pastTime == null) {
+			Calendar cstTime = Calendar.getInstance(TimeZone.getTimeZone(ServiceRunner.TIMEZONE_UTC));
+			cstTime.setTimeInMillis(currentTime);
+			log.info("Converted current time: " + cstTime.getTime());
+			Calendar past = Calendar.getInstance(TimeZone.getTimeZone(ServiceRunner.TIMEZONE_UTC));
+			long newTime = cstTime.getTime().getTime() - globalConfig.getMinUploadTime();
+			past.setTimeInMillis(newTime);
+			pastTime = past.getTime();
+		}
 		
 		ResponseList<Status> statuses = twitter.getUserTimeline();
 		log.info("Trying to find latest tweets from user " + sourceService.getServiceUserName()
-				+ " after " + past.getTime().toString() + " from "
+				+ " after " + pastTime.toString() + " from "
 				+ statuses.size() + " tweets");
 		
 		for (Status status : statuses) {
 			TwitterItem item = new TwitterItem(status);
 			log.fine("processing tweet: " + item.getTitle()
 					+ ", date uploaded: " + status.getCreatedAt());
-			if (status.getCreatedAt().after(past.getTime())) {
+			if (status.getCreatedAt().after(pastTime)) {
 				log.info(item.getTitle() 
 						+ ", date uploaded: " + status.getCreatedAt()
 						+ ", GEO: " + item.getGeoData());

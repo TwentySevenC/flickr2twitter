@@ -5,7 +5,14 @@ package com.googlecode.flickr2twitter.servlet;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -98,10 +105,32 @@ public final class ServiceWorkerServlet extends HttpServlet {
 			} else {
 				try {
 					IItemList<IItem> items = new ItemList(globalSvcConfig.getAppName());
-					items.setItems(sourceProvider.getLatestItems(globalConfig, globalSvcConfig, source, currentTime));
-					itemLists.add(items);
-					if (items.getItems().isEmpty() == false)
+					List<IItem> unsortedItems = sourceProvider.getLatestItems(globalConfig, globalSvcConfig, source, currentTime);
+					
+					
+					if (unsortedItems.isEmpty() == false) {
 						isEmpty = false;
+						Collections.sort(unsortedItems, new Comparator<IItem>() {
+
+							@Override
+							public int compare(IItem o1, IItem o2) {
+								if (o1.getDatePosted() != null && o2.getDatePosted() != null) {
+									return o1.getDatePosted().compareTo(o2.getDatePosted());
+								}
+								return 0;
+							}
+						});
+						IItem mostRecentItem = unsortedItems.get(unsortedItems.size() - 1);
+						Date lastItemTime = mostRecentItem.getDatePosted() != null ? mostRecentItem.getDatePosted() : new Date(currentTime);
+						try {
+							MyPersistenceManagerFactory.updateLastSourceTime(source, lastItemTime);
+						} catch (Exception e) {
+							log.warning("Failed to update last item time->" + e);
+						}
+					}
+					
+					items.setItems(unsortedItems);
+					itemLists.add(items);
 				} catch (Exception e) {
 					log.throwing(ServiceRunner.class.getName(), "", e);
 				}

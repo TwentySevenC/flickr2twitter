@@ -11,8 +11,6 @@ import java.util.Date;
  */
 public interface IMedia extends ILinkableItem {
 	
-	public void setDatePosted(Date datePosted);
-	public Date getDatePosted();
 	
 	public void setDateTaken(Date dateTaken);
 	public Date getDateTaken();

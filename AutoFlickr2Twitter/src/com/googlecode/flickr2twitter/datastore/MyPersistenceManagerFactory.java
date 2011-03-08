@@ -20,6 +20,7 @@ import javax.jdo.Query;
 import com.google.appengine.api.datastore.Email;
 import com.google.appengine.api.datastore.Key;
 import com.googlecode.flickr2twitter.core.GlobalDefaultConfiguration;
+import com.googlecode.flickr2twitter.core.ServiceRunner;
 import com.googlecode.flickr2twitter.datastore.model.GlobalServiceConfiguration;
 import com.googlecode.flickr2twitter.datastore.model.GlobalSourceApplicationService;
 import com.googlecode.flickr2twitter.datastore.model.GlobalTargetApplicationService;
@@ -175,6 +176,31 @@ public final class MyPersistenceManagerFactory {
 			User user = result.get(0);
 			user.setLastLoginTime(loginTime);
 			pm.makePersistent(user);
+		} finally {
+			pm.close();
+		}
+	}
+	
+	public static void updateLastSourceTime(UserSourceServiceConfig userConfig, Date lastUpdateTime) throws Exception {
+		PersistenceManagerFactory pmf = MyPersistenceManagerFactory
+		.getInstance();
+		PersistenceManager pm = pmf.getPersistenceManager();
+		try {
+			javax.jdo.Query query = null;
+			query = pm.newQuery(UserSourceServiceConfig.class);
+			query.setFilter("serviceAccessToken == atoken && userEmail == userEmailStr");
+			query.declareParameters("String atoken, String userEmailStr");
+			List<UserSourceServiceConfig> result = (List<UserSourceServiceConfig>) query
+			.execute(userConfig.getServiceAccessToken(), userConfig.getUserEmail());
+
+			if (result.isEmpty()) {
+				throw new Exception("Can not find this user source config->" + userConfig.getUserEmail());
+			}
+			UserSourceServiceConfig srcConfig = result.get(0);
+			Calendar past = Calendar.getInstance(TimeZone.getTimeZone(ServiceRunner.TIMEZONE_UTC));
+			past.setTimeInMillis(lastUpdateTime.getTime());
+			srcConfig.setLastUpdateTime(past.getTime());
+			pm.makePersistent(srcConfig);
 		} finally {
 			pm.close();
 		}
@@ -409,7 +435,7 @@ public final class MyPersistenceManagerFactory {
 				log.log(Level.INFO, u.toString());
 				try {
 					updateUserLoginTime(u.getUserId().getEmail(), 
-							Calendar.getInstance(TimeZone.getTimeZone("UTC")).getTime());
+							Calendar.getInstance(TimeZone.getTimeZone(ServiceRunner.TIMEZONE_UTC)).getTime());
 				} catch (Exception e) {
 					log.warning("Failed to update the user(" 
 							+ u.getUserId().getEmail() + 

@@ -3,6 +3,8 @@
  */
 package com.googlecode.flickr2twitter.impl.ebay;
 
+import java.util.Date;
+
 import com.googlecode.flickr2twitter.model.IDescriptiveItem;
 import com.googlecode.flickr2twitter.model.IItem;
 import com.googlecode.flickr2twitter.model.ILinkableItem;
@@ -16,6 +18,7 @@ public class EbayKeywordsItem implements IItem, ILinkableItem, IDescriptiveItem 
 	private String id;
 	private String title;
 	private String description;
+	private Date datetime;
 	
 	public EbayKeywordsItem() {
 		super();
@@ -115,6 +118,16 @@ public class EbayKeywordsItem implements IItem, ILinkableItem, IDescriptiveItem 
 	@Override
 	public String getSelfDescription() {
 		return title;
+	}
+
+	@Override
+	public void setDatePosted(Date datePosted) {
+		this.datetime = datePosted;
+	}
+
+	@Override
+	public Date getDatePosted() {
+		return datetime;
 	}
 
 	

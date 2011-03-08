@@ -6,6 +6,7 @@ package com.googlecode.flickr2twitter.impl.picasa;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,13 +74,17 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 		webService.setAuthSubToken(sessionToken, null);
 		URL feedUrl = new URL(URL_ACTIVITIES);
 
-		Calendar past = Calendar.getInstance(TimeZone.getTimeZone(ServiceRunner.TIMEZONE_UTC));
-		long newTime = currentTime - globalConfig.getMinUploadTime();
-		past.setTimeInMillis(newTime);
+		Date pastTime = sourceService.getLastUpdateTime();
+		if (pastTime == null) {
+			Calendar past = Calendar.getInstance(TimeZone.getTimeZone(ServiceRunner.TIMEZONE_UTC));
+			long newTime = currentTime - globalConfig.getMinUploadTime();
+			past.setTimeInMillis(newTime);
+			pastTime = past.getTime();
+		}
 
 		AlbumFeed feed = webService.getFeed(feedUrl, AlbumFeed.class);
 		log.info("Trying to find photos uploaded for user " + sourceService.getServiceUserId()
-				+ " after " + past.getTime().toString() + " from "
+				+ " after " + pastTime.toString() + " from "
 				+ feed.getPhotoEntries().size() + " new photos");
 		List<IPhoto> photos = new ArrayList<IPhoto>();
 		
@@ -88,7 +93,7 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 			log.fine("processing photo: " + photo.getTitle().getPlainText()
 					+ ", date uploaded: " + pPhoto.getDatePosted());
 			//TODO check whether the photo is private
-			if (pPhoto.getDatePosted().after(past.getTime())) {
+			if (pPhoto.getDatePosted().after(pastTime)) {
 				
 					log.info(photo.getTitle() + ", URL: " + pPhoto.getUrl()
 							+ ", date uploaded: " + pPhoto.getDatePosted()

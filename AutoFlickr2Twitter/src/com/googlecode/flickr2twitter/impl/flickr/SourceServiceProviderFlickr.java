@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -96,21 +97,25 @@ public class SourceServiceProviderFlickr implements
 			extras.add(Extras.TAGS);
 		}
 		
-		Calendar cstTime = Calendar.getInstance(TimeZone.getTimeZone(TIMEZONE_GMT));
-		cstTime.setTimeInMillis(currentTime);
-		log.info("Converted current time: " + cstTime.getTime());
+		Date pastTime = sourceService.getLastUpdateTime();
+		if (pastTime == null) {
+			Calendar cstTime = Calendar.getInstance(TimeZone.getTimeZone(TIMEZONE_GMT));
+			cstTime.setTimeInMillis(currentTime);
+			log.info("Converted current time: " + cstTime.getTime());
+
+			//		Calendar past = getFromTime(globalConfig, currentTime);
+
+			Calendar past = Calendar.getInstance(TimeZone.getTimeZone(TIMEZONE_GMT));
+			long newTime = cstTime.getTime().getTime() - interval;
+			past.setTimeInMillis(newTime);
+			pastTime = past.getTime();
+		}
 		
-//		Calendar past = getFromTime(globalConfig, currentTime);
-			
-		Calendar past = Calendar.getInstance(TimeZone.getTimeZone(TIMEZONE_GMT));
-		long newTime = cstTime.getTime().getTime() - interval;
-		past.setTimeInMillis(newTime);
-		
-		PhotoList list = photosFace.recentlyUpdated(past.getTime(), extras, 100,
+		PhotoList list = photosFace.recentlyUpdated(pastTime, extras, 100,
 				1);
 		
 		log.info("Trying to find photos uploaded for user " + userId
-				+ " after " + past.getTime().toString() + " from "
+				+ " after " + pastTime.toString() + " from "
 				+ list.getTotal() + " new photos");
 		for (Object obj : list) {
 			if (obj instanceof Photo) {
@@ -118,7 +123,7 @@ public class SourceServiceProviderFlickr implements
 				
 				log.info("processing photo: " + photo.getTitle()
 						+ ", date uploaded: " + photo.getDatePosted());
-				if (photo.isPublicFlag() && photo.getDatePosted().after(past.getTime())) {
+				if (photo.isPublicFlag() && photo.getDatePosted().after(pastTime)) {
 					if (!filterTags.isEmpty() && containsTags(filterTags, photo.getTags()) == false) {
 						log.warning("Photo does not contains the required tags, contained tags are: " 
 								+ photo.getTags());

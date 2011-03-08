@@ -5,6 +5,7 @@ package com.googlecode.flickr2twitter.impl.ebay;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.logging.Logger;
@@ -73,16 +74,20 @@ public class SourceServiceProviderEbay extends BaseSourceProvider<IItem>implemen
 				SourceServiceProviderFlickr.TIMEZONE_GMT));
 		now.setTimeInMillis(currentTime);
 		log.info("Converted current time: " + now.getTime());
-			
-		Calendar past = Calendar.getInstance(TimeZone.getTimeZone(SourceServiceProviderFlickr.TIMEZONE_GMT));
-		long newTime = now.getTime().getTime() - globalConfig.getMinUploadTime();
-		past.setTimeInMillis(newTime);
+		
+		Date pastTime = sourceService.getLastUpdateTime();
+		if (pastTime == null) {
+			Calendar past = Calendar.getInstance(TimeZone.getTimeZone(SourceServiceProviderFlickr.TIMEZONE_GMT));
+			long newTime = now.getTime().getTime() - globalConfig.getMinUploadTime();
+			past.setTimeInMillis(newTime);
+			pastTime = past.getTime();
+		}
 		
 		String env = isSandbox() ? "sandbox " : "";
 		log.info("Fetching latest listing for eBay " + env + "user->" + sellerId 
-				+ " from " + past.getTime() + " to " + now.getTime());
-		List<EbayItem> ebayItems = isSandbox() ? dao.getSellerListFromSandBox(sellerId, past.getTime(), now.getTime())
-				: dao.getSellerListFromProduction(sellerId, past.getTime(), now.getTime());
+				+ " from " + pastTime + " to " + now.getTime());
+		List<EbayItem> ebayItems = isSandbox() ? dao.getSellerListFromSandBox(sellerId, pastTime, now.getTime())
+				: dao.getSellerListFromProduction(sellerId, pastTime, now.getTime());
 		
 		log.info("found " + ebayItems.size() + " items updated recently");
 		
