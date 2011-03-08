@@ -20,6 +20,9 @@
 				boolean isAdmin = MyPersistenceManagerFactory.Permission.ADMIN.name().equals(user.getPermission());
 		%>
 		<h1>Authorize/Configure Source and Target Accounts</h1>
+		<p>
+			Click icons below to allow us to access your data in different sites. You're supposed to authorize at least one source account and one target account.  
+		</p>
 		<hr/>
 		<div id="middle">
 			<h3 class="source">Source</h3>

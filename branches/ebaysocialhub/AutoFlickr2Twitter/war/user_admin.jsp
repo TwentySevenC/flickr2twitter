@@ -28,6 +28,9 @@
 	%>
 	<div id="content">
 		<h1>Manage Accounts</h1>
+		<p>
+			With all authorized accounts listed here, you can either disable/enable them or delete the accounts permanently.
+		</p>
 		<hr/>
 		<div id="middle">
 			<h3 class="source">Source</h3>
