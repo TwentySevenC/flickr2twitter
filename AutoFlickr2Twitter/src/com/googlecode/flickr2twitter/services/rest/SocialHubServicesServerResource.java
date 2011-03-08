@@ -71,7 +71,7 @@ public class SocialHubServicesServerResource extends ServerResource implements I
 					sourceConfig.setServiceAccessToken(keywords);
 					sourceConfig.setServiceUserId(keywords);
 					String userSiteUrl = "http://shop.ebay.com/i.html?_trkparms=65%253A12%257C66%253A2%257C39%253A1%257C72%253A4831&rt=nc&_nkw=" +
-							new FindItemsDAO().encodeKeywords(keywords) + 
+							new FindItemsDAO().urlEncode(keywords) + 
 							"&_ipg=&_sc=1&_sticky=1&_trksid=p3286.c0.m14&_sop=10&_sc=1";
 							
 					sourceConfig.setUserSiteUrl(userSiteUrl);

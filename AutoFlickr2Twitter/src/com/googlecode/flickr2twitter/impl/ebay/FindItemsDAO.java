@@ -118,18 +118,15 @@ public class FindItemsDAO {
 		Map<String, String> parameters = new LinkedHashMap<String, String>();
 		
 		if (isSandbox) {
-			parameters.put("SECURITY-APPNAME", APP_ID_SANDBOX);
+			parameters.put(urlEncode("SECURITY-APPNAME"), APP_ID_SANDBOX);
 		} else {
-			parameters.put("SECURITY-APPNAME", APP_ID_PROD);
+			parameters.put(urlEncode("SECURITY-APPNAME"), APP_ID_PROD);
 		}
 		
-		parameters.put("OPERATION-NAME", "findItemsByKeywords");
-		parameters.put("SERVICE-VERSION", "1.9.0");
-		parameters.put("RESPONSE-DATA-FORMAT", "XML");
-		parameters.put("REST-PAYLOAD", "");
-		parameters.put("affiliate.networkId", "9");
-		parameters.put("affiliate.trackingId", "1234567890");
-		parameters.put("affiliate.customId", "k-man");
+		parameters.put(urlEncode("OPERATION-NAME"), "findItemsByKeywords");
+		parameters.put(urlEncode("SERVICE-VERSION"), "1.9.0");
+		parameters.put(urlEncode("RESPONSE-DATA-FORMAT"), "XML");
+		parameters.put(urlEncode("REST-PAYLOAD"), "");
 		
 		parameters.put("paginationInput.entriesPerPage", String.valueOf(entriesPerPage));
 		parameters.put("keywords", urlEncode(keywords));
@@ -137,8 +134,8 @@ public class FindItemsDAO {
 		int i=0;
 		
 		if (sellerId != null) {
-			parameters.put("itemFilter["+i +"].name", "Seller");
-			parameters.put("itemFilter["+i +"].value", urlEncode(sellerId));
+			parameters.put(urlEncode("itemFilter["+i +"].name"), "Seller");
+			parameters.put(urlEncode("itemFilter["+i +"].value"), urlEncode(sellerId));
 			i++;
 		}
 		
@@ -162,14 +159,14 @@ public class FindItemsDAO {
 		}
 		
 		if (minPrice2 != null) {
-			parameters.put("itemFilter["+i +"].name", "MinPrice");
-			parameters.put("itemFilter["+i +"].value", String.valueOf(minPrice2));
+			parameters.put(urlEncode("itemFilter["+i +"].name"), "MinPrice");
+			parameters.put(urlEncode("itemFilter["+i +"].value"), urlEncode(String.valueOf(minPrice2)));
 			i++;
 		}
 		
 		if (maxPrice2 != null) {
-			parameters.put("itemFilter["+ i +"].name", "MaxPrice");
-			parameters.put("itemFilter["+ i +"].value", String.valueOf(maxPrice2));
+			parameters.put(urlEncode("itemFilter["+ i +"].name"), "MaxPrice");
+			parameters.put(urlEncode("itemFilter["+ i +"].value"), urlEncode(String.valueOf(maxPrice2)));
 			i++;
 		}
 		
@@ -208,6 +205,8 @@ public class FindItemsDAO {
 			document = builder.parse(in);
 
 		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			if (in != null) {

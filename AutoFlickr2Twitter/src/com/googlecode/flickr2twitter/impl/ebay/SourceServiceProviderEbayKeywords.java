@@ -26,6 +26,8 @@ public class SourceServiceProviderEbayKeywords extends
 	public static final String ID = "ebay_keywords";
 	public static final String DISPLAY_NAME = "eBay Keywords";
 	public static final String PAGE_NAME_CONFIG = "ebay_config_keywords.jsp";
+	public static final String KEY_MIN_PRICE = "minPrice";
+	public static final String KEY_MAX_PRICE = "maxPrice";
 	private static final Logger log = Logger.getLogger(SourceServiceProviderEbayKeywords.class);
 	
 	private FindItemsDAO dao = new FindItemsDAO();
@@ -73,8 +75,11 @@ public class SourceServiceProviderEbayKeywords extends
 		String env = isSandbox() ? "sandbox " : "";
 		log.info("Fetching latest listing for eBay keywords " + env + "->" + keywords 
 				+ " from " + pastTime + " to " + now.getTime());
-		List<EbayItem> ebayItems = isSandbox() ? dao.findItemsByKeywordsFromSandbox(keywords, 1) 
-				: dao.findItemsByKeywordsFromProduction(keywords, 1);
+		String minPrice = sourceService.getAdditionalParameters().get(KEY_MIN_PRICE);
+		String maxPrice = sourceService.getAdditionalParameters().get(KEY_MAX_PRICE);
+		List<EbayItem> ebayItems = isSandbox() ? dao.findItemsByKeywordsFromSandbox(keywords, 
+				minPrice, maxPrice, 1) 
+				: dao.findItemsByKeywordsFromProduction(keywords, minPrice, maxPrice, 1);
 		
 		log.info("found " + ebayItems.size() + " items being listed recently");
 		List<IItem> items = new ArrayList<IItem>(1);

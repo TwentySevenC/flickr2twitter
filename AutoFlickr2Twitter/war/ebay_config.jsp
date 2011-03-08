@@ -29,7 +29,7 @@
 					<tr>
 						<td class="first_ebay"">Seller ID:</td>
 						<td><input type="text"
-							name="<%=EbayConfigServlet.PARA_SEARCH_SELLER_ID%>" /></td>
+							name="<%=EbayConfigServlet.PARA_SEARCH_SELLER_ID%>" <% if (hasUserID) {%> value="<%=ebayUserID %>"<%} %>/></td>
 					</tr>
 					<tr>
 						<td/>

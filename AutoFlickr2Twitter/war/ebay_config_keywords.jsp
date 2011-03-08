@@ -18,6 +18,12 @@
 	<%
 		String keywords = request
 				.getParameter(EbayConfigKeywordsServlet.PARA_SEARCH_KEYWORDS);
+		String minPrice = request
+		.getParameter(EbayConfigKeywordsServlet.PARA_SEARCH_PRICE_LOW);
+		minPrice = minPrice != null ? minPrice : "";
+		String maxPrice = request
+		.getParameter(EbayConfigKeywordsServlet.PARA_SEARCH_PRICE_HIGH);
+		maxPrice = maxPrice != null ? maxPrice : "";
 		boolean hasKeywords = (keywords != null) && (keywords.length() > 0);
 		boolean isSandbox = Boolean.valueOf(request
 				.getParameter(EbayConfigServlet.PARA_SANDBOX));
@@ -31,14 +37,14 @@
 			<tr>
 				<td class="first_ebay">Keywords:</td>
 				<td><input type="text"
-					name="<%=EbayConfigKeywordsServlet.PARA_SEARCH_KEYWORDS%>" /></td>
+					name="<%=EbayConfigKeywordsServlet.PARA_SEARCH_KEYWORDS%>" <% if (hasKeywords) {%> value="<%=keywords %>"<%} %>/></td>
 			</tr>
 			<tr>
 				<td class="td.first_ebay">Price:</td>
 				<td>from $ <input type="text" size="8"
-					name="<%=EbayConfigKeywordsServlet.PARA_SEARCH_PRICE_LOW%>" /> to $ <input
+					name="<%=EbayConfigKeywordsServlet.PARA_SEARCH_PRICE_LOW%>" value="<%=minPrice %>"/> to $ <input
 					type="text" size="8"
-					name="<%=EbayConfigKeywordsServlet.PARA_SEARCH_PRICE_HIGH%>" /></td>
+					name="<%=EbayConfigKeywordsServlet.PARA_SEARCH_PRICE_HIGH%>" value="<%=maxPrice %>"/></td>
 			</tr>
 			<tr>
 				<td class="first_ebay">Max Notification:</td>
@@ -57,9 +63,9 @@
 			if (hasKeywords) {
 				FindItemsDAO findItemsDao = new FindItemsDAO();
 				List<EbayItem> items = isSandbox ? findItemsDao
-						.findItemsByKeywordsFromSandbox(keywords, 10)
+						.findItemsByKeywordsFromSandbox(keywords, minPrice, maxPrice, 10)
 						: findItemsDao.findItemsByKeywordsFromProduction(
-								keywords, 10);
+								keywords, minPrice, maxPrice, 10);
 				// show user details if found a user
 				if (items != null && items.size() >0 ) {
 		%>
