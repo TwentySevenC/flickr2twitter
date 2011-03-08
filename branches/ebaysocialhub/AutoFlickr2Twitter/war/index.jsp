@@ -63,8 +63,11 @@
 		} else { //user already signed in.
 		%>
 		<h1>Welcome to SocialHub, <%=user.getScreenName()%>.</h1>
+		<% if (user.getLastLoginTime() != null) { %>
+		<p>Last successful login time: <%=String.valueOf(user.getLastLoginTime())%>.</p>
+		<% } %>
 		<hr/>
-		<p>Now you can authorize your source and target account if you have not done so, or you can manage your accounts.</p>
+		<p>Now you can <a href="/authorize.jsp">authorize</a> your source and target account if you have not done so, or you can <a href="/user_admin.jsp">manage</a> your accounts.</p>
 		<p>
 			<a href="logout.jsp"><img src="/images/button_logout.png" alt=""/></a>
 		</p>
