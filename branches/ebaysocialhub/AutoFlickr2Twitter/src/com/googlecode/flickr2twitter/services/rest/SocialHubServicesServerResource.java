@@ -12,11 +12,11 @@ import org.restlet.resource.ServerResource;
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.googlecode.flickr2twitter.datastore.model.UserSourceServiceConfig;
 import com.googlecode.flickr2twitter.datastore.model.UserTargetServiceConfig;
-import com.googlecode.flickr2twitter.impl.ebay.FindItemsDAO;
 import com.googlecode.flickr2twitter.impl.ebay.SourceServiceProviderEbayKeywords;
 import com.googlecode.flickr2twitter.impl.twitter.AbstractServiceProviderTwitter;
 import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
 import com.googlecode.flickr2twitter.services.rest.models.ISociaHubServicesResource;
+import com.googlecode.flickr2twitter.servlet.EbayConfigKeywordsServlet;
 
 /**
  * @author Toby Yu(yuyang226@gmail.com)
@@ -64,16 +64,12 @@ public class SocialHubServicesServerResource extends ServerResource implements I
 					String userEmail = values[1];
 					String keywords = values[2];
 					
-					
 					UserSourceServiceConfig sourceConfig = new UserSourceServiceConfig();
 					sourceConfig.setServiceProviderId(providerId);
 					sourceConfig.setUserEmail(userEmail);
 					sourceConfig.setServiceAccessToken(keywords);
 					sourceConfig.setServiceUserId(keywords);
-					String userSiteUrl = "http://shop.ebay.com/i.html?_trkparms=65%253A12%257C66%253A2%257C39%253A1%257C72%253A4831&rt=nc&_nkw=" +
-							new FindItemsDAO().urlEncode(keywords) + 
-							"&_ipg=&_sc=1&_sticky=1&_trksid=p3286.c0.m14&_sop=10&_sc=1";
-							
+					String userSiteUrl = new EbayConfigKeywordsServlet().buildEbayUserSearchUrl(false, keywords, null, null);
 					sourceConfig.setUserSiteUrl(userSiteUrl);
 					sourceConfig.setServiceUserName(keywords);
 					log.info("Adding new user target config to database->" + sourceConfig);
