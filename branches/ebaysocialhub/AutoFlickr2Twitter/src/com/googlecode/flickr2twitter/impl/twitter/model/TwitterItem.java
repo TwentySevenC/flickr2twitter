@@ -3,6 +3,8 @@
  */
 package com.googlecode.flickr2twitter.impl.twitter.model;
 
+import java.util.Date;
+
 import twitter4j.Status;
 
 import com.googlecode.flickr2twitter.model.IGeoItem;
@@ -15,6 +17,7 @@ import com.googlecode.flickr2twitter.model.ItemGeoData;
  */
 public class TwitterItem extends Item implements IGeoItem {
 	private ItemGeoData geoData;
+	private Date datetime;
 
 	/**
 	 * 
@@ -43,6 +46,16 @@ public class TwitterItem extends Item implements IGeoItem {
 	@Override
 	public void setGeoData(ItemGeoData geoData) {
 		
+	}
+
+	@Override
+	public void setDatePosted(Date datePosted) {
+		this.datetime = datePosted;
+	}
+
+	@Override
+	public Date getDatePosted() {
+		return datetime;
 	}
 
 }

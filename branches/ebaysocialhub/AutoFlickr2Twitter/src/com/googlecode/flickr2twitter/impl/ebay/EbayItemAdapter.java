@@ -1,5 +1,7 @@
 package com.googlecode.flickr2twitter.impl.ebay;
 
+import java.util.Date;
+
 import com.googlecode.flickr2twitter.model.ILinkableItem;
 
 /**
@@ -43,6 +45,16 @@ public class EbayItemAdapter implements ILinkableItem{
 	@Override
 	public String getDescription() {
 		return ebayItem.getDescription();
+	}
+
+	@Override
+	public void setDatePosted(Date datePosted) {
+		ebayItem.setStartTime(datePosted);
+	}
+
+	@Override
+	public Date getDatePosted() {
+		return ebayItem.getStartTime();
 	}
 	
 }

@@ -6,6 +6,7 @@ package com.googlecode.flickr2twitter.impl.youtube;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,7 +71,11 @@ public class SourceServiceProviderYoutube extends BaseSourceProvider<IVideo> imp
 		String sessionToken = sourceService.getServiceAccessToken();
 		youtubeService.setAuthSubToken(sessionToken);
 		
-		Calendar past = getFromTime(globalConfig, currentTime);
+		Date pastTime = sourceService.getLastUpdateTime();
+		if (pastTime == null) {
+			Calendar past = getFromTime(globalConfig, currentTime);
+			pastTime = past.getTime();
+		}
 			
 		URL feedUrl = new URL(URL_ACTIVITIES);
 		VideoFeed videoFeed = youtubeService.getFeed(feedUrl, VideoFeed.class);
@@ -78,7 +83,7 @@ public class SourceServiceProviderYoutube extends BaseSourceProvider<IVideo> imp
 		log.info("Retrieve recent activities for youtube user " + sourceService.getServiceUserId());
 		List<IVideo> videos = new ArrayList<IVideo>();
 		log.info("Trying to find videos uploaded for user " + sourceService.getServiceUserId()
-				+ " after " + past.getTime().toString() + " from "
+				+ " after " + pastTime.toString() + " from "
 				+ videoFeed.getEntries().size() + " new posts");
 		for (VideoEntry entry : videoFeed.getEntries()) {
 			YoutubeVideo video = new YoutubeVideo(entry);
@@ -87,7 +92,7 @@ public class SourceServiceProviderYoutube extends BaseSourceProvider<IVideo> imp
 			//TODO check whether the photo is private
 			if (
 					//entry.isDraft() == false && 
-					video.getDatePosted().after(past.getTime())) {
+					video.getDatePosted().after(pastTime)) {
 				log.info(video.getTitle() + ", URL: " + video.getUrl()
 						+ ", date uploaded: " + video.getDatePosted());
 				videos.add(video);

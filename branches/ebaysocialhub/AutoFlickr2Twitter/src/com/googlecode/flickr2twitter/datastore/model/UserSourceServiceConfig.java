@@ -4,6 +4,7 @@
 package com.googlecode.flickr2twitter.datastore.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -20,6 +21,12 @@ public class UserSourceServiceConfig extends UserServiceConfig implements
 
 	@Persistent
 	private String serviceAccessToken;
+	
+	/**
+	 * the last time successfully retrieved a new activity
+	 */
+	@Persistent
+	private Date lastUpdateTime;
 
 	/**
 	 * 
@@ -34,6 +41,14 @@ public class UserSourceServiceConfig extends UserServiceConfig implements
 
 	public void setServiceAccessToken(String serviceAccessToken) {
 		this.serviceAccessToken = serviceAccessToken;
+	}
+
+	public Date getLastUpdateTime() {
+		return lastUpdateTime;
+	}
+
+	public void setLastUpdateTime(Date lastUpdateTime) {
+		this.lastUpdateTime = lastUpdateTime;
 	}
 
 	/*
