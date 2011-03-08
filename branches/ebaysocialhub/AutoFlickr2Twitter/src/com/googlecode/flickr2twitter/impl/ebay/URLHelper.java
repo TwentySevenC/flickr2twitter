@@ -7,6 +7,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 
+import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
+
 /**
  * @author hochen
  * 
@@ -61,8 +63,11 @@ public class URLHelper {
 			}
 		}
 		
+		String urlPath = buffer.toString();
+		if (urlPath.endsWith("&")) {
+			urlPath = StringUtils.substringBeforeLast(urlPath, "&");
+		}
 
-
-		return new URL(buffer.toString());
+		return new URL(urlPath);
 	}
 }
