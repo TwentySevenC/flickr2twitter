@@ -3,14 +3,17 @@ package com.googlecode.flickr2twitter.impl.ebay;
 import java.util.Date;
 
 import com.googlecode.flickr2twitter.model.ILinkableItem;
+import com.googlecode.flickr2twitter.model.IShortUrl;
+import com.googlecode.flickr2twitter.urlshorteners.BitLyUtils;
 
 /**
  * @author John Liu(zhhong.liu@gmail.com)
  *
  */
-public class EbayItemAdapter implements ILinkableItem{
+public class EbayItemAdapter implements ILinkableItem, IShortUrl{
 
 	private final EbayItem ebayItem;
+	private String shortUrl;
 	
 	public EbayItemAdapter(EbayItem item) {
 		this.ebayItem = item;
@@ -55,6 +58,14 @@ public class EbayItemAdapter implements ILinkableItem{
 	@Override
 	public Date getDatePosted() {
 		return ebayItem.getStartTime();
+	}
+
+	@Override
+	public String getShortUrl() {
+		if (shortUrl == null && ebayItem.getViewItemURL() != null) {
+			this.shortUrl = BitLyUtils.shortenUrl(ebayItem.getViewItemURL());
+		}
+		return shortUrl;
 	}
 	
 }
