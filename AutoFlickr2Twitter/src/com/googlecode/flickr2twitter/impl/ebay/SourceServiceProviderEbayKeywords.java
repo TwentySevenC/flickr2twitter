@@ -87,19 +87,6 @@ public class SourceServiceProviderEbayKeywords extends
 			}
 		}
 		
-		EbayItem item = new EbayItem("yayu");
-		item.setStartTime(Calendar.getInstance(TimeZone.getTimeZone(SourceServiceProviderFlickr.TIMEZONE_GMT)).getTime());
-		item.setDescription("dddd");
-		item.setTitle("adsdf");
-		item.setViewItemURL("http://www.ebay.com");
-		items.add(new EbayItemAdapter(item));
-		
-		item = new EbayItem("yayu22");
-		item.setStartTime(new Date(111111L));
-		item.setDescription("ddsdfsdfdd");
-		item.setTitle("sdfsdfsdf");
-		item.setViewItemURL("http://www.ebay.com");
-		items.add(new EbayItemAdapter(item));
 		return items;
 	}
 
