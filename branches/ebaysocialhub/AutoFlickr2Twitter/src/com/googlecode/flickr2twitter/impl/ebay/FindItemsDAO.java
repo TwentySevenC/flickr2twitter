@@ -53,7 +53,7 @@ public class FindItemsDAO {
 			String maxPrice,
 			int entriesPerPage) throws IOException, SAXException {
 		
-		return findItemsByKeywords(true, null, encodeKeywords(keywords), minPrice, maxPrice, entriesPerPage);
+		return findItemsByKeywords(true, null, keywords, minPrice, maxPrice, entriesPerPage);
 	}
 	
 	public List<EbayItem> findItemsByKeywordsFromProduction(
@@ -62,16 +62,19 @@ public class FindItemsDAO {
 			String maxPrice,
 			int entriesPerPage) throws IOException, SAXException {
 		
-		return findItemsByKeywords(false, null, encodeKeywords(keywords), minPrice, maxPrice, entriesPerPage);
+		return findItemsByKeywords(false, null, keywords, minPrice, maxPrice, entriesPerPage);
 	}
 	
 	public URL buildSearchItemsUrl(
 			boolean isSandbox, 
 			String keywords,
 			String minPrice,
-			String maxPrice) throws MalformedURLException {
-		keywords = encodeKeywords(keywords);
-		Map<String, String> parameters = generateSearchParameters(isSandbox, keywords, null, minPrice, maxPrice, 10);
+			String maxPrice,
+			int entriesPerPage) throws MalformedURLException {
+		
+		
+		
+		Map<String, String> parameters = generateSearchParameters(isSandbox, keywords, null, minPrice, maxPrice, entriesPerPage);
 		URL url = null;
 		if (isSandbox) {
 			url = URLHelper.buildUrl(
@@ -92,7 +95,7 @@ public class FindItemsDAO {
 		return url;
 	}
 	
-	public String encodeKeywords(String keywords) {
+	public String urlEncode(String keywords) {
 		try {
 			String encoding = System.getProperty("file.encoding");
 			if (StringUtils.isNotBlank(encoding)) {
@@ -129,13 +132,13 @@ public class FindItemsDAO {
 		parameters.put("affiliate.customId", "k-man");
 		
 		parameters.put("paginationInput.entriesPerPage", String.valueOf(entriesPerPage));
-		parameters.put("keywords", keywords);
+		parameters.put("keywords", urlEncode(keywords));
 		
 		int i=0;
 		
 		if (sellerId != null) {
 			parameters.put("itemFilter["+i +"].name", "Seller");
-			parameters.put("itemFilter["+i +"].value", sellerId);
+			parameters.put("itemFilter["+i +"].value", urlEncode(sellerId));
 			i++;
 		}
 		
@@ -183,7 +186,7 @@ public class FindItemsDAO {
 			String minPrice,
 			String maxPrice,
 			int entriesPerPage) throws IOException, SAXException {
-		URL url = buildSearchItemsUrl(isSandbox, keywords, minPrice, maxPrice);
+		URL url = buildSearchItemsUrl(isSandbox, keywords, minPrice, maxPrice, entriesPerPage);
 
 		System.out.println(url);
 
