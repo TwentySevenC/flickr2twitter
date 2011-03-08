@@ -75,6 +75,12 @@
 			name="showebaykeywords"><input type="hidden"
 			value="<%=keywords%>"
 			name="<%=EbayConfigKeywordsServlet.PARA_KEYWORDS%>" />
+			<input type="hidden"
+			value="<%=minPrice%>"
+			name="<%=EbayConfigKeywordsServlet.PARA_SEARCH_PRICE_LOW%>" />
+			<input type="hidden"
+			value="<%=maxPrice%>"
+			name="<%=EbayConfigKeywordsServlet.PARA_SEARCH_PRICE_HIGH%>" />
 		<table class="border_table">
 			<tr>
 				<td class="first_ebay"/>
@@ -102,6 +108,11 @@
 					}
 				%>
 				<td><a href="<%=item.getViewItemURL()%>"><%=item.getTitle()%></a></td>
+				<% if (item.getCurrentPrice() != null) { %>
+					<td>$<%=item.getCurrentPrice()%></td>
+				<%} else if (item.getBuyItNowPrice() != null) { %>
+					<td>$<%=item.getBuyItNowPrice()%></td>
+				<%} %>
 			</tr>
 			<%
 				}
