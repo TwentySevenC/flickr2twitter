@@ -18,7 +18,9 @@ import com.googlecode.flickr2twitter.model.IItemList;
 import com.googlecode.flickr2twitter.model.ILinkableItem;
 import com.googlecode.flickr2twitter.model.IMedia;
 import com.googlecode.flickr2twitter.model.IPhoto;
+import com.googlecode.flickr2twitter.model.IShortUrl;
 import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
+import com.googlecode.flickr2twitter.urlshorteners.BitLyUtils;
 import com.googlecode.flickr2twitter.utils.FacebookUtil;
 
 public class TargetServiceProviderFacebook implements ITargetServiceProvider {
@@ -173,6 +175,10 @@ public class TargetServiceProviderFacebook implements ITargetServiceProvider {
 					ILinkableItem litem = (ILinkableItem) item;
 					message = "My new item: " + item.getTitle();
 					String url = litem.getUrl();
+					if (litem instanceof IShortUrl) {
+						url = ((IShortUrl) litem).getShortUrl();
+					}
+					
 					message += " " + url;
 				} else {
 					message = item.getTitle();
