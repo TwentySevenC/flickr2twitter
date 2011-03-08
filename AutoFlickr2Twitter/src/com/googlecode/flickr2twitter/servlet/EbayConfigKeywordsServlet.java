@@ -32,6 +32,11 @@ public class EbayConfigKeywordsServlet extends HttpServlet {
 	public static final String PARA_SEARCH_PRICE_LOW = "search_price_low";
 	public static final String PARA_SEARCH_PRICE_HIGH = "search_price_high";
 	public static final String PARA_SEARCH_MAX_NOTIFICATION = "search_max_notification";
+	
+	private static final String PREFIX_PRODUCTION = "http://shop.ebay.com/";
+	private static final String PREFIX_SANDBOX = "http://shop.sandbox.ebay.com/";
+	private static final String PREFIX_URL = "i.html?_nkw=Nikon+D700&_in_kw=1&_ex_kw=&_sacat=See-All-Categories&_okw=";
+	private static final String SUFFIX_URL = "&_ftrt=901&_ftrv=1&_sabdlo=&_sabdhi=&_samilow=&_samihi=&_sadis=200&_fpos=Zip+code&_fsct=&LH_SALE_CURRENCY=0&_sop=10&_dmd=1&_ipg=50";
 
 	/*
 	 * (non-Javadoc)
@@ -70,6 +75,7 @@ public class EbayConfigKeywordsServlet extends HttpServlet {
 				.setServiceProviderId(isSandbox ? SourceServiceProviderEbayKeywordsSandbox.ID
 						: SourceServiceProviderEbayKeywords.ID);
 		serviceConfig.setUserEmail(userEmail);
+
 		if (StringUtils.isNotBlank(minPrice)) {
 			serviceConfig.addAddtionalParameter(SourceServiceProviderEbayKeywords.KEY_MIN_PRICE, minPrice);
 		}
@@ -82,13 +88,7 @@ public class EbayConfigKeywordsServlet extends HttpServlet {
 		 * URL url = new FindItemsDAO().buildSearchItemsUrl(false, keywords); if
 		 * (url != null) { serviceConfig.setUserSiteUrl(url.toString()); }
 		 */
-
-		String userSiteUrl = isSandbox ? "http://shop.sandbox.ebay.com/i.html?_trkparms=65%253A1%257C66%253A2%257C39%253A1&rt=nc&_nkw="
-				+ new FindItemsDAO().urlEncode(keywords)
-				+ "&_ipg=&_sc=1&_sticky=1&_trksid=p3286.c0.m14&_sop=10&_sc=1"
-				: "http://shop.ebay.com/i.html?_trkparms=65%253A12%257C66%253A2%257C39%253A1%257C72%253A4831&rt=nc&_nkw="
-						+ new FindItemsDAO().urlEncode(keywords)
-						+ "&_ipg=&_sc=1&_sticky=1&_trksid=p3286.c0.m14&_sop=10&_sc=1";
+		String userSiteUrl = buildEbayUserSearchUrl(isSandbox, keywords, minPrice, maxPrice);
 
 		serviceConfig.setUserSiteUrl(userSiteUrl);
 
@@ -97,5 +97,27 @@ public class EbayConfigKeywordsServlet extends HttpServlet {
 
 		resp.sendRedirect("/user_admin.jsp");
 	}
+	
+	public String buildEbayUserSearchUrl(boolean isSandbox, String keywords, String minPrice, String maxPrice) {
+		FindItemsDAO findItemsDao = new FindItemsDAO();
+		String userSiteUrl = PREFIX_URL + findItemsDao.urlEncode(keywords) + "&_oexkw=&_adv=1";
+		boolean hasMinPrice = StringUtils.isNotBlank(minPrice);
+		boolean hasMaxPrice = StringUtils.isNotBlank(maxPrice);
+		minPrice = hasMinPrice ? minPrice : "";
+		maxPrice = hasMaxPrice ? maxPrice : "";
+		
+		if (hasMinPrice || hasMaxPrice) {
+			userSiteUrl += "&_mPrRngCbx=1";
+		}
+		userSiteUrl += "&_udlo=" + minPrice + "&_udhi=" + maxPrice + SUFFIX_URL;
+
+		if (isSandbox) {
+			userSiteUrl = PREFIX_PRODUCTION + userSiteUrl;
+		} else {
+			userSiteUrl = PREFIX_SANDBOX + userSiteUrl;
+		}
+		return userSiteUrl;
+	}
 
 }
+
