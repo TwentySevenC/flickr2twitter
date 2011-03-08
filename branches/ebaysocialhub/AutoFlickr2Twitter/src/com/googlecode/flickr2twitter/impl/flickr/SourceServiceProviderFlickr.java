@@ -98,6 +98,7 @@ public class SourceServiceProviderFlickr implements
 		}
 		
 		Date pastTime = sourceService.getLastUpdateTime();
+		Calendar past = Calendar.getInstance(TimeZone.getTimeZone(TIMEZONE_GMT));
 		if (pastTime == null) {
 			Calendar cstTime = Calendar.getInstance(TimeZone.getTimeZone(TIMEZONE_GMT));
 			cstTime.setTimeInMillis(currentTime);
@@ -105,9 +106,11 @@ public class SourceServiceProviderFlickr implements
 
 			//		Calendar past = getFromTime(globalConfig, currentTime);
 
-			Calendar past = Calendar.getInstance(TimeZone.getTimeZone(TIMEZONE_GMT));
 			long newTime = cstTime.getTime().getTime() - interval;
 			past.setTimeInMillis(newTime);
+			pastTime = past.getTime();
+		} else {
+			past.setTimeInMillis(pastTime.getTime());
 			pastTime = past.getTime();
 		}
 		
