@@ -20,7 +20,7 @@
 		</p>
 	</div>
 	
-	<iframe title="Social Hub on Youtube" width="480" height="390" src="http://www.youtube.com/embed/UnDkR3NhND4" frameborder="0" allowfullscreen></iframe>
+	<iframe title="YouTube video player" width="480" height="390" src="http://www.youtube.com/embed/WFQjaG5VZWo" frameborder="0" allowfullscreen></iframe>
 	<%@ include file="footer.jsp"%>
 </div>
 </body>
