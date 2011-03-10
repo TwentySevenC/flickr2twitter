@@ -24,6 +24,8 @@
 		String maxPrice = request
 		.getParameter(EbayConfigKeywordsServlet.PARA_SEARCH_PRICE_HIGH);
 		maxPrice = maxPrice != null ? maxPrice : "";
+		boolean enableNotifySupression = Boolean.valueOf(request
+		.getParameter(EbayConfigKeywordsServlet.PARA_SEARCH_MAX_NOTIFICATION));
 		boolean hasKeywords = (keywords != null) && (keywords.length() > 0);
 		boolean isSandbox = Boolean.valueOf(request
 				.getParameter(EbayConfigServlet.PARA_SANDBOX));
@@ -47,10 +49,10 @@
 					name="<%=EbayConfigKeywordsServlet.PARA_SEARCH_PRICE_HIGH%>" value="<%=maxPrice %>"/></td>
 			</tr>
 			<tr>
-				<td class="first_ebay">Max Notification:</td>
-				<td><input type="text"
+				<td class="first_ebay">Suppress Notification:</td>
+				<td><input type="checkbox"
 					name="<%=EbayConfigKeywordsServlet.PARA_SEARCH_MAX_NOTIFICATION%>"
-					value="0" /> (zero or empty means unlimited)</td>
+					value="<%=String.valueOf(enableNotifySupression)%>" <% if(enableNotifySupression) { %> checked <% } else { %> unchecked <% } %>/> (zero or empty means unlimited)</td>
 			</tr>
 			<tr>
 				<td/>
@@ -81,6 +83,9 @@
 			<input type="hidden"
 			value="<%=maxPrice%>"
 			name="<%=EbayConfigKeywordsServlet.PARA_SEARCH_PRICE_HIGH%>" />
+			<input type="hidden"
+			value="<%=enableNotifySupression%>"
+			name="<%=EbayConfigKeywordsServlet.PARA_SEARCH_MAX_NOTIFICATION%>" />
 		<table class="border_table">
 			<tr>
 				<td class="first_ebay"/>

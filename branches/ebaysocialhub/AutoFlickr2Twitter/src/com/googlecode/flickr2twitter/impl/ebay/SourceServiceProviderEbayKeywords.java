@@ -28,6 +28,7 @@ public class SourceServiceProviderEbayKeywords extends
 	public static final String PAGE_NAME_CONFIG = "ebay_config_keywords.jsp";
 	public static final String KEY_MIN_PRICE = "minPrice";
 	public static final String KEY_MAX_PRICE = "maxPrice";
+	public static final String KEY_MAX_NOTIFICATION = "maxNotification";
 	private static final Logger log = Logger.getLogger(SourceServiceProviderEbayKeywords.class);
 	
 	private FindItemsDAO dao = new FindItemsDAO();
