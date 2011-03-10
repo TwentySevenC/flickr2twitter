@@ -49,12 +49,6 @@
 					name="<%=EbayConfigKeywordsServlet.PARA_SEARCH_PRICE_HIGH%>" value="<%=maxPrice %>"/></td>
 			</tr>
 			<tr>
-				<td class="first_ebay">Suppress Notification:</td>
-				<td><input type="checkbox"
-					name="<%=EbayConfigKeywordsServlet.PARA_SEARCH_MAX_NOTIFICATION%>"
-					value="<%=String.valueOf(enableNotifySupression)%>" <% if(enableNotifySupression) { %> checked <% } else { %> unchecked <% } %>/> (zero or empty means unlimited)</td>
-			</tr>
-			<tr>
 				<td/>
 				<td><a href="#" onclick="searchebaykeywords.submit();"><img
 					src="/images/button_search.png" alt=""/></a></td>
@@ -83,10 +77,13 @@
 			<input type="hidden"
 			value="<%=maxPrice%>"
 			name="<%=EbayConfigKeywordsServlet.PARA_SEARCH_PRICE_HIGH%>" />
-			<input type="hidden"
-			value="<%=enableNotifySupression%>"
-			name="<%=EbayConfigKeywordsServlet.PARA_SEARCH_MAX_NOTIFICATION%>" />
 		<table class="border_table">
+			<tr>
+				<td class="first_ebay">Suppress Notification:</td>
+				<td><input type="checkbox"
+					name="<%=EbayConfigKeywordsServlet.PARA_NOTIFICATION_ONCE_A_DAY%>"
+					value="true"> Only Post a summary a day</td>
+			</tr>
 			<tr>
 				<td class="first_ebay"/>
 				<td><a href="#" onclick="showebaykeywords.submit();"><img
