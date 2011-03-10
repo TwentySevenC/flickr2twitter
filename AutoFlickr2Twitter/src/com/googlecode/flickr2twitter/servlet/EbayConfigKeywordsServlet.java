@@ -61,6 +61,7 @@ public class EbayConfigKeywordsServlet extends HttpServlet {
 		String keywords = req.getParameter(PARA_KEYWORDS);
 		String minPrice = req.getParameter(PARA_SEARCH_PRICE_LOW);
 		String maxPrice = req.getParameter(PARA_SEARCH_PRICE_HIGH);
+		String maxNotify = req.getParameter(PARA_SEARCH_MAX_NOTIFICATION);
 		boolean isSandbox = Boolean.valueOf(req
 				.getParameter(EbayConfigServlet.PARA_SANDBOX));
 
@@ -82,6 +83,10 @@ public class EbayConfigKeywordsServlet extends HttpServlet {
 		if (StringUtils.isNotBlank(maxPrice)) {
 			serviceConfig.addAddtionalParameter(SourceServiceProviderEbayKeywords.KEY_MAX_PRICE, maxPrice);
 		}
+		if (StringUtils.isNotBlank(maxNotify)) {
+			serviceConfig.addAddtionalParameter(SourceServiceProviderEbayKeywords.KEY_MAX_NOTIFICATION, Boolean.valueOf(maxNotify).toString());
+		}
+		
 		// http://shop.ebay.com/i.html?_trkparms=65%253A12%257C66%253A2%257C39%253A1%257C72%253A4831&rt=nc&_nkw=nikon+d700&_sticky=1&_trksid=p3286.c0.m14&_sop=10&_sc=1
 		// http://shop.sandbox.ebay.com/i.html?_trkparms=65%253A1%257C66%253A2%257C39%253A1&rt=nc&_nkw=android+mini+collectible&_ipg=&_sc=1&_sticky=1&_trksid=p3286.c0.m14&_sop=10&_sc=1
 		/*
