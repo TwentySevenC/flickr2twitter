@@ -32,7 +32,8 @@ public class EbayConfigKeywordsServlet extends HttpServlet {
 	public static final String PARA_SEARCH_PRICE_LOW = "search_price_low";
 	public static final String PARA_SEARCH_PRICE_HIGH = "search_price_high";
 	public static final String PARA_SEARCH_MAX_NOTIFICATION = "search_max_notification";
-	
+	public static final String PARA_NOTIFICATION_ONCE_A_DAY = "notification_once_a_day";
+
 	private static final String PREFIX_PRODUCTION = "http://shop.ebay.com/";
 	private static final String PREFIX_SANDBOX = "http://shop.sandbox.ebay.com/";
 	private static final String PREFIX_URL = "i.html?_nkw=Nikon+D700&_in_kw=1&_ex_kw=&_sacat=See-All-Categories&_okw=";
@@ -48,6 +49,9 @@ public class EbayConfigKeywordsServlet extends HttpServlet {
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+
+		Boolean notificationOnceADay = Boolean.valueOf(req
+				.getParameter(PARA_NOTIFICATION_ONCE_A_DAY));
 		User user = (User) req.getSession().getAttribute(
 				UserAccountServlet.PARA_SESSION_USER);
 
@@ -78,22 +82,27 @@ public class EbayConfigKeywordsServlet extends HttpServlet {
 		serviceConfig.setUserEmail(userEmail);
 
 		if (StringUtils.isNotBlank(minPrice)) {
-			serviceConfig.addAddtionalParameter(SourceServiceProviderEbayKeywords.KEY_MIN_PRICE, minPrice);
+			serviceConfig.addAddtionalParameter(
+					SourceServiceProviderEbayKeywords.KEY_MIN_PRICE, minPrice);
 		}
 		if (StringUtils.isNotBlank(maxPrice)) {
-			serviceConfig.addAddtionalParameter(SourceServiceProviderEbayKeywords.KEY_MAX_PRICE, maxPrice);
+			serviceConfig.addAddtionalParameter(
+					SourceServiceProviderEbayKeywords.KEY_MAX_PRICE, maxPrice);
 		}
 		if (StringUtils.isNotBlank(maxNotify)) {
-			serviceConfig.addAddtionalParameter(SourceServiceProviderEbayKeywords.KEY_MAX_NOTIFICATION, Boolean.valueOf(maxNotify).toString());
+			serviceConfig.addAddtionalParameter(
+					SourceServiceProviderEbayKeywords.KEY_MAX_NOTIFICATION,
+					Boolean.valueOf(maxNotify).toString());
 		}
-		
+
 		// http://shop.ebay.com/i.html?_trkparms=65%253A12%257C66%253A2%257C39%253A1%257C72%253A4831&rt=nc&_nkw=nikon+d700&_sticky=1&_trksid=p3286.c0.m14&_sop=10&_sc=1
 		// http://shop.sandbox.ebay.com/i.html?_trkparms=65%253A1%257C66%253A2%257C39%253A1&rt=nc&_nkw=android+mini+collectible&_ipg=&_sc=1&_sticky=1&_trksid=p3286.c0.m14&_sop=10&_sc=1
 		/*
 		 * URL url = new FindItemsDAO().buildSearchItemsUrl(false, keywords); if
 		 * (url != null) { serviceConfig.setUserSiteUrl(url.toString()); }
 		 */
-		String userSiteUrl = buildEbayUserSearchUrl(isSandbox, keywords, minPrice, maxPrice);
+		String userSiteUrl = buildEbayUserSearchUrl(isSandbox, keywords,
+				minPrice, maxPrice);
 
 		serviceConfig.setUserSiteUrl(userSiteUrl);
 
@@ -102,15 +111,17 @@ public class EbayConfigKeywordsServlet extends HttpServlet {
 
 		resp.sendRedirect("/user_admin.jsp");
 	}
-	
-	public String buildEbayUserSearchUrl(boolean isSandbox, String keywords, String minPrice, String maxPrice) {
+
+	public String buildEbayUserSearchUrl(boolean isSandbox, String keywords,
+			String minPrice, String maxPrice) {
 		FindItemsDAO findItemsDao = new FindItemsDAO();
-		String userSiteUrl = PREFIX_URL + findItemsDao.urlEncode(keywords) + "&_oexkw=&_adv=1";
+		String userSiteUrl = PREFIX_URL + findItemsDao.urlEncode(keywords)
+				+ "&_oexkw=&_adv=1";
 		boolean hasMinPrice = StringUtils.isNotBlank(minPrice);
 		boolean hasMaxPrice = StringUtils.isNotBlank(maxPrice);
 		minPrice = hasMinPrice ? minPrice : "";
 		maxPrice = hasMaxPrice ? maxPrice : "";
-		
+
 		if (hasMinPrice || hasMaxPrice) {
 			userSiteUrl += "&_mPrRngCbx=1";
 		}
@@ -125,4 +136,3 @@ public class EbayConfigKeywordsServlet extends HttpServlet {
 	}
 
 }
-
