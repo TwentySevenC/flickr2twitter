@@ -36,7 +36,9 @@ public class EbayConfigKeywordsServlet extends HttpServlet {
 
 	private static final String PREFIX_PRODUCTION = "http://shop.ebay.com/";
 	private static final String PREFIX_SANDBOX = "http://shop.sandbox.ebay.com/";
-	private static final String PREFIX_URL = "i.html?_nkw=Nikon+D700&_in_kw=1&_ex_kw=&_sacat=See-All-Categories&_okw=";
+	//Sample: http://shop.ebay.com/i.html?_nkw=Nikon+D700&_in_kw=1&_ex_kw=&_sacat=See-All-Categories&_okw=Nikon+D700&_oexkw=&_adv=1&_mPrRngCbx=1&_udlo=200&_udhi=500&_ftrt=901&_ftrv=1&_sabdlo=&_sabdhi=&_samilow=&_samihi=&_sadis=200&_fpos=Zip+code&_fsct=&LH_SALE_CURRENCY=0&_sop=10&_dmd=1&_ipg=50
+	private static final String PREFIX_URL = "i.html?_nkw=";
+	private static final String MIDDLE_URL = "&_in_kw=1&_ex_kw=&_sacat=See-All-Categories&_okw=";
 	private static final String SUFFIX_URL = "&_ftrt=901&_ftrv=1&_sabdlo=&_sabdhi=&_samilow=&_samihi=&_sadis=200&_fpos=Zip+code&_fsct=&LH_SALE_CURRENCY=0&_sop=10&_dmd=1&_ipg=50";
 
 	/*
@@ -95,12 +97,6 @@ public class EbayConfigKeywordsServlet extends HttpServlet {
 					Boolean.valueOf(maxNotify).toString());
 		}
 
-		// http://shop.ebay.com/i.html?_trkparms=65%253A12%257C66%253A2%257C39%253A1%257C72%253A4831&rt=nc&_nkw=nikon+d700&_sticky=1&_trksid=p3286.c0.m14&_sop=10&_sc=1
-		// http://shop.sandbox.ebay.com/i.html?_trkparms=65%253A1%257C66%253A2%257C39%253A1&rt=nc&_nkw=android+mini+collectible&_ipg=&_sc=1&_sticky=1&_trksid=p3286.c0.m14&_sop=10&_sc=1
-		/*
-		 * URL url = new FindItemsDAO().buildSearchItemsUrl(false, keywords); if
-		 * (url != null) { serviceConfig.setUserSiteUrl(url.toString()); }
-		 */
 		String userSiteUrl = buildEbayUserSearchUrl(isSandbox, keywords,
 				minPrice, maxPrice);
 
@@ -115,8 +111,8 @@ public class EbayConfigKeywordsServlet extends HttpServlet {
 	public String buildEbayUserSearchUrl(boolean isSandbox, String keywords,
 			String minPrice, String maxPrice) {
 		FindItemsDAO findItemsDao = new FindItemsDAO();
-		String userSiteUrl = PREFIX_URL + findItemsDao.urlEncode(keywords)
-				+ "&_oexkw=&_adv=1";
+		String encodedKeywords = findItemsDao.urlEncode(keywords);
+		String userSiteUrl = PREFIX_URL + encodedKeywords + "&_in_kw=1&_ex_kw=&_sacat=See-All-Categories&_okw=" + encodedKeywords + "&_oexkw=&_adv=1";
 		boolean hasMinPrice = StringUtils.isNotBlank(minPrice);
 		boolean hasMaxPrice = StringUtils.isNotBlank(maxPrice);
 		minPrice = hasMinPrice ? minPrice : "";
@@ -128,9 +124,9 @@ public class EbayConfigKeywordsServlet extends HttpServlet {
 		userSiteUrl += "&_udlo=" + minPrice + "&_udhi=" + maxPrice + SUFFIX_URL;
 
 		if (isSandbox) {
-			userSiteUrl = PREFIX_PRODUCTION + userSiteUrl;
-		} else {
 			userSiteUrl = PREFIX_SANDBOX + userSiteUrl;
+		} else {
+			userSiteUrl = PREFIX_PRODUCTION + userSiteUrl;
 		}
 		return userSiteUrl;
 	}
