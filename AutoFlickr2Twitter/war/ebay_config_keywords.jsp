@@ -82,7 +82,7 @@
 				<td class="first_ebay">Suppress Notification:</td>
 				<td><input type="checkbox"
 					name="<%=EbayConfigKeywordsServlet.PARA_NOTIFICATION_ONCE_A_DAY%>"
-					value="true"> Only Post a summary a day</td>
+					value="true"> only receive one message per day</td>
 			</tr>
 			<tr>
 				<td class="first_ebay"/>
@@ -126,12 +126,34 @@
 					// notify user that there is no search result
 		%>
 		<h1>Search Result</h1>
+		<form action="/ebayConfigkeywords?sandbox=<%=isSandbox%>" method="post"
+			name="showebaykeywords"><input type="hidden"
+			value="<%=keywords%>"
+			name="<%=EbayConfigKeywordsServlet.PARA_KEYWORDS%>" />
+			<input type="hidden"
+			value="<%=minPrice%>"
+			name="<%=EbayConfigKeywordsServlet.PARA_SEARCH_PRICE_LOW%>" />
+			<input type="hidden"
+			value="<%=maxPrice%>"
+			name="<%=EbayConfigKeywordsServlet.PARA_SEARCH_PRICE_HIGH%>" />
 		<table class="border_table">
+			<tr>
+				<td class="first_ebay">Suppress Notification:</td>
+				<td><input type="checkbox"
+					name="<%=EbayConfigKeywordsServlet.PARA_NOTIFICATION_ONCE_A_DAY%>"
+					value="true"> only receive one message per day</td>
+			</tr>
+			<tr>
+				<td class="first_ebay"/>
+				<td><a href="#" onclick="showebaykeywords.submit();"><img
+					src="/images/button_submit.png" alt=""/></a></td>
+			</tr>
 			<tr>
 				<td class="first_ebay">No Items Found for Keywords:</td>
 				<td><%=keywords%></td>
 			</tr>
 		</table>
+		</form>
 		<%
 				}
 			}
