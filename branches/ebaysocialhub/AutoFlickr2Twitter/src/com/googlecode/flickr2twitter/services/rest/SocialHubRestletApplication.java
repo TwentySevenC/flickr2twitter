@@ -40,6 +40,7 @@ public class SocialHubRestletApplication extends Application {
 
 	    router.attach("/user", SocialHubServerResource.class);
 	    router.attach("/services", SocialHubServicesServerResource.class);
+	    router.attach("/eBaySeller", SocialHubEbaySellerResource.class);
 
 	    return router;
 	}

@@ -56,7 +56,22 @@ public class EbayConfigServlet extends HttpServlet {
 		String sellerId = req.getParameter(PARA_SELLER_ID);
 		boolean isSandbox = Boolean.valueOf(req.getParameter(EbayConfigServlet.PARA_SANDBOX));
 		
-		GetUserProfileDAO getUserProfileDAO = new GetUserProfileDAO();
+		registerNewSellerSourceServiceConfig(userEmail, sellerId, isSandbox);
+
+		resp.sendRedirect("/user_admin.jsp");
+	}
+
+    /**
+     * @param userEmail
+     * @param sellerId
+     * @param isSandbox
+     * @throws IOException
+     * @throws ServletException
+     */
+    public void registerNewSellerSourceServiceConfig(String userEmail, String sellerId, boolean isSandbox)
+            throws IOException, ServletException
+    {
+        GetUserProfileDAO getUserProfileDAO = new GetUserProfileDAO();
 
 		EbayUser ebayUser = null;
 		try {
@@ -87,8 +102,6 @@ public class EbayConfigServlet extends HttpServlet {
 		}
 		MyPersistenceManagerFactory.addSourceServiceApp(userEmail,
 				serviceConfig);
-
-		resp.sendRedirect("/user_admin.jsp");
-	}
+    }
 
 }
