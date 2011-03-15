@@ -19,49 +19,72 @@ chrome.extension.onRequest.addListener(function(request, sender, sendResponse){
     }
 });
 
-function handleRequest(sellId, sendResponse){
-    console.log("[Func] handleRequest");
-    
-    // check user ID
-    checkUserId();
-    
-    // TODO#EMAC.P1 send request to SocialHub
-    var succeeded = true;
-    
-    // return to user
-    if (succeeded) {
-        sendResponse({
-            MESSAGE: "Followed!"
-        });
-    }
-}
-
 var userId = "";
 
-function checkUserId(){
-    console.log("[Func] checkUserId");
+handleRequest.sellerId = "";
+handleRequest.sendResponseCallback = null;
+
+function handleRequest(sellerId, sendResponse){
+    console.log("[Func] handleRequest");
+    
+    // cache sellerId and sendResponse
+    handleRequest.sellerId = sellerId;
+    handleRequest.sendResponseCallback = sendResponse;
     
     // already bound
     if (userId) {
+        submitRequest();
+        
         return;
     }
     
-    // search cookies
-    console.log("Search user ID in cookies ..");
-    chrome.cookies.get({
-        url: "http://ebaysocialhub.appspot.com/chromeextension/",
-        name: "userId"
-    }, function(cookie){
-        if (cookie) {
-            userId = cookie.value;
-            console.log("Found user ID in cookies: " + userId);
-        }
-    });
+    // request via Oauth
+    console.log("Request user ID via Oauth ..");
+    requestUserIdAndSubmit();
+}
+
+function submitRequest(){
+    console.log("[Func] submitRequest");
     
     if (!userId) {
-        // request via Oauth
-        console.log("Request user ID via Oauth ..");
-        requestUserId();
+        return;
+    }
+    
+    doSubmit();
+}
+
+doSubmit.xhr = null;
+
+function doSubmit(){
+    console.log("[Func] doSubmit");
+    
+    var method = "POST";
+	var url = "http://ebaysocialhub.appspot.com/rest/eBaySeller";
+    var data = userId + "/" + handleRequest.sellerId;
+    
+    doSubmit.xhr = new XMLHttpRequest();
+    doSubmit.xhr.onreadystatechange = onDoSubmit;
+    doSubmit.xhr.open(method, url, true);
+    doSubmit.xhr.send(data);
+}
+
+function onDoSubmit(){
+    console.log("[Func] onDoSubmit");
+    
+    console.log(doSubmit.xhr);
+    
+    var message = "";
+    if (doSubmit.xhr.readyState == 4) {
+        if (doSubmit.xhr.status == 200) {
+            message = "Followed!";
+        }
+        else {
+            message = "Error: Problem retrieving data."
+        }
+        
+        handleRequest.sendResponseCallback({
+            MESSAGE: message
+        });
     }
 }
 
@@ -75,8 +98,8 @@ var oauth = ChromeExOAuth.initBackgroundPage({
     'app_name': 'SocialHub - eBay (Chrome Extension)'
 });
 
-function requestUserId(){
-    console.log("[Func] requestUserId");
+function requestUserIdAndSubmit(){
+    console.log("[Func] requestUserIdAndSubmit");
     
     oauth.authorize(onAuthorized);
 }
@@ -100,11 +123,6 @@ function onRequestUserId(text, xhr){
     userId = data.feed.author[0].email.$t;
     console.log("Got user ID: " + userId);
     
-    console.log("Save user ID in cookies ..");
-    chrome.cookies.set({
-        url: "http://ebaysocialhub.appspot.com/chromeextension/",
-        name: "userId",
-        value: userId,
-        expirationDate: (new Date().getTime() + 86400)
-    });
+    // submit request right after we got user ID
+    submitRequest();
 }
