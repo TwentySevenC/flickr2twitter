@@ -7,8 +7,12 @@ package com.googlecode.flickr2twitter.services.rest;
 import java.util.Arrays;
 import java.util.logging.Logger;
 
+import org.restlet.data.Form;
 import org.restlet.resource.ServerResource;
 
+import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
+import com.googlecode.flickr2twitter.datastore.model.User;
+import com.googlecode.flickr2twitter.datastore.model.UserSourceServiceConfig;
 import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
 import com.googlecode.flickr2twitter.services.rest.models.ISocialHubEbaySellerResource;
 import com.googlecode.flickr2twitter.servlet.EbayConfigServlet;
@@ -32,14 +36,12 @@ public class SocialHubEbaySellerResource extends ServerResource
 
     /*
      * (non-Javadoc)
-     * @see
-     * com.googlecode.flickr2twitter.services.rest.models.ISocialHubEbaySellerResource#addEbaySellerSourceServiceConfig
-     * (java.lang.String)
+     * @see com.googlecode.flickr2twitter.services.rest.models.ISocialHubEbaySellerResource#register(java.lang.String)
      */
     @Override
-    public void addEbaySellerSourceServiceConfig(String data)
+    public void register(String data)
     {
-        log.info("adding new eBay seller source->" + data);
+        log.info("registering new eBay seller source->" + data);
 
         if ( data != null )
         {
@@ -53,8 +55,8 @@ public class SocialHubEbaySellerResource extends ServerResource
                     String sellerId = values[1];
 
                     new EbayConfigServlet().registerNewSellerSourceServiceConfig(userEmail, sellerId, false);
-                    
-                    log.info("new eBay seller source added->" + data);
+
+                    log.info("new eBay seller source registered->" + data);
                 }
                 else
                 {
@@ -63,9 +65,94 @@ public class SocialHubEbaySellerResource extends ServerResource
             }
             catch (Exception e)
             {
-                log.throwing(SocialHubEbaySellerResource.class.getName(), "addEbaySellerSourceServiceConfig", e);
+                log.throwing(SocialHubEbaySellerResource.class.getName(), "register", e);
             }
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see com.googlecode.flickr2twitter.services.rest.models.ISocialHubEbaySellerResource#unregister(java.lang.String)
+     */
+    @Override
+    public void unregister(String data)
+    {
+        log.info("unregistering existing eBay seller source->" + data);
+
+        if ( data != null )
+        {
+            try
+            {
+                String[] values = StringUtils.split(data, "/");
+                log.info("Received data->" + Arrays.asList(values));
+                if ( values.length == 2 )
+                {
+                    String userEmail = values[0];
+                    String sellerId = values[1];
+
+                    User user = MyPersistenceManagerFactory.getUser(userEmail);
+                    MyPersistenceManagerFactory.deleteUserService(user, sellerId, 0);
+
+                    log.info("eBay seller source unregistered->" + data);
+                }
+                else
+                {
+                    log.info("Unsupported source config->" + data);
+                }
+            }
+            catch (Exception e)
+            {
+                log.throwing(SocialHubEbaySellerResource.class.getName(), "unregister", e);
+            }
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see com.googlecode.flickr2twitter.services.rest.models.ISocialHubEbaySellerResource#find()
+     */
+    @Override
+    public boolean find()
+    {
+        Form query = getQuery();
+        log.info("finding eBay seller source->" + query);
+
+        if ( query != null )
+        {
+            try
+            {
+                log.info("Received data->" + query);
+                if ( query.size() == 2 )
+                {
+                    String userEmail = query.getFirstValue("useremail");
+                    String sellerId = query.getFirstValue("sellerid");
+
+                    boolean found = false;
+                    for (UserSourceServiceConfig config : MyPersistenceManagerFactory.getUserSourceServices(userEmail))
+                    {
+                        if ( sellerId.equals(config.getServiceAccessToken()) )
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    log.info("eBay seller source found->" + query);
+
+                    return found;
+                }
+                else
+                {
+                    log.info("Unsupported source config->" + query);
+                }
+            }
+            catch (Exception e)
+            {
+                log.throwing(SocialHubEbaySellerResource.class.getName(), "find", e);
+            }
+        }
+
+        return false;
     }
 
 }
