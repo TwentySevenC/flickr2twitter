@@ -1,7 +1,7 @@
 /**
  * @author: Emac Shen (shen.bin.1983@gmail.com)
  */
-var SITE_URL = "http://1.ebaysocialhub.appspot.com/rest/eBaySeller";
+var SITE_URL = "http://ebaysocialhub.appspot.com/rest/eBaySeller";
 var METHOD_QUERY = "QUERY";
 var METHOD_FOLLOW = "FOLLOW";
 var METHOD_UNFOLLOW = "UNFOLLOW";
@@ -110,10 +110,13 @@ function doSubmit(){
     else 
         if (METHOD_FOLLOW == handleRequest.method) {
             method = "POST";
+			data += "/follow";
         }
         else 
             if (METHOD_UNFOLLOW == handleRequest.method) {
-                method = "DELETE";
+				// it seems GAE doesn't support DELETE method, have to use POST to work around
+                method = "POST";
+				data += "/unfollow";
             }
             else {
                 reportError("Unsupported method: " + handleRequest.method);
