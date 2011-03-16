@@ -21,10 +21,11 @@
 			return;
 		}
 		
+		// 20110316#bishen: force to reload source/target configs by user email 
 		List<UserSourceServiceConfig> sourceSvcs = MyPersistenceManagerFactory
-				.getUserSourceServices(user);
+				.getUserSourceServices(user.getUserId().getEmail());
 		List<UserTargetServiceConfig> targetSvcs = MyPersistenceManagerFactory
-				.getUserTargetServices(user);
+				.getUserTargetServices(user.getUserId().getEmail());
 	%>
 	<div id="content">
 		<h1>Manage Accounts</h1>
