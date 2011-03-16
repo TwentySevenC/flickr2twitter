@@ -49,10 +49,18 @@ public class SocialHubEbaySellerResource extends ServerResource
             {
                 String[] values = StringUtils.split(data, "/");
                 log.info("Received data->" + Arrays.asList(values));
-                if ( values.length == 2 )
+                if ( values.length == 3 )
                 {
                     String userEmail = values[0];
                     String sellerId = values[1];
+                    
+                    // it seems GAE doesn't support DELETE method, have to use POST to work around
+                    boolean following = "follow".equals(values[2]);
+                    if ( !following )
+                    {
+                        unregister(data);
+                        return;
+                    }
 
                     new EbayConfigServlet().registerNewSellerSourceServiceConfig(userEmail, sellerId, false);
 
@@ -85,7 +93,7 @@ public class SocialHubEbaySellerResource extends ServerResource
             {
                 String[] values = StringUtils.split(data, "/");
                 log.info("Received data->" + Arrays.asList(values));
-                if ( values.length == 2 )
+                if ( values.length == 3 )
                 {
                     String userEmail = values[0];
                     String sellerId = values[1];
