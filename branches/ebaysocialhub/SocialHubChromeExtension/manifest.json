@@ -17,7 +17,7 @@
     "https://*/*"
   ],
   "content_scripts": [ {
-    "matches": ["http://cgi.ebay.com/*", "https://cgi.ebay.com/*"], 
+    "matches": ["http://cgi.ebay.com/*", "https://cgi.ebay.com/*", "http://shop.ebay.com/*", "https://shop.ebay.com/*"], 
     "js": ["scripts/content.js"],
     "all_frames": true
   }]
