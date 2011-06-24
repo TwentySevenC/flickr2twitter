@@ -302,6 +302,41 @@ public class SourceServiceProviderFlickr implements
 		result.put("url", url.toExternalForm());
 		return result;
 	}
+	
+	/*
+	 * trying to use OAuth 1a
+	 * @Override
+	public Map<String, Object> requestAuthorization(String baseUrl) throws Exception {
+		GlobalSourceApplicationService globalAppConfig = MyPersistenceManagerFactory
+				.getGlobalSourceAppService(ID);
+		if (globalAppConfig == null
+				|| ID.equalsIgnoreCase(globalAppConfig.getProviderId()) == false) {
+			throw new IllegalArgumentException(
+					"Invalid source service provider: " + globalAppConfig);
+		}
+		Map<String, Object> result = new HashMap<String, Object>();
+
+		if (baseUrl.endsWith("/oauth")) {
+			baseUrl = StringUtils.left(baseUrl, baseUrl.length() - "/oauth".length());
+		}
+		String nextUrl = baseUrl + "/" + CALLBACK_URL;
+		OAuthConsumer consumer = new DefaultOAuthConsumer(globalAppConfig.getSourceAppApiKey(),
+				globalAppConfig.getSourceAppSecret());
+
+		OAuthProvider provider = new DefaultOAuthProvider(
+		"http://www.flickr.com/services/oauth/request_token", 
+		"http://www.flickr.com/services/oauth/access_token",
+		"http://www.flickr.com/services/oauth/authorize");
+		// fetches a request token from the service provider and builds
+		// a url based on AUTHORIZE_WEBSITE_URL and CALLBACK_URL to
+		// which your app must now send the user
+		provider.setOAuth10a(true);
+		
+		String tokenUrl = provider.retrieveRequestToken(consumer, nextUrl);
+		log.info(", Token URL: " + tokenUrl);
+		result.put("url", tokenUrl);
+		return result;
+	}*/
 
 	/*
 	 * (non-Javadoc)
