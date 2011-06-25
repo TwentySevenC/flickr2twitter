@@ -18,9 +18,6 @@ public class UserSourceServiceConfig extends UserServiceConfig implements
 		Serializable {
 
 	private static final long serialVersionUID = 1L;
-
-	@Persistent
-	private String serviceAccessToken;
 	
 	/**
 	 * the last time successfully retrieved a new activity
@@ -35,14 +32,6 @@ public class UserSourceServiceConfig extends UserServiceConfig implements
 		super();
 	}
 
-	public String getServiceAccessToken() {
-		return serviceAccessToken;
-	}
-
-	public void setServiceAccessToken(String serviceAccessToken) {
-		this.serviceAccessToken = serviceAccessToken;
-	}
-
 	public Date getLastUpdateTime() {
 		return lastUpdateTime;
 	}
@@ -51,25 +40,19 @@ public class UserSourceServiceConfig extends UserServiceConfig implements
 		this.lastUpdateTime = lastUpdateTime;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime
-				* result
-				+ ((serviceAccessToken == null) ? 0 : serviceAccessToken
-						.hashCode());
+		result = prime * result
+				+ ((lastUpdateTime == null) ? 0 : lastUpdateTime.hashCode());
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -81,10 +64,10 @@ public class UserSourceServiceConfig extends UserServiceConfig implements
 		if (!(obj instanceof UserSourceServiceConfig))
 			return false;
 		UserSourceServiceConfig other = (UserSourceServiceConfig) obj;
-		if (serviceAccessToken == null) {
-			if (other.serviceAccessToken != null)
+		if (lastUpdateTime == null) {
+			if (other.lastUpdateTime != null)
 				return false;
-		} else if (!serviceAccessToken.equals(other.serviceAccessToken))
+		} else if (!lastUpdateTime.equals(other.lastUpdateTime))
 			return false;
 		return true;
 	}

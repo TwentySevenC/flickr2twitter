@@ -47,6 +47,12 @@ public abstract class UserServiceConfig {
 	private String serviceProviderId;
 	
 	@Persistent
+	private String serviceAccessToken;
+
+	@Persistent
+	private String serviceTokenSecret;
+	
+	@Persistent
 	private String additionalParamsPersitent;
 	
 	@NotPersistent
@@ -144,6 +150,22 @@ public abstract class UserServiceConfig {
 	 */
 	public void setServiceProviderId(String serviceProviderId) {
 		this.serviceProviderId = serviceProviderId;
+	}
+	
+	public String getServiceAccessToken() {
+		return serviceAccessToken;
+	}
+
+	public void setServiceAccessToken(String serviceAccessToken) {
+		this.serviceAccessToken = serviceAccessToken;
+	}
+
+	public String getServiceTokenSecret() {
+		return serviceTokenSecret;
+	}
+
+	public void setServiceTokenSecret(String serviceTokenSecret) {
+		this.serviceTokenSecret = serviceTokenSecret;
 	}
 
 	/**

@@ -116,15 +116,13 @@ implements IServiceAuthorizer {
 		serviceConfig.setServiceUserName(accessToken.getScreenName());
 		serviceConfig.setUserSiteUrl("http://twitter.com/"
 				+ accessToken.getScreenName());
+		serviceConfig.setServiceAccessToken(accessToken.getToken());
+		serviceConfig.setServiceTokenSecret(accessToken.getTokenSecret());
 		if (serviceConfig instanceof UserSourceServiceConfig) {
 			UserSourceServiceConfig srcConfig = (UserSourceServiceConfig) serviceConfig;
-			srcConfig.setServiceAccessToken(accessToken.getToken());
-			srcConfig.addAddtionalParameter(KEY_TOKEN_SECRET, accessToken.getTokenSecret());
 			MyPersistenceManagerFactory.addSourceServiceApp(userEmail, srcConfig);
 		} else {
 			UserTargetServiceConfig targetConfig = (UserTargetServiceConfig) serviceConfig;
-			targetConfig.setServiceAccessToken(accessToken.getToken());
-			targetConfig.setServiceTokenSecret(accessToken.getTokenSecret());
 			log.info("Adding new user target config to database->" + targetConfig);
 			MyPersistenceManagerFactory.addTargetServiceApp(userEmail, targetConfig);
 		}
