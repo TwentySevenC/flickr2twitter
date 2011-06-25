@@ -27,6 +27,10 @@ public class UserServiceConfigModel implements Serializable {
 	
 	private String serviceProviderId;
 	
+	private String serviceAccessToken;
+
+	private String serviceTokenSecret;
+	
 	private Map<String, String> additionalParameters;
 	
 	private boolean enabled = true;
@@ -130,6 +134,34 @@ public class UserServiceConfigModel implements Serializable {
 	 */
 	public void setServiceProviderId(String serviceProviderId) {
 		this.serviceProviderId = serviceProviderId;
+	}
+	
+	/**
+	 * @return the serviceAccessToken
+	 */
+	public String getServiceAccessToken() {
+		return serviceAccessToken;
+	}
+
+	/**
+	 * @param serviceAccessToken the serviceAccessToken to set
+	 */
+	public void setServiceAccessToken(String serviceAccessToken) {
+		this.serviceAccessToken = serviceAccessToken;
+	}
+
+	/**
+	 * @return the serviceTokenSecret
+	 */
+	public String getServiceTokenSecret() {
+		return serviceTokenSecret;
+	}
+
+	/**
+	 * @param serviceTokenSecret the serviceTokenSecret to set
+	 */
+	public void setServiceTokenSecret(String serviceTokenSecret) {
+		this.serviceTokenSecret = serviceTokenSecret;
 	}
 
 	/**
@@ -243,6 +275,8 @@ public class UserServiceConfigModel implements Serializable {
 				+ ", serviceUserId=" + serviceUserId + ", serviceUserName="
 				+ serviceUserName + ", userSiteUrl=" + userSiteUrl
 				+ ", serviceProviderId=" + serviceProviderId
+				+ ", serviceAccessToken=" + serviceAccessToken
+				+ ", serviceTokenSecret=" + serviceTokenSecret
 				+ ", additionalParameters=" + additionalParameters
 				+ ", enabled=" + enabled + "]";
 	}
