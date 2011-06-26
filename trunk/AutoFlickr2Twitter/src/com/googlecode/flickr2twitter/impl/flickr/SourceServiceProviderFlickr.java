@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -38,6 +39,7 @@ import com.googlecode.flickr2twitter.datastore.model.GlobalSourceApplicationServ
 import com.googlecode.flickr2twitter.datastore.model.User;
 import com.googlecode.flickr2twitter.datastore.model.UserSourceServiceConfig;
 import com.googlecode.flickr2twitter.exceptions.TokenAlreadyRegisteredException;
+import com.googlecode.flickr2twitter.intf.IServiceAuthorizer;
 import com.googlecode.flickr2twitter.intf.ISourceServiceProvider;
 import com.googlecode.flickr2twitter.model.IPhoto;
 import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
@@ -47,7 +49,7 @@ import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
  * 
  */
 public class SourceServiceProviderFlickr implements
-		ISourceServiceProvider<IPhoto> {
+		ISourceServiceProvider<IPhoto>, IServiceAuthorizer {
 	public static final String ID = "flickr";
 	public static final String DISPLAY_NAME = "Flickr";
 	public static final String KEY_FROB = "frob";
@@ -95,17 +97,28 @@ public class SourceServiceProviderFlickr implements
 			extras.add(Extras.TAGS);
 		}
 		
+		Date pastTime = sourceService.getLastUpdateTime();
+		Calendar past = Calendar.getInstance(TimeZone.getTimeZone(TIMEZONE_GMT));
+		if (pastTime == null) {
 		Calendar cstTime = Calendar.getInstance(TimeZone.getTimeZone(TIMEZONE_GMT));
 		cstTime.setTimeInMillis(currentTime);
 		log.info("Converted current time: " + cstTime.getTime());
-		Calendar past = Calendar.getInstance(TimeZone.getTimeZone(TIMEZONE_GMT));
+
+			//		Calendar past = getFromTime(globalConfig, currentTime);
+
 		long newTime = cstTime.getTime().getTime() - interval;
 		past.setTimeInMillis(newTime);
-		PhotoList list = photosFace.recentlyUpdated(past.getTime(), extras, 100,
+			pastTime = past.getTime();
+		} else {
+			past.setTimeInMillis(pastTime.getTime());
+			pastTime = past.getTime();
+		}
+		
+		PhotoList list = photosFace.recentlyUpdated(pastTime, extras, 100,
 				1);
 		
 		log.info("Trying to find photos uploaded for user " + userId
-				+ " after " + past.getTime().toString() + " from "
+				+ " after " + pastTime.toString() + " from "
 				+ list.getTotal() + " new photos");
 		for (Object obj : list) {
 			if (obj instanceof Photo) {
@@ -113,7 +126,7 @@ public class SourceServiceProviderFlickr implements
 				
 				log.info("processing photo: " + photo.getTitle()
 						+ ", date uploaded: " + photo.getDatePosted());
-				if (photo.isPublicFlag() && photo.getDatePosted().after(past.getTime())) {
+				if (photo.isPublicFlag() && photo.getDatePosted().after(pastTime)) {
 					if (!filterTags.isEmpty() && containsTags(filterTags, photo.getTags()) == false) {
 						log.warning("Photo does not contains the required tags, contained tags are: " 
 								+ photo.getTags());
@@ -289,6 +302,41 @@ public class SourceServiceProviderFlickr implements
 		result.put("url", url.toExternalForm());
 		return result;
 	}
+	
+	/*
+	 * trying to use OAuth 1a
+	 * @Override
+	public Map<String, Object> requestAuthorization(String baseUrl) throws Exception {
+		GlobalSourceApplicationService globalAppConfig = MyPersistenceManagerFactory
+				.getGlobalSourceAppService(ID);
+		if (globalAppConfig == null
+				|| ID.equalsIgnoreCase(globalAppConfig.getProviderId()) == false) {
+			throw new IllegalArgumentException(
+					"Invalid source service provider: " + globalAppConfig);
+		}
+		Map<String, Object> result = new HashMap<String, Object>();
+
+		if (baseUrl.endsWith("/oauth")) {
+			baseUrl = StringUtils.left(baseUrl, baseUrl.length() - "/oauth".length());
+		}
+		String nextUrl = baseUrl + "/" + CALLBACK_URL;
+		OAuthConsumer consumer = new DefaultOAuthConsumer(globalAppConfig.getSourceAppApiKey(),
+				globalAppConfig.getSourceAppSecret());
+
+		OAuthProvider provider = new DefaultOAuthProvider(
+		"http://www.flickr.com/services/oauth/request_token", 
+		"http://www.flickr.com/services/oauth/access_token",
+		"http://www.flickr.com/services/oauth/authorize");
+		// fetches a request token from the service provider and builds
+		// a url based on AUTHORIZE_WEBSITE_URL and CALLBACK_URL to
+		// which your app must now send the user
+		provider.setOAuth10a(true);
+		
+		String tokenUrl = provider.retrieveRequestToken(consumer, nextUrl);
+		log.info(", Token URL: " + tokenUrl);
+		result.put("url", tokenUrl);
+		return result;
+	}*/
 
 	/*
 	 * (non-Javadoc)
@@ -307,7 +355,7 @@ public class SourceServiceProviderFlickr implements
 		result.setSourceAppSecret(GlobalDefaultConfiguration.getInstance()
 				.getFlickrSecret());
 		result.setAuthPagePath(CALLBACK_URL);
-		result.setImagePath(null); // TODO set the default image path
+		result.setImagePath("/services/flickr/images/flickr_100.gif");
 		return result;
 	}
 

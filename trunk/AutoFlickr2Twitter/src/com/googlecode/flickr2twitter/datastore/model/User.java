@@ -6,6 +6,7 @@ package com.googlecode.flickr2twitter.datastore.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
@@ -55,6 +56,9 @@ public class User implements Serializable {
 	
 	@Persistent
 	private List<UserTargetServiceConfig> targetServices;
+	
+	@Persistent
+	private Date lastLoginTime;
 
 	/**
 	 * 
@@ -189,6 +193,14 @@ public class User implements Serializable {
 		if (targetServices == null)
 			targetServices = new ArrayList<UserTargetServiceConfig>();
 		return targetServices.addAll(c);
+	}
+
+	public Date getLastLoginTime() {
+		return lastLoginTime;
+	}
+
+	public void setLastLoginTime(Date lastLoginTime) {
+		this.lastLoginTime = lastLoginTime;
 	}
 
 	/* (non-Javadoc)

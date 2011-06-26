@@ -22,9 +22,11 @@ import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.googlecode.flickr2twitter.datastore.model.GlobalTargetApplicationService;
 import com.googlecode.flickr2twitter.datastore.model.UserTargetServiceConfig;
 import com.googlecode.flickr2twitter.intf.ITargetServiceProvider;
+import com.googlecode.flickr2twitter.model.IDescriptiveItem;
 import com.googlecode.flickr2twitter.model.IGeoItem;
 import com.googlecode.flickr2twitter.model.IItem;
 import com.googlecode.flickr2twitter.model.IItemList;
+import com.googlecode.flickr2twitter.model.ILinkableItem;
 import com.googlecode.flickr2twitter.model.IMedia;
 import com.googlecode.flickr2twitter.model.IPhoto;
 import com.googlecode.flickr2twitter.model.IShortUrl;
@@ -69,6 +71,7 @@ implements ITargetServiceProvider {
 				globalAppConfig.getTargetAppConsumerId(),
 				globalAppConfig.getTargetAppConsumerSecret(), accessToken);
 		Twitter twitter = new TwitterFactory().getInstance(auth);
+		
 		for (IItemList<IItem> itemList : items) {
 			log.info("Processing items from: " + itemList.getListTitle());
 			for (IItem item : itemList.getItems()) {
@@ -84,6 +87,7 @@ implements ITargetServiceProvider {
 									.getGeoData().getLongitude());
 						}
 					}
+					
 					String message = null;
 					if (item instanceof IPhoto) {
 						IPhoto photo = (IPhoto) item;
@@ -105,12 +109,35 @@ implements ITargetServiceProvider {
 							url = BitLyUtils.shortenUrl(media.getUrl());
 						}
 						message += " " + url;
+					} else if (item instanceof IDescriptiveItem) {
+						IDescriptiveItem ditem = (IDescriptiveItem)item;
+						message = ditem.getTitle();
+						String url = ditem.getUrl();
+						if (ditem instanceof IShortUrl) {
+							url = ((IShortUrl) ditem).getShortUrl();
+						} else if (ditem.getUrl().length() > 15){
+							url = BitLyUtils.shortenUrl(ditem.getUrl());
 					}
+						message += " " + url;
+					} else if (item instanceof ILinkableItem) {
+						ILinkableItem litem = (ILinkableItem) item;
+						message = "My new item: " + item.getTitle();
+						String url = litem.getUrl();
+						if (litem instanceof IShortUrl) {
+							url = ((IShortUrl) litem).getShortUrl();
+						} else if (litem.getUrl().length() > 15){
+							url = BitLyUtils.shortenUrl(litem.getUrl());
+						}
+						message += " " + url;
+					} else {
+						message = item.getTitle();
+					}
+					
 					if (message != null) {
 						try {
-							Status status = geoLoc == null ? twitter
-									.updateStatus(message) : twitter.updateStatus(
-											message, geoLoc);
+							Status status = geoLoc == null ? 
+												twitter.updateStatus(message) : 
+												twitter.updateStatus(message, geoLoc);
 									log.info("Successfully updated the status ["
 											+ status.getText() + "] to user @"
 											+ targetConfig.getServiceUserName());
@@ -140,7 +167,7 @@ implements ITargetServiceProvider {
 		result.setTargetAppConsumerSecret(GlobalDefaultConfiguration
 				.getInstance().getTwitterConsumerSecret());
 		result.setAuthPagePath(CALLBACK_URL + "?" + KEY_SOURCE + "=" + Boolean.FALSE);
-		result.setImagePath(null); // TODO set the default image path
+		result.setImagePath("/services/twitter/images/twitter_100.gif");
 		return result;
 	}
 

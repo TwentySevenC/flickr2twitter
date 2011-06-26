@@ -6,7 +6,7 @@ package com.googlecode.flickr2twitter.datastore.model;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
@@ -45,6 +45,12 @@ public abstract class UserServiceConfig {
 	
 	@Persistent
 	private String serviceProviderId;
+	
+	@Persistent
+	private String serviceAccessToken;
+
+	@Persistent
+	private String serviceTokenSecret;
 	
 	@Persistent
 	private String additionalParamsPersitent;
@@ -145,6 +151,22 @@ public abstract class UserServiceConfig {
 	public void setServiceProviderId(String serviceProviderId) {
 		this.serviceProviderId = serviceProviderId;
 	}
+	
+	public String getServiceAccessToken() {
+		return serviceAccessToken;
+	}
+
+	public void setServiceAccessToken(String serviceAccessToken) {
+		this.serviceAccessToken = serviceAccessToken;
+	}
+
+	public String getServiceTokenSecret() {
+		return serviceTokenSecret;
+	}
+
+	public void setServiceTokenSecret(String serviceTokenSecret) {
+		this.serviceTokenSecret = serviceTokenSecret;
+	}
 
 	/**
 	 * @return the additionalParameters
@@ -161,7 +183,7 @@ public abstract class UserServiceConfig {
 	 */
 	public void addAddtionalParameter(String key, String value) throws UnsupportedEncodingException {
 		if (this.additionalParameters == null) {
-			this.additionalParameters = new HashMap<String, String>();
+			this.additionalParameters = new Hashtable<String, String>();
 		}
 		this.additionalParameters.put(key, value);
 		serializeParams();
@@ -176,6 +198,10 @@ public abstract class UserServiceConfig {
 		serializeParams();
 	}
 	
+	public void setAdditionalParamsPersitent(String additionalParamsPersitent) {
+		this.additionalParamsPersitent = additionalParamsPersitent;
+	}
+
 	private void serializeParams() throws UnsupportedEncodingException {
 		StringBuffer buf = new StringBuffer();
 		if (additionalParameters != null && additionalParameters.size() > 0) {
@@ -195,7 +221,7 @@ public abstract class UserServiceConfig {
 	}
 	
 	private Map<String, String> deserializeParams() throws UnsupportedEncodingException {
-		Map<String, String> result = new HashMap<String, String>();
+		Map<String, String> result = new Hashtable<String, String>();
 		if (StringUtils.isNotBlank(this.additionalParamsPersitent)) {
 			String encoding = System.getProperty("file.encoding");
 			for (String data : StringUtils.split(additionalParamsPersitent, "&")) {

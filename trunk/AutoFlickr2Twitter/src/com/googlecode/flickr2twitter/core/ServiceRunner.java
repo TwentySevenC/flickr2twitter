@@ -3,19 +3,22 @@
  */
 package com.googlecode.flickr2twitter.core;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.logging.Logger;
 
-import com.google.appengine.api.labs.taskqueue.Queue;
-import com.google.appengine.api.labs.taskqueue.QueueFactory;
-import com.google.appengine.api.labs.taskqueue.TaskOptions.Builder;
-import com.google.appengine.api.labs.taskqueue.TaskOptions.Method;
+import com.google.appengine.api.taskqueue.Queue;
+import com.google.appengine.api.taskqueue.QueueFactory;
+import com.google.appengine.api.taskqueue.TaskOptions.Builder;
+import com.google.appengine.api.taskqueue.TaskOptions.Method;
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.googlecode.flickr2twitter.datastore.model.GlobalServiceConfiguration;
 import com.googlecode.flickr2twitter.datastore.model.User;
+import com.googlecode.flickr2twitter.datastore.model.UserSourceServiceConfig;
+import com.googlecode.flickr2twitter.datastore.model.UserTargetServiceConfig;
 import com.googlecode.flickr2twitter.servlet.ServiceWorkerServlet;
 
 /**
@@ -54,8 +57,31 @@ public class ServiceRunner {
 				log.warning("No target services configured for the user: " + user);
 				continue;
 			}
+			
+			List<UserSourceServiceConfig> srcConfigs = new ArrayList<UserSourceServiceConfig>(user.getSourceServices().size());
+			for (UserSourceServiceConfig srcConfig : user.getSourceServices()) {
+				if (srcConfig.isEnabled()) {
+					srcConfigs.add(srcConfig);
+				}
+			}
+			if (srcConfigs.isEmpty()) {
+				log.warning("All configured source services have been disabled for the user: " + user);
+				continue;
+			}
+			
+			List<UserTargetServiceConfig> targetConfigs = new ArrayList<UserTargetServiceConfig>(user.getTargetServices().size());
+			for (UserTargetServiceConfig targetConfig : user.getTargetServices()) {
+				if (targetConfig.isEnabled()) {
+					targetConfigs.add(targetConfig);
+				}
+			}
+			if (targetConfigs.isEmpty()) {
+				log.warning("All configured target services have been disabled for the user: " + user);
+				continue;
+			}
+			
 			Queue queue = QueueFactory.getQueue(ServiceWorkerServlet.QUEUE_NAME_WORKER);
-		    queue.add(Builder.url("/tasks/worker")
+		    queue.add(Builder.withUrl("/tasks/worker")
 		    		.param(KEY_USER, user.getUserId().getEmail())
 		    		.param(KEY_TIMESTAMP, String.valueOf(now.getTime()))
 		    		.param(KEY_INTERNVAL, String.valueOf(globalConfig.getMinUploadTime()))

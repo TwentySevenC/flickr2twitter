@@ -5,7 +5,10 @@ package com.googlecode.flickr2twitter.datastore;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,6 +20,7 @@ import javax.jdo.Query;
 import com.google.appengine.api.datastore.Email;
 import com.google.appengine.api.datastore.Key;
 import com.googlecode.flickr2twitter.core.GlobalDefaultConfiguration;
+import com.googlecode.flickr2twitter.core.ServiceRunner;
 import com.googlecode.flickr2twitter.datastore.model.GlobalServiceConfiguration;
 import com.googlecode.flickr2twitter.datastore.model.GlobalSourceApplicationService;
 import com.googlecode.flickr2twitter.datastore.model.GlobalTargetApplicationService;
@@ -131,22 +135,136 @@ public final class MyPersistenceManagerFactory {
 			UserServiceConfig service = result.get(0);
 			service.setEnabled(!service.isEnabled());
 			pm.makePersistent(service);
-			if( type == 0 ) {
-				List<UserSourceServiceConfig> sources = user.getSourceServices();
-				for( UserSourceServiceConfig src : sources ) {
-					if( src.getServiceAccessToken().equals( accessToken )) {
+			if (type == 0) {
+				List<UserSourceServiceConfig> sources = user
+						.getSourceServices();
+				for (UserSourceServiceConfig src : sources) {
+					if (src.getServiceAccessToken().equals(accessToken)) {
 						src.setEnabled(!src.isEnabled());
 					}
 				}
 			} else {
-				List<UserTargetServiceConfig> targets = user.getTargetServices();
-				for( UserTargetServiceConfig tgt : targets ) {
-					if( tgt.getServiceAccessToken().equals( accessToken )) {
+				List<UserTargetServiceConfig> targets = user
+						.getTargetServices();
+				for (UserTargetServiceConfig tgt : targets) {
+					if (tgt.getServiceAccessToken().equals(accessToken)) {
 						tgt.setEnabled(!tgt.isEnabled());
 					}
 				}
 			}
+
+		} finally {
+			pm.close();
+		}
+	}
 			
+	public static void updateUserLoginTime(String userEmail, Date loginTime) throws Exception {
+		PersistenceManagerFactory pmf = MyPersistenceManagerFactory
+				.getInstance();
+		PersistenceManager pm = pmf.getPersistenceManager();
+		try {
+			javax.jdo.Query query = null;
+				query = pm.newQuery(User.class);
+			query.setFilter("userId == email");
+			query.declareParameters("String email");
+			List<User> result = (List<User>) query
+					.execute(userEmail);
+
+			if (result.isEmpty()) {
+				throw new Exception("Can not find this user->" + userEmail);
+			}
+			User user = result.get(0);
+			user.setLastLoginTime(loginTime);
+			pm.makePersistent(user);
+		} finally {
+			pm.close();
+		}
+	}
+	
+	public static void updateLastSourceTime(UserSourceServiceConfig userConfig, Date lastUpdateTime) throws Exception {
+		PersistenceManagerFactory pmf = MyPersistenceManagerFactory
+		.getInstance();
+		PersistenceManager pm = pmf.getPersistenceManager();
+		try {
+			javax.jdo.Query query = null;
+			query = pm.newQuery(UserSourceServiceConfig.class);
+			query.setFilter("serviceAccessToken == atoken && userEmail == userEmailStr");
+			query.declareParameters("String atoken, String userEmailStr");
+			List<UserSourceServiceConfig> result = (List<UserSourceServiceConfig>) query
+			.execute(userConfig.getServiceAccessToken(), userConfig.getUserEmail());
+
+			if (result.isEmpty()) {
+				throw new Exception("Can not find this user source config->" + userConfig.getUserEmail());
+			}
+			UserSourceServiceConfig srcConfig = result.get(0);
+			Calendar past = Calendar.getInstance(TimeZone.getTimeZone(ServiceRunner.TIMEZONE_UTC));
+			past.setTimeInMillis(lastUpdateTime.getTime());
+			srcConfig.setLastUpdateTime(past.getTime());
+			pm.makePersistent(srcConfig);
+		} finally {
+			pm.close();
+		}
+	}
+
+	/**
+	 * @param user
+	 *            the login user
+	 * @param accessToken
+	 *            the access token of the service.
+	 * @param type
+	 *            0: Source service; 1: target service
+	 */
+	public static void deleteUserService(User user, String accessToken, int type)
+			throws Exception {
+		String userEmail = user.getUserId().getEmail();
+		log.info("Deleting user service of user " + userEmail);
+		PersistenceManagerFactory pmf = MyPersistenceManagerFactory
+				.getInstance();
+		PersistenceManager pm = pmf.getPersistenceManager();
+		try {
+			javax.jdo.Query query = null;
+			if (type == 0) {
+				log.info("Deleting source...");
+				query = pm.newQuery(UserSourceServiceConfig.class);
+			} else {
+				query = pm.newQuery(UserTargetServiceConfig.class);
+				log.info("Deleting target service...");
+			}
+			query.setFilter("serviceAccessToken == atoken && userEmail == userEmailStr");
+			query.declareParameters("String atoken, String userEmailStr");
+			List<UserServiceConfig> result = (List<UserServiceConfig>) query
+					.execute(accessToken, userEmail);
+
+			if (result.isEmpty()) {
+				throw new Exception("Can not find this service.");
+			}
+			log.info("Deleting target service...");
+			UserServiceConfig service = result.get(0);
+			pm.deletePersistent(service);
+			if (type == 0) {
+				List<UserSourceServiceConfig> sources = user
+						.getSourceServices();
+				UserSourceServiceConfig delSource = null;
+				for (UserSourceServiceConfig src : sources) {
+					if (src.getServiceAccessToken().equals(accessToken)) {
+						delSource = src;
+					}
+				}
+				if (delSource != null) {
+					sources.remove(delSource);
+				}
+			} else {
+				UserTargetServiceConfig delTarget = null;
+				List<UserTargetServiceConfig> targets = user
+						.getTargetServices();
+				for (UserTargetServiceConfig tgt : targets) {
+					if (tgt.getServiceAccessToken().equals(accessToken)) {
+						delTarget = tgt;
+					}
+				}
+				targets.remove(delTarget);
+			}
+
 		} finally {
 			pm.close();
 		}
@@ -315,6 +433,14 @@ public final class MyPersistenceManagerFactory {
 			if (data != null && data.isEmpty() == false) {
 				User u = (User) data.get(0);
 				log.log(Level.INFO, u.toString());
+				try {
+					updateUserLoginTime(u.getUserId().getEmail(), 
+							Calendar.getInstance(TimeZone.getTimeZone(ServiceRunner.TIMEZONE_UTC)).getTime());
+				} catch (Exception e) {
+					log.warning("Failed to update the user(" 
+							+ u.getUserId().getEmail() + 
+							")'s last login time=>" + e);
+				}
 				return u;
 			}
 		} catch (NoSuchAlgorithmException e) {
@@ -431,6 +557,29 @@ public final class MyPersistenceManagerFactory {
 			pm.close();
 		}
 		return conf;
+	}
+
+	public static boolean deleteOldUserTargetSource(String userServiceID,
+			String userEmail) {
+		PersistenceManagerFactory pmf = MyPersistenceManagerFactory
+				.getInstance();
+		PersistenceManager pm = pmf.getPersistenceManager();
+		try {
+			Query query = pm.newQuery(UserTargetServiceConfig.class);
+			query.setFilter("serviceUserId == currentServiceUserID && userEmail == userEmailAddress");
+
+			query.declareParameters("String currentServiceUserID, String userEmailAddress");
+			List<?> data = (List<?>) query.execute(userServiceID, userEmail);
+			if (data != null) {
+				log.info("Found target service:" + data.size());
+				pm.deletePersistentAll(data);
+				log.info("Target Service deleted.");
+				return true;
+			}
+			return false;
+		} finally {
+			pm.close();
+		}
 	}
 
 }
