@@ -13,9 +13,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
-
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link href="stylesheets/site.css" rel="stylesheet" type="text/css" />
+<link href="stylesheets/style.css" rel="stylesheet" type="text/css" />
+<link href="stylesheets/content.css" rel="stylesheet" type="text/css" />
 <title>Twitter the World - Authorize your Source and Target</title>
 </head>
 <body>

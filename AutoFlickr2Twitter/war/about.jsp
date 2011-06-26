@@ -3,24 +3,24 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="stylesheets/site.css" rel="stylesheet" type="text/css" />
 <link href="stylesheets/style.css" rel="stylesheet" type="text/css" />
-<title>Flickr2Twitter</title>
+<link href="stylesheets/content.css" rel="stylesheet" type="text/css" />
+<title>SocialHub</title>
 </head>
 
 <body>
 <div id="container">
 	<%@ include file="header.jsp"%>
 	<div id="content">
-		<div id="left">
-		<h1>About flickr2twitter</h1>
+		<h1 id="about_">About eBay SocialHub</h1>
+		<hr/>
 		<p>
-		<img src="images/help.jpg"/><br/>
-		Please visit our <a href="http://code.google.com/p/flickr2twitter/">project site</a> and <a href="http://groups.google.com/group/flickr2twitter">Project discussion group</a>.
+			Please visit our <a href="http://code.google.com/p/flickr2twitter/">project site</a> and <a href="http://groups.google.com/group/flickr2twitter">project discussion group</a>.
 		</p>
 		</div>
-
-		<%@ include file="right.jsp"%>
-	</div>
+	
+	<iframe title="YouTube video player" width="480" height="390" src="http://www.youtube.com/embed/WFQjaG5VZWo" frameborder="0" allowfullscreen></iframe>
 	<%@ include file="footer.jsp"%>
 </div>
 </body>

@@ -12,6 +12,25 @@
     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
+  
+  function highlightSelectedMenuItem() {
+	  var path = location.pathname;
+	  var headUl = document.getElementById("header_ul");
+	  var links = headUl.getElementsByTagName("a");
+	  var linkWidth = Math.floor((717 / links.length) - 21);
+	  for(i=0; i<links.length; i++) {
+		  link = links[i];
+		  if(i != (links.length - 1)) {
+		      link.style.width = linkWidth + "px";
+		  } else {
+			  link.id = "last";
+			  link.style.width = 717 - ((linkWidth + 21) * (links.length - 1)) - 20 + "px";
+		  }
+		  if(path.indexOf(link.getAttribute("href")) != -1) {
+			  link.style.backgroundColor="#FEBE43";
+		  }
+	  }
+  }
 </script>
 
 <%
@@ -25,12 +44,10 @@
 %>
 
 <div id="header">
-		<div id="logo_w1">Flickr2Twitter</div>
+		<div id="logo_w1">Social Hub</div>
 		<div id="logo_w2"></div>
-		<div id="header_text">
-			
-		</div>
-		<ul>
+		<div id="header_text"></div>
+		<ul id="header_ul">
 			<li><a href="index.jsp">Home</a></li>
 			<% if (signedIn == true && MyPersistenceManagerFactory
 					.Permission.ADMIN.name().equals(user.getPermission())) {
@@ -40,11 +57,14 @@
 			<%	
 			}
 			%>
-			<li><a href="authorize.jsp">Authorize Source & Target</a></li>
-			<li><a href="user_admin.jsp">Manage Accounts</a></li>
+			<li><a href="authorize.jsp">Authorize</a></li>
+			<li><a href="user_admin.jsp">Manage</a></li>
 			<li><a href="about.jsp">Help</a></li>
 			<% if (signedIn == true) { %>
-			<li><a href="logout.jsp" >Logout <%=user.getScreenName() %></a></li>
+			<li><a href="logout.jsp">Logout</a></li>
 			<% } %>
 		</ul>
+		<script type="text/javascript">
+			highlightSelectedMenuItem();
+		</script>
 </div>

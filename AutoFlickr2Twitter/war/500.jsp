@@ -4,15 +4,16 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="stylesheets/site.css" rel="stylesheet" type="text/css" />
 <link href="stylesheets/style.css" rel="stylesheet" type="text/css" />
-<title>Flickr2Twitter</title>
+<link href="stylesheets/content.css" rel="stylesheet" type="text/css" />
+<title>SocialHub</title>
 </head>
 
 <body>
 <div id="container">
 	<%@ include file="header.jsp"%>
-	<div id="content">
-		
+	<div id="content">		
 		<div id="left">
 			<h1>Oops...</h1>
 			<p>Server Internal Error.</p>
@@ -20,8 +21,6 @@
 			<p/>
 			<p/>
 		</div>
-
-		<%@ include file="right.jsp"%>
 	</div>
 	<%@ include file="footer.jsp"%>
 </div>
