@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.googlecode.flickr2twitter.core.ServiceFactory;
 import com.googlecode.flickr2twitter.datastore.model.User;
 import com.googlecode.flickr2twitter.exceptions.TokenAlreadyRegisteredException;
+import com.googlecode.flickr2twitter.intf.IServiceAuthorizer;
+import com.googlecode.flickr2twitter.intf.ISourceServiceProvider;
 
 /**
  * @author Meng Zang (DeepNightTwo@gmail.com)
@@ -53,8 +55,10 @@ public class OAuthServlet extends HttpServlet {
 		log.info("Current Data: " + data);
 		try {
 			if (sourceProvider == true) {
-				retMsg = ServiceFactory.getSourceServiceProvider(providerId)
-						.readyAuthorization(userEmail, data);
+				ISourceServiceProvider<?> srcProvider = ServiceFactory.getSourceServiceProvider(providerId);
+				if (srcProvider instanceof IServiceAuthorizer) {
+					retMsg = ((IServiceAuthorizer)srcProvider).readyAuthorization(userEmail, data);
+				}
 			} else {
 				retMsg = ServiceFactory.getTargetServiceProvider(providerId)
 						.readyAuthorization(userEmail, data);
@@ -89,8 +93,10 @@ public class OAuthServlet extends HttpServlet {
 			Map<String, Object> data = null;
 			String baseUrl = req.getRequestURL().toString();
 			if (sourceProvider == true) {
-				data = ServiceFactory.getSourceServiceProvider(providerId)
-						.requestAuthorization(baseUrl);
+				ISourceServiceProvider<?> srcProvider = ServiceFactory.getSourceServiceProvider(providerId);
+				if (srcProvider instanceof IServiceAuthorizer) {
+					data = ((IServiceAuthorizer)srcProvider).requestAuthorization(baseUrl);
+				}
 			} else {
 				data = ServiceFactory.getTargetServiceProvider(providerId)
 						.requestAuthorization(baseUrl);
@@ -105,8 +111,10 @@ public class OAuthServlet extends HttpServlet {
 				User user = (User) req.getSession().getAttribute(
 						UserAccountServlet.PARA_SESSION_USER);
 				if (sourceProvider == true) {
-					ServiceFactory.getSourceServiceProvider(providerId)
-							.readyAuthorization(user.getUserId().toString(), data);
+					ISourceServiceProvider<?> srcProvider = ServiceFactory.getSourceServiceProvider(providerId);
+					if (srcProvider instanceof IServiceAuthorizer) {
+						((IServiceAuthorizer)srcProvider).readyAuthorization(user.getUserId().toString(), data);
+					}
 				} else {
 					ServiceFactory.getTargetServiceProvider(providerId)
 							.readyAuthorization(user.getUserId().getEmail(), data);

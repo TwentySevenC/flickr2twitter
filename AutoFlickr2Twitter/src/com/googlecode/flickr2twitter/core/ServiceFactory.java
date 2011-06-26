@@ -5,7 +5,7 @@ package com.googlecode.flickr2twitter.core;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -13,13 +13,14 @@ import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
+import com.googlecode.flickr2twitter.impl.ebay.SourceServiceProviderEbay;
+import com.googlecode.flickr2twitter.impl.ebay.SourceServiceProviderEbayKeywords;
+import com.googlecode.flickr2twitter.impl.ebay.SourceServiceProviderEbayKeywordsSandbox;
+import com.googlecode.flickr2twitter.impl.ebay.SourceServiceProviderEbaySandbox;
+import com.googlecode.flickr2twitter.impl.facebook.TargetServiceProviderFacebook;
 import com.googlecode.flickr2twitter.impl.flickr.SourceServiceProviderFlickr;
-import com.googlecode.flickr2twitter.impl.photobucket.SourceServiceProviderPhotobucket;
-import com.googlecode.flickr2twitter.impl.picasa.SourceServiceProviderPicasa;
 import com.googlecode.flickr2twitter.impl.sina.TargetServiceProviderSina;
-import com.googlecode.flickr2twitter.impl.twitter.SourceServiceProviderTwitter;
 import com.googlecode.flickr2twitter.impl.twitter.TargetServiceProviderTwitter;
-import com.googlecode.flickr2twitter.impl.youtube.SourceServiceProviderYoutube;
 import com.googlecode.flickr2twitter.intf.IServiceProvider;
 import com.googlecode.flickr2twitter.intf.ISourceServiceProvider;
 import com.googlecode.flickr2twitter.intf.ITargetServiceProvider;
@@ -39,15 +40,16 @@ public class ServiceFactory {
 	private static final Collection<ITargetServiceProvider> TARGET_PROVIDERS_List;
 
 	private static final Class<?>[] PROVIDER_CLASSES = {
-			SourceServiceProviderFlickr.class, SourceServiceProviderPicasa.class, 
-			SourceServiceProviderTwitter.class, SourceServiceProviderYoutube.class,
-			SourceServiceProviderPhotobucket.class, 
+		SourceServiceProviderEbay.class, SourceServiceProviderEbayKeywords.class, 
+		SourceServiceProviderEbaySandbox.class, SourceServiceProviderEbayKeywordsSandbox.class,
+		SourceServiceProviderFlickr.class, 
+		TargetServiceProviderFacebook.class,
 			TargetServiceProviderTwitter.class, TargetServiceProviderSina.class};
 
 	static {
-		Map<String, ISourceServiceProvider<IItem>> sourceData = new HashMap<String, ISourceServiceProvider<IItem>>(
+		Map<String, ISourceServiceProvider<IItem>> sourceData = new LinkedHashMap<String, ISourceServiceProvider<IItem>>(
 				2);
-		Map<String, ITargetServiceProvider> targetData = new HashMap<String, ITargetServiceProvider>(
+		Map<String, ITargetServiceProvider> targetData = new LinkedHashMap<String, ITargetServiceProvider>(
 				5);
 
 		for (Class<?> _class : PROVIDER_CLASSES) {

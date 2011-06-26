@@ -4,6 +4,7 @@
 package com.googlecode.flickr2twitter.datastore.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -17,9 +18,12 @@ public class UserSourceServiceConfig extends UserServiceConfig implements
 		Serializable {
 
 	private static final long serialVersionUID = 1L;
-
+	
+	/**
+	 * the last time successfully retrieved a new activity
+	 */
 	@Persistent
-	private String serviceAccessToken;
+	private Date lastUpdateTime;
 
 	/**
 	 * 
@@ -28,33 +32,27 @@ public class UserSourceServiceConfig extends UserServiceConfig implements
 		super();
 	}
 
-	public String getServiceAccessToken() {
-		return serviceAccessToken;
+	public Date getLastUpdateTime() {
+		return lastUpdateTime;
 	}
 
-	public void setServiceAccessToken(String serviceAccessToken) {
-		this.serviceAccessToken = serviceAccessToken;
+	public void setLastUpdateTime(Date lastUpdateTime) {
+		this.lastUpdateTime = lastUpdateTime;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime
-				* result
-				+ ((serviceAccessToken == null) ? 0 : serviceAccessToken
-						.hashCode());
+		result = prime * result
+				+ ((lastUpdateTime == null) ? 0 : lastUpdateTime.hashCode());
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -66,10 +64,10 @@ public class UserSourceServiceConfig extends UserServiceConfig implements
 		if (!(obj instanceof UserSourceServiceConfig))
 			return false;
 		UserSourceServiceConfig other = (UserSourceServiceConfig) obj;
-		if (serviceAccessToken == null) {
-			if (other.serviceAccessToken != null)
+		if (lastUpdateTime == null) {
+			if (other.lastUpdateTime != null)
 				return false;
-		} else if (!serviceAccessToken.equals(other.serviceAccessToken))
+		} else if (!lastUpdateTime.equals(other.lastUpdateTime))
 			return false;
 		return true;
 	}

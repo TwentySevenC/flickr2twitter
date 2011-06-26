@@ -6,6 +6,7 @@ package com.googlecode.flickr2twitter.impl.picasa;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ import com.googlecode.flickr2twitter.datastore.model.User;
 import com.googlecode.flickr2twitter.datastore.model.UserSourceServiceConfig;
 import com.googlecode.flickr2twitter.exceptions.TokenAlreadyRegisteredException;
 import com.googlecode.flickr2twitter.impl.picasa.model.PicasaPhoto;
+import com.googlecode.flickr2twitter.intf.IServiceAuthorizer;
 import com.googlecode.flickr2twitter.intf.ISourceServiceProvider;
 import com.googlecode.flickr2twitter.model.IPhoto;
 import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
@@ -34,7 +36,7 @@ import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
  * @author Toby Yu(yuyang226@gmail.com)
  *
  */
-public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhoto> {
+public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhoto>, IServiceAuthorizer {
 	public static final String ID = "picasa";
 	public static final String DISPLAY_NAME = "Picasa Web Album";
 	
@@ -72,13 +74,17 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 		webService.setAuthSubToken(sessionToken, null);
 		URL feedUrl = new URL(URL_ACTIVITIES);
 
+		Date pastTime = sourceService.getLastUpdateTime();
+		if (pastTime == null) {
 		Calendar past = Calendar.getInstance(TimeZone.getTimeZone(ServiceRunner.TIMEZONE_UTC));
 		long newTime = currentTime - globalConfig.getMinUploadTime();
 		past.setTimeInMillis(newTime);
+			pastTime = past.getTime();
+		}
 
 		AlbumFeed feed = webService.getFeed(feedUrl, AlbumFeed.class);
 		log.info("Trying to find photos uploaded for user " + sourceService.getServiceUserId()
-				+ " after " + past.getTime().toString() + " from "
+				+ " after " + pastTime.toString() + " from "
 				+ feed.getPhotoEntries().size() + " new photos");
 		List<IPhoto> photos = new ArrayList<IPhoto>();
 		
@@ -87,7 +93,7 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 			log.fine("processing photo: " + photo.getTitle().getPlainText()
 					+ ", date uploaded: " + pPhoto.getDatePosted());
 			//TODO check whether the photo is private
-			if (pPhoto.getDatePosted().after(past.getTime())) {
+			if (pPhoto.getDatePosted().after(pastTime)) {
 				
 					log.info(photo.getTitle() + ", URL: " + pPhoto.getUrl()
 							+ ", date uploaded: " + pPhoto.getDatePosted()
@@ -206,7 +212,7 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 		result.setSourceAppApiKey(CONSUMER_KEY);
 		result.setSourceAppSecret(CONSUMER_SECRET);
 		result.setAuthPagePath(CALLBACK_URL);
-		result.setImagePath(null); // TODO set the default image path
+		result.setImagePath("/services/picasa/images/picasa_100.gif");
 		return result;
 	}
 

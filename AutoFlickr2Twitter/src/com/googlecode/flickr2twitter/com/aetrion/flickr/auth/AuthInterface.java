@@ -4,6 +4,17 @@
 
 package com.googlecode.flickr2twitter.com.aetrion.flickr.auth;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
+
 import com.googlecode.flickr2twitter.com.aetrion.flickr.FlickrException;
 import com.googlecode.flickr2twitter.com.aetrion.flickr.Parameter;
 import com.googlecode.flickr2twitter.com.aetrion.flickr.Response;
@@ -12,17 +23,6 @@ import com.googlecode.flickr2twitter.com.aetrion.flickr.people.User;
 import com.googlecode.flickr2twitter.com.aetrion.flickr.util.UrlUtilities;
 import com.googlecode.flickr2twitter.com.aetrion.flickr.util.XMLUtilities;
 import com.googlecode.flickr2twitter.com.twmacinta.util.MD5;
-
-import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Authentication interface.
@@ -35,6 +35,7 @@ public class AuthInterface {
     public static final String METHOD_GET_FROB = "flickr.auth.getFrob";
     public static final String METHOD_GET_TOKEN = "flickr.auth.getToken";
     public static final String METHOD_GET_FULL_TOKEN = "flickr.auth.getFullToken";
+    public static final String METHOD_GET_ACCESS_TOKEN = "flickr.auth.oauth.getAccessToken";
 
     private String apiKey;
     private String sharedSecret;
@@ -190,7 +191,7 @@ public class AuthInterface {
         Element authElement = response.getPayload();
         auth.setToken(XMLUtilities.getChildValue(authElement, "token"));
         auth.setPermission(Permission.fromString(XMLUtilities.getChildValue(authElement, "perms")));
-
+        
         Element userElement = XMLUtilities.getChild(authElement, "user");
         User user = new User();
         user.setId(userElement.getAttribute("nsid"));
@@ -199,6 +200,35 @@ public class AuthInterface {
         auth.setUser(user);
 
         return auth;
+    }
+    
+    /**
+     * Exchange an auth token from the old Authentication API, to an OAuth access token. 
+     * Calling this method will delete the auth token used to make the request.
+     *
+     * @return the new oauth token
+     * @throws IOException
+     * @throws SAXException
+     * @throws FlickrException
+     */
+    public OAuth getOAuthRequestToken(String userOAuthToken) throws IOException, SAXException, FlickrException {
+    	 List<Parameter> parameters = new ArrayList<Parameter>();
+         parameters.add(new Parameter("method", METHOD_GET_ACCESS_TOKEN));
+         parameters.add(new Parameter("api_key", apiKey));
+         parameters.add(new Parameter("auth_token", userOAuthToken));
+
+         // This method call must be signed.
+         parameters.add(new Parameter("api_sig", AuthUtilities.getSignature(sharedSecret, parameters)));
+
+         Response response = transportAPI.get(transportAPI.getPath(), parameters);
+         if (response.isError()) {
+             throw new FlickrException(response.getErrorCode(), response.getErrorMessage());
+         }
+         Element authElement = response.getPayload();
+         Element tokenElement = XMLUtilities.getChild(authElement, "access_token");
+         String oauthToken = tokenElement.getAttribute("oauth_token");
+         String tokenSecret = tokenElement.getAttribute("oauth_token_secret");
+         return new OAuth(oauthToken, tokenSecret);
     }
 
 

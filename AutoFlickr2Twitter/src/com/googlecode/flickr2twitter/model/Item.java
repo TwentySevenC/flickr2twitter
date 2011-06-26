@@ -7,7 +7,7 @@ package com.googlecode.flickr2twitter.model;
  * @author Toby Yu(yuyang226@gmail.com)
  *
  */
-public class Item implements IItem {
+public abstract class Item implements IItem {
 	private static final long serialVersionUID = 1L;
 	
 	private String id;

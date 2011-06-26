@@ -155,7 +155,7 @@ IServiceProvider<GlobalTargetApplicationService> {
 		result.setTargetAppConsumerId("flickr2twitter@googlegroups.com");
 		result.setTargetAppConsumerSecret("flickr2twitter@googlegroups.com");
 		result.setAuthPagePath(null); // TODO set the default auth page path
-		result.setImagePath(null); // TODO set the default image path
+		result.setImagePath("/services/email/images/gmail_icon_50.png");
 		return result;
 	}
 
