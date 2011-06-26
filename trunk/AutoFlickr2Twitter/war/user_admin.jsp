@@ -5,8 +5,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="stylesheets/site.css" rel="stylesheet" type="text/css" />
 <link href="stylesheets/style.css" rel="stylesheet" type="text/css" />
-<title>Flickr2Twitter</title>
+<link href="stylesheets/content.css" rel="stylesheet" type="text/css" />
+<title>SocialHub</title>
 </head>
 
 <body>
@@ -19,59 +21,87 @@
 			return;
 		}
 		
+		// 20110316#bishen: force to reload source/target configs by user email 
 		List<UserSourceServiceConfig> sourceSvcs = MyPersistenceManagerFactory
-				.getUserSourceServices(user);
+				.getUserSourceServices(user.getUserId().getEmail());
 		List<UserTargetServiceConfig> targetSvcs = MyPersistenceManagerFactory
-				.getUserTargetServices(user);
+				.getUserTargetServices(user.getUserId().getEmail());
 	%>
 	<div id="content">
-		<div id="left">
-		<h1>Manage your accounts</h1>
+		<h1>Manage Accounts</h1>
 		<p>
-		<ul>
-		<li>Source</li>
-		<p/>
-		<table class="nobordertable" width="100%">
+			With all authorized accounts listed here, you can either disable/enable them or delete the accounts permanently.
+		</p>
+		<hr/>
+		<div id="middle">
+			<h3 class="source">Source</h3>
+			<br/>
+			<table class="no_border_table">
 		<%
 			boolean odd = true;
+				if ( sourceSvcs.size() == 0 ) {
+			%>
+				<tr>
+					<td class="first" bgcolor="#DAFF7F"/>
+					<td bgcolor="#DAFF7F"/>
+					<td bgcolor="#DAFF7F"/>
+				</tr>
+			<%
+				odd = false;
+				}
 			for( UserSourceServiceConfig src : sourceSvcs ) {
 		%>
 			<tr>
-				<td width="60%" <%if(odd) {%>bgcolor="#CDCDCD"<%}else{%>bgcolor="AEAEAE"<%}%>>
+					<td class="first" <%if(odd) {%>bgcolor="#DAFF7F"<%}else{%>bgcolor="#FFE97F"<%}%>>
 					<a target="_new" href="<%=src.getUserSiteUrl()%>"><%=src.getServiceUserName()%>@<%=src.getServiceProviderId().toUpperCase()%></a>
 				</td>
-				<td <%if(odd) {%>bgcolor="#CDCDCD"<%}else{%>bgcolor="AEAEAE"<%}%>>
-					<a href="srctgtmgr?at=<%=src.getServiceAccessToken()%>&type=0"><%=src.isEnabled()?"Disable":"Enable"%>
+					<td <%if(odd) {%>bgcolor="#DAFF7F"<%}else{%>bgcolor="#FFE97F"<%}%>>
+						<a href="srctgtmgr?at=<%=src.getServiceAccessToken()%>&type=0"><%=src.isEnabled()?"Disable":"Enable"%></a>
 				</td>
+					<td <%if(odd) {%>bgcolor="#DAFF7F"<%}else{%>bgcolor="#FFE97F"<%}%>>
+						<a href="delete?at=<%=src.getServiceAccessToken()%>&type=0">Delete</a>
+					</td>
 			</tr>
 		<%
 			odd = !odd;
 			}
 		%>
-		</table><p/>
-		<li>Target</li>
+			</table>
 		<p/>
-		<table class="nobordertable" width="100%"><p/>
+			<h3 class="target">Target</h3>
+			<br/>
+			<table class="no_border_table">
 		<%
+				odd = true;
+				if ( targetSvcs.size() == 0 ) {
+			%>
+				<tr>
+					<td class="first" bgcolor="#DAFF7F"/>
+					<td bgcolor="#DAFF7F"/>
+					<td bgcolor="#DAFF7F"/>
+				</tr>
+			<%
+				odd = false;
+				}
 			for( UserTargetServiceConfig tgt : targetSvcs ) {
 		%>
 			<tr>
-				<td width="60%" <%if(odd) {%>bgcolor="#CDCDCD"<%}else{%>bgcolor="AEAEAE"<%}%>>
+					<td class="first" <%if(odd) {%>bgcolor="#DAFF7F"<%}else{%>bgcolor="#FFE97F"<%}%>>
 					<a target="_new" href="<%=tgt.getUserSiteUrl()%>"><%=tgt.getServiceUserName()%>@<%=tgt.getServiceProviderId().toUpperCase()%></a>
 				</td>
-				<td <%if(odd) {%>bgcolor="#CDCDCD"<%}else{%>bgcolor="AEAEAE"<%}%>>
-					<a href="srctgtmgr?at=<%=tgt.getServiceAccessToken()%>&type=1"><%=tgt.isEnabled()?"Disable":"Enable"%>
+					<td <%if(odd) {%>bgcolor="#DAFF7F"<%}else{%>bgcolor="#FFE97F"<%}%>>
+						<a href="srctgtmgr?at=<%=tgt.getServiceAccessToken()%>&type=1"><%=tgt.isEnabled()?"Disable":"Enable"%></a>
 				</td>
+					<td <%if(odd) {%>bgcolor="#DAFF7F"<%}else{%>bgcolor="#FFE97F"<%}%>>
+						<a href="delete?at=<%=tgt.getServiceAccessToken()%>&type=1">Delete</a>
+					</td>
 			</tr>
 		<%
 			odd = !odd;
 			}
 		%>
-		</ul>
-		</table><p/>
+			</table>
 		</div>
-
-		<%@ include file="right.jsp"%>
 	</div>
 	<%@ include file="footer.jsp"%>
 </div>

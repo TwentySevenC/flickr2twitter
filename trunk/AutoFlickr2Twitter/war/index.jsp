@@ -3,8 +3,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link href="stylesheets/site.css" rel="stylesheet" type="text/css" />
 <link href="stylesheets/style.css" rel="stylesheet" type="text/css" />
-<title>Flickr2Twitter</title>
+<link href="stylesheets/content.css" rel="stylesheet" type="text/css" />
+<title>SocialHub</title>
 </head>
 
 <body>
@@ -14,51 +16,64 @@
 		<%
 			if(!signedIn) {
 		%>
+		<h1>Welcome to SocialHub</h1>
+		<hr/>
+		<br/>
 		<div id="left">
-			<h1>Welcome to flickr2twitter</h1>
-			<p>You need to sign in first, if you don't have an account here yet, you can use your google or yahoo account to sign in directly.</p>
-			<p/>
 			<form action="/userOperation" method="post" name="frmSign">
-				<table class="border_table">
+				<table id="index_signin" class="border_table">
 					<tr>
-						<td>User Name:</td>
+						<td class="first">User Name:</td>
 						<td><input type="text" name="<%=UserAccountServlet.PARA_EMAIL%>"></input></td>
 					</tr>
 					<tr>
 						<td>Password:</td>
 						<td><input type="password" name="<%=UserAccountServlet.PARA_PASSWORD%>"></input><input
 							type="hidden" name="<%=UserAccountServlet.PARA_OPT%>" value="<%=UserAccountServlet.OPT_LOGIN%>"></input></td>
-
+	
 					</tr>
 					<tr>
 						<td></td>
 						<td>
-							<a href="#" onclick="frmSign.submit();"><img src="images/signin_Button.jpg"/></a>
+							<a href="#" onclick="frmSign.submit();"><img src="/images/button_signin.png" alt=""/></a>
 						</td>
 					</tr>
 				</table>
 			</form>
-			<p>Or sign in with open ID account:</p>
-			<a href="/openid?op=Google" ><img border="0" src="http://openid.net/images/get-logos/google.png" alt="Google"></a><br/>
-			<a href="/openid?op=Yahoo" ><img border="0" src="http://openid.net/wordpress-content/uploads/2009/11/yahoo.png" alt="Yahoo"></a>
-			<p/>
+			<img id="or" src="/images/label_or.png" alt=""/>
+		</div>
+		<div id="right">
+			<table class="border_table">
+				<tr class="first">
+					<td>Sign In by OpenID</td>
+				</tr>
+				<tr>
+					<td>
+						<a href="/openid?op=Google" ><img border="0" src="/images/openid_google.png" alt="Google"/></a>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<a href="/openid?op=Yahoo" ><img border="0" src="/images/openid_yahoo.png" alt="Yahoo"/></a>
+					</td>
+				</tr>
+			</table>
 		</div>
 		<%
 		} else { //user already signed in.
 		%>
-		<div id="left">
-			<h1>Welcome to flickr2twitter, <%=user.getScreenName()%>.</h1>
-			<p>Now you can authorize your source and target account if you have not done so, or you can manage your accounts.</p>
-			<p/>
-			<p/>
+		<h1>Welcome to SocialHub, <%=user.getScreenName()%>.</h1>
+		<% if (user.getLastLoginTime() != null) { %>
+		<p>Last successful login time: <%=String.valueOf(user.getLastLoginTime())%>.</p>
+		<% } %>
 			<hr/>
-			<p/>
-			<a href="logout.jsp" class="signoutbutton">Exit</a>			
-		</div>
+		<p>Now you can <a href="/authorize.jsp">authorize</a> your source and target account if you have not done so, or you can <a href="/user_admin.jsp">manage</a> your accounts.</p>
+		<p>
+			<a href="logout.jsp"><img src="/images/button_logout.png" alt=""/></a>
+		</p>
 		<%
 		}
 		%>
-		<%@ include file="right.jsp"%>
 	</div>
 	<%@ include file="footer.jsp"%>
 </div>

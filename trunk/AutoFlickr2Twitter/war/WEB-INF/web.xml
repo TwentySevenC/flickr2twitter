@@ -29,6 +29,15 @@
 		<servlet-name>sinacallback</servlet-name>
 		<url-pattern>/sinacallback</url-pattern>
 	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>delete</servlet-name>
+		<servlet-class>com.googlecode.flickr2twitter.servlet.DeleteSourceTargetServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>delete</servlet-name>
+		<url-pattern>/delete</url-pattern>
+	</servlet-mapping>
 
 	<servlet>
 		<servlet-name>userOperation</servlet-name>
@@ -65,7 +74,7 @@
 		<servlet-name>workerServlet</servlet-name>
 		<url-pattern>/tasks/worker</url-pattern>
 	</servlet-mapping>
-	
+
 	<servlet>
 		<servlet-name>srctgtmgr</servlet-name>
 		<servlet-class>com.googlecode.flickr2twitter.servlet.UserSourceTargetMgrServlet</servlet-class>
@@ -73,6 +82,24 @@
 	<servlet-mapping>
 		<servlet-name>srctgtmgr</servlet-name>
 		<url-pattern>/srctgtmgr</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>ebayConfig</servlet-name>
+		<servlet-class>com.googlecode.flickr2twitter.servlet.EbayConfigServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ebayConfig</servlet-name>
+		<url-pattern>/ebayConfig</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>ebayConfigkeywords</servlet-name>
+		<servlet-class>com.googlecode.flickr2twitter.servlet.EbayConfigKeywordsServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ebayConfigkeywords</servlet-name>
+		<url-pattern>/ebayConfigkeywords</url-pattern>
 	</servlet-mapping>
 
 	<security-constraint>
@@ -88,12 +115,12 @@
 		<exception-type>java.lang.Exception</exception-type>
 		<location>/error.jsp</location>
 	</error-page>
-	
+
 	<error-page>
 		<error-code>404</error-code>
 		<location>/404.jsp</location>
 	</error-page>
-	
+
 	<error-page>
 		<error-code>500</error-code>
 		<location>/500.jsp</location>
@@ -103,5 +130,23 @@
 	<welcome-file-list>
 		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
+
+	<!-- Application class name -->
+	<context-param>
+		<param-name>org.restlet.application</param-name>
+		<param-value>com.googlecode.flickr2twitter.services.rest.SocialHubRestletApplication</param-value>
+	</context-param>
+
+	<!-- Restlet adapter -->
+	<servlet>
+		<servlet-name>RestletServlet</servlet-name>
+		<servlet-class>org.restlet.ext.servlet.ServerServlet</servlet-class>
+	</servlet>
+
+	<!-- Catch all requests -->
+	<servlet-mapping>
+		<servlet-name>RestletServlet</servlet-name>
+		<url-pattern>/rest/*</url-pattern>
+	</servlet-mapping>
 
 </web-app>
