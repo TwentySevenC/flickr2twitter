@@ -6,10 +6,10 @@ package com.googlecode.flickr2twitter.com.aetrion.flickr;
 import java.util.Collection;
 import java.util.Iterator;
 
-import com.googlecode.flickr2twitter.com.aetrion.flickr.util.XMLUtilities;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import com.googlecode.flickr2twitter.com.aetrion.flickr.util.XMLUtilities;
 
 /**
  * Flickr Response object.

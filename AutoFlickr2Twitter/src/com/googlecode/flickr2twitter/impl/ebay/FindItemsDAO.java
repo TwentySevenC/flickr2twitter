@@ -5,7 +5,6 @@ package com.googlecode.flickr2twitter.impl.ebay;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;

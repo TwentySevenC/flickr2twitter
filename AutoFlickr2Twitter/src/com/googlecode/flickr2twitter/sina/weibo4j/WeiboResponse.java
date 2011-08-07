@@ -26,17 +26,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.googlecode.flickr2twitter.sina.weibo4j;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import com.googlecode.flickr2twitter.sina.weibo4j.http.HTMLEntity;
-import com.googlecode.flickr2twitter.sina.weibo4j.http.Response;
-import com.googlecode.flickr2twitter.sina.weibo4j.org.json.JSONException;
-import com.googlecode.flickr2twitter.sina.weibo4j.org.json.JSONObject;
-
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.text.ParseException;
@@ -46,6 +35,16 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import com.googlecode.flickr2twitter.sina.weibo4j.http.HTMLEntity;
+import com.googlecode.flickr2twitter.sina.weibo4j.http.Response;
+import com.googlecode.flickr2twitter.sina.weibo4j.org.json.JSONException;
+import com.googlecode.flickr2twitter.sina.weibo4j.org.json.JSONObject;
 
 /**
  * Super class of Weibo Response objects.

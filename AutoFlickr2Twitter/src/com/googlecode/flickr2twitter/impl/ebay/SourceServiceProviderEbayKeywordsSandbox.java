@@ -3,7 +3,6 @@
  */
 package com.googlecode.flickr2twitter.impl.ebay;
 
-import twitter4j.internal.logging.Logger;
 
 /**
  * @author yayu

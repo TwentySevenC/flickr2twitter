@@ -27,11 +27,6 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.googlecode.flickr2twitter.sina.weibo4j.http;
 
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-
-import com.googlecode.flickr2twitter.sina.weibo4j.Configuration;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -42,6 +37,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
+import com.googlecode.flickr2twitter.sina.weibo4j.Configuration;
 
 /**
  * @author Yusuke Yamamoto - yusuke at mac.com

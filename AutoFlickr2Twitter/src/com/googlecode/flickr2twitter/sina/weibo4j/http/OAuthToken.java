@@ -27,11 +27,11 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package com.googlecode.flickr2twitter.sina.weibo4j.http;
 
 
+import java.io.Serializable;
+
 import javax.crypto.spec.SecretKeySpec;
 
 import com.googlecode.flickr2twitter.sina.weibo4j.WeiboException;
-
-import java.io.Serializable;
 
 abstract class OAuthToken implements Serializable {
     
