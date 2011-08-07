@@ -4,9 +4,9 @@
 
 package com.googlecode.flickr2twitter.com.aetrion.flickr.auth;
 
-import com.googlecode.flickr2twitter.com.aetrion.flickr.people.User;
-
 import java.io.Serializable;
+
+import com.googlecode.flickr2twitter.com.aetrion.flickr.people.User;
 
 /**
  * @author Anthony Eden
