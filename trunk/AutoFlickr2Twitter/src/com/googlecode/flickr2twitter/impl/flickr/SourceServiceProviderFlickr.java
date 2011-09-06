@@ -5,6 +5,8 @@ package com.googlecode.flickr2twitter.impl.flickr;
 
 import java.io.IOException;
 import java.net.URL;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -18,20 +20,16 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.logging.Logger;
 
-import org.xml.sax.SAXException;
-
-import com.googlecode.flickr2twitter.com.aetrion.flickr.Flickr;
-import com.googlecode.flickr2twitter.com.aetrion.flickr.FlickrException;
-import com.googlecode.flickr2twitter.com.aetrion.flickr.REST;
-import com.googlecode.flickr2twitter.com.aetrion.flickr.RequestContext;
-import com.googlecode.flickr2twitter.com.aetrion.flickr.auth.Auth;
-import com.googlecode.flickr2twitter.com.aetrion.flickr.auth.AuthInterface;
-import com.googlecode.flickr2twitter.com.aetrion.flickr.auth.Permission;
-import com.googlecode.flickr2twitter.com.aetrion.flickr.photos.Extras;
-import com.googlecode.flickr2twitter.com.aetrion.flickr.photos.Photo;
-import com.googlecode.flickr2twitter.com.aetrion.flickr.photos.PhotoList;
-import com.googlecode.flickr2twitter.com.aetrion.flickr.photos.PhotosInterface;
-import com.googlecode.flickr2twitter.com.aetrion.flickr.tags.Tag;
+import com.aetrion.flickr.Flickr;
+import com.aetrion.flickr.FlickrException;
+import com.aetrion.flickr.REST;
+import com.aetrion.flickr.RequestContext;
+import com.aetrion.flickr.auth.Permission;
+import com.aetrion.flickr.photos.Extras;
+import com.aetrion.flickr.photos.Photo;
+import com.aetrion.flickr.photos.PhotoList;
+import com.aetrion.flickr.photos.PhotosInterface;
+import com.aetrion.flickr.tags.Tag;
 import com.googlecode.flickr2twitter.core.GlobalDefaultConfiguration;
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.googlecode.flickr2twitter.datastore.model.GlobalServiceConfiguration;
@@ -39,10 +37,15 @@ import com.googlecode.flickr2twitter.datastore.model.GlobalSourceApplicationServ
 import com.googlecode.flickr2twitter.datastore.model.User;
 import com.googlecode.flickr2twitter.datastore.model.UserSourceServiceConfig;
 import com.googlecode.flickr2twitter.exceptions.TokenAlreadyRegisteredException;
+import com.googlecode.flickr2twitter.impl.flickr.model.FlickrPhoto;
 import com.googlecode.flickr2twitter.intf.IServiceAuthorizer;
 import com.googlecode.flickr2twitter.intf.ISourceServiceProvider;
 import com.googlecode.flickr2twitter.model.IPhoto;
 import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
+import com.yuyang226.flickr.oauth.OAuth;
+import com.yuyang226.flickr.oauth.OAuthInterface;
+import com.yuyang226.flickr.oauth.OAuthToken;
+import com.yuyang226.flickr.org.json.JSONException;
 
 /**
  * @author Toby Yu(yuyang226@gmail.com)
@@ -52,11 +55,22 @@ public class SourceServiceProviderFlickr implements
 		ISourceServiceProvider<IPhoto>, IServiceAuthorizer {
 	public static final String ID = "flickr";
 	public static final String DISPLAY_NAME = "Flickr";
-	public static final String KEY_FROB = "frob";
+	public static final String KEY_REQUEST_TOKEN = "request_token";
+	public static final String KEY_TOKEN_SECRET = "token_secret";
+	public static final String KEY_TOKEN_VERIFIER = "oauth_verifier";
+	public static final String KEY_OAUTH_TOKEN = "oauth_token";
 	public static final String KEY_FILTER_TAGS = "filter_tags";
 	public static final String TAGS_DELIMITER = ",";
 	public static final String TIMEZONE_CST = "CST";
 	public static final String TIMEZONE_GMT = "GMT";
+	
+	public static final String HOST_OAUTH = "www.flickr.com";
+	public static final String PATH_OAUTH_REQUEST_TOKEN = "/services/oauth/request_token";
+	public static final String PATH_OAUTH_ACCESS_TOKEN = "/services/oauth/access_token";
+	public static final String PATH_OAUTH_AUTHORIZE = "/services/oauth/authorize";
+	public static final String URL_REQUEST_TOKEN = "http://" + HOST_OAUTH + PATH_OAUTH_REQUEST_TOKEN;
+	public static final String URL_ACCESS_TOKEN = "http://" + HOST_OAUTH + PATH_OAUTH_ACCESS_TOKEN;
+	public static final String URL_AUTHORIZE = "http://" + HOST_OAUTH + PATH_OAUTH_AUTHORIZE;
 	
 	public static final String CALLBACK_URL = "flickrcallback.jsp";
 	private static final Logger log = Logger.getLogger(SourceServiceProviderFlickr.class.getName());
@@ -69,14 +83,15 @@ public class SourceServiceProviderFlickr implements
 	}
 
 	private List<IPhoto> showRecentPhotos(Flickr f, UserSourceServiceConfig sourceService, 
-			long interval, long currentTime) throws IOException, SAXException, FlickrException {
+			long interval, long currentTime) throws IOException, JSONException, FlickrException, InvalidKeyException, NoSuchAlgorithmException {
 		String userId = sourceService.getServiceUserId();
-		String token = sourceService.getServiceAccessToken();
 		RequestContext requestContext = RequestContext.getRequestContext();
-		Auth auth = new Auth();
-		auth.setPermission(Permission.READ);
-		auth.setToken(token);
-		requestContext.setAuth(auth);
+		OAuth auth = new OAuth();
+		//auth.setPermission(Permission.READ);
+		OAuthToken oauthToken = new OAuthToken(sourceService.getServiceAccessToken(), 
+				sourceService.getServiceTokenSecret());
+		auth.setToken(oauthToken);
+		requestContext.setOAuth(auth);
 		List<IPhoto> photos = new ArrayList<IPhoto>();
 		List<String> filterTags = new ArrayList<String>();
 		Map<String, String> additionalParams = sourceService.getAdditionalParameters();
@@ -117,24 +132,24 @@ public class SourceServiceProviderFlickr implements
 		PhotoList list = photosFace.recentlyUpdated(pastTime, extras, 100,
 				1);
 		
-		log.info("Trying to find photos uploaded for user " + userId
-				+ " after " + pastTime.toString() + " from "
-				+ list.getTotal() + " new photos");
+		log.info(new StringBuilder("Trying to find photos uploaded for user ").append(userId)
+				.append(" after ").append(pastTime.toString()).append(" from ")
+				.append(list.getTotal()).append(" new photos").toString());
 		for (Object obj : list) {
 			if (obj instanceof Photo) {
 				Photo photo = (Photo) obj;
 				
-				log.info("processing photo: " + photo.getTitle()
-						+ ", date uploaded: " + photo.getDatePosted());
+				log.info(new StringBuilder("processing photo: ").append(photo.getTitle())
+						.append(", date uploaded: ").append(photo.getDatePosted()).toString());
 				if (photo.isPublicFlag() && photo.getDatePosted().after(pastTime)) {
 					if (!filterTags.isEmpty() && containsTags(filterTags, photo.getTags()) == false) {
 						log.warning("Photo does not contains the required tags, contained tags are: " 
 								+ photo.getTags());
 					} else {
-						log.info(photo.getTitle() + ", URL: " + photo.getUrl()
-								+ ", date uploaded: " + photo.getDatePosted()
-								+ ", GEO: " + photo.getGeoData());
-						photos.add(photo);
+						log.info(new StringBuilder(photo.getTitle()).append(", URL: ").append(photo.getUrl())
+								.append(", date uploaded: ").append(photo.getDatePosted())
+								.append(", GEO: ").append(photo.getGeoData()).toString());
+						photos.add(new FlickrPhoto(photo));
 					}
 				} else {
 					log.warning("private photo will not be posted: " + photo.getTitle());
@@ -192,10 +207,6 @@ public class SourceServiceProviderFlickr implements
 		REST transport = new REST();
 		Flickr f = new Flickr(globalSvcConfig.getSourceAppApiKey(),
 				globalSvcConfig.getSourceAppSecret(), transport);
-		transport.setAllowCache(false);
-
-		Flickr.debugRequest = false;
-		Flickr.debugStream = false;
 		return showRecentPhotos(f, sourceService,
 				globalConfig.getMinUploadTime(), currentTime);
 	}
@@ -210,7 +221,9 @@ public class SourceServiceProviderFlickr implements
 	@Override
 	public String readyAuthorization(String userEmail, Map<String, Object> data)
 			throws Exception {
-		if (data == null || data.containsKey(KEY_FROB) == false) {
+		if (data == null || data.containsKey(KEY_TOKEN_VERIFIER) == false
+				|| data.containsKey(KEY_OAUTH_TOKEN) == false
+				|| data.containsKey(KEY_TOKEN_SECRET) == false) {
 			throw new IllegalArgumentException("Invalid data: " + data);
 		}
 		User user = MyPersistenceManagerFactory.getUser(userEmail);
@@ -221,43 +234,47 @@ public class SourceServiceProviderFlickr implements
 		Flickr f = new Flickr(GlobalDefaultConfiguration.getInstance()
 				.getFlickrApiKey(), GlobalDefaultConfiguration.getInstance()
 				.getFlickrSecret(), new REST());
-		String frob = String.valueOf(data.get(KEY_FROB));
-		AuthInterface authInterface = f.getAuthInterface();
-		Auth auth = authInterface.getToken(frob);
+		String token = String.valueOf(data.get(KEY_OAUTH_TOKEN));
+		String tokenSecret = String.valueOf(data.get(KEY_TOKEN_SECRET));
+		String oauthVerifier = String.valueOf(data.get(KEY_TOKEN_VERIFIER));
+		OAuthInterface authInterface = f.getOAuthInterface();
+		OAuth oauth = authInterface.getAccessToken(new OAuthToken(token, tokenSecret), oauthVerifier);
+		com.aetrion.flickr.people.User flickrUser = oauth.getUser();
+		RequestContext.getRequestContext().setOAuth(oauth);
+		if (flickrUser == null) {
+			flickrUser = authInterface.testLogin();
+		}
+		String photosUrl = flickrUser.getPhotosurl();
+		if (photosUrl == null) {
+			photosUrl = "http://www.flickr.com/photos/" + flickrUser.getId();
+		}
 		StringBuffer buf = new StringBuffer();
 		buf.append("Authentication success\n");
 		// This token can be used until the user revokes it.
-		buf.append("Token: " + auth.getToken());
+		buf.append("Token: " + oauth.getToken());
 		buf.append("\n");
-		buf.append("nsid: " + auth.getUser().getId());
+		buf.append("nsid: " + flickrUser.getId());
 		buf.append("\n");
-		buf.append("Realname: " + auth.getUser().getRealName());
+		buf.append("User Site: " + photosUrl);
 		buf.append("\n");
-		buf.append("User Site: " + auth.getUser().getPhotosurl());
-		buf.append("\n");
-		buf.append("Username: " + auth.getUser().getUsername());
-		buf.append("\n");
-		buf.append("Permission: " + auth.getPermission().getType());
+		buf.append("Username: " + flickrUser.getUsername());
 
-		String userId = auth.getUser().getId();
+		String userId = flickrUser.getId();
 		for (UserSourceServiceConfig service : MyPersistenceManagerFactory
 				.getUserSourceServices(user)) {
-			if (auth.getToken().equals(service.getServiceAccessToken())) {
-				throw new TokenAlreadyRegisteredException(auth.getToken(), auth
+			if (oauth.getToken().getOauthToken().equals(service.getServiceAccessToken())) {
+				throw new TokenAlreadyRegisteredException(oauth.getToken().getOauthToken(), oauth
 						.getUser().getUsername());
 			}
 		}
 		UserSourceServiceConfig serviceConfig = new UserSourceServiceConfig();
 		serviceConfig.setServiceUserId(userId);
-		serviceConfig.setServiceUserName(auth.getUser().getUsername());
-		serviceConfig.setServiceAccessToken(auth.getToken());
+		serviceConfig.setServiceUserName(flickrUser.getUsername());
+		serviceConfig.setServiceAccessToken(oauth.getToken().getOauthToken());
+		serviceConfig.setServiceTokenSecret(oauth.getToken().getOauthTokenSecret());
 		serviceConfig.setServiceProviderId(ID);
 		serviceConfig.setUserEmail(userEmail);
-		com.googlecode.flickr2twitter.com.aetrion.flickr.people.User flickrUser = 
-			f.getPeopleInterface().getInfo(userId);
-		if (flickrUser != null) {
-			serviceConfig.setUserSiteUrl(flickrUser.getPhotosurl());
-		}
+		serviceConfig.setUserSiteUrl(photosUrl);
 		
 		serviceConfig.addAddtionalParameter(KEY_FILTER_TAGS, "");
 		
@@ -289,17 +306,19 @@ public class SourceServiceProviderFlickr implements
 
 		Flickr f = new Flickr(globalAppConfig.getSourceAppApiKey(),
 				globalAppConfig.getSourceAppSecret(), new REST());
-		AuthInterface authInterface = f.getAuthInterface();
-
-		String frob = authInterface.getFrob();
+		OAuthInterface authInterface = f.getOAuthInterface();
 		if (baseUrl.endsWith("/oauth")) {
 			baseUrl = StringUtils.left(baseUrl, baseUrl.length() - "/oauth".length());
 		}
-		String nextUrl = baseUrl + "/" + CALLBACK_URL;
-		URL url = authInterface.buildAuthenticationUrl(Permission.READ, frob, nextUrl);
-		log.info("frob: " + frob + ", Token URL: " + url.toExternalForm());
-		result.put(KEY_FROB, frob);
-		result.put("url", url.toExternalForm());
+		String callbackUrl = baseUrl + "/" + CALLBACK_URL;
+		OAuthToken oauthToken = authInterface.getRequestToken(callbackUrl);
+		URL url = authInterface.buildAuthenticationUrl(Permission.READ, oauthToken);
+		log.info("OAuthToken: " + oauthToken + ", Token URL: " + url.toExternalForm());
+		result.put(KEY_OAUTH_TOKEN, oauthToken);
+		
+		result.put("url", url);
+		result.put(KEY_OAUTH_TOKEN, oauthToken.getOauthToken());
+		result.put(KEY_TOKEN_SECRET, oauthToken.getOauthTokenSecret());
 		return result;
 	}
 	
