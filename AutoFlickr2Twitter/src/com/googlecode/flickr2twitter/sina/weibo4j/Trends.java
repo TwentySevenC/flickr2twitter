@@ -28,11 +28,11 @@ package com.googlecode.flickr2twitter.sina.weibo4j;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Collections;
-import java.util.Arrays;
 
 import com.googlecode.flickr2twitter.sina.weibo4j.http.Response;
 import com.googlecode.flickr2twitter.sina.weibo4j.org.json.JSONArray;
