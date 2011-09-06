@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import com.googlecode.flickr2twitter.com.aetrion.flickr.util.IOUtilities;
-
 /**
  * @author yayu
  * 
@@ -68,7 +66,12 @@ public final class GlobalDefaultConfiguration {
             properties = new Properties();
             properties.load(in);
         } finally {
-            IOUtilities.close(in);
+        	if (in != null) {
+        		try {
+					in.close();
+				} catch (Exception e) {
+				}
+        	}
         }
         this.flickrApiKey = properties.getProperty(KEY_FLICKR_APIKEY, null);
         this.flickrSecret = properties.getProperty(KEY_FLICKR_SECRET, null);
