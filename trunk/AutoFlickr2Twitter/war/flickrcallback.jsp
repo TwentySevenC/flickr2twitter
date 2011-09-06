@@ -11,11 +11,10 @@
 			.getAttribute(UserAccountServlet.PARA_SESSION_USER);
 	Map<String, Object> currentData = (Map<String, Object>) session
 			.getAttribute(currentProviderID);
-	String frob = request.getParameter(SourceServiceProviderFlickr.KEY_FROB);
-	log.info("Flickr OAuth Frob: " + frob);
-	if (frob != null) {
-		currentData.put(SourceServiceProviderFlickr.KEY_FROB, frob);
-	}
+	String oauthToken = request.getParameter(SourceServiceProviderFlickr.KEY_OAUTH_TOKEN);
+	String oauthVerifier = request.getParameter(SourceServiceProviderFlickr.KEY_TOKEN_VERIFIER);
+	currentData.put(SourceServiceProviderFlickr.KEY_OAUTH_TOKEN, oauthToken);
+	currentData.put(SourceServiceProviderFlickr.KEY_TOKEN_VERIFIER, oauthVerifier);
 	if (currentData == null || user == null) {
 		session.setAttribute("message",
 				"Authorize not done. Please login first.");

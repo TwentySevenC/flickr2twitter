@@ -34,5 +34,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/jackson-all-1.7.3.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/signpost-commonshttp4-1.2.1.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/signpost-core-1.2.1.1.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/flickrapi4-0.1.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
