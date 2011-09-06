@@ -15,12 +15,13 @@ import javax.jdo.PersistenceManagerFactory;
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.googlecode.flickr2twitter.impl.ebay.SourceServiceProviderEbay;
 import com.googlecode.flickr2twitter.impl.ebay.SourceServiceProviderEbayKeywords;
-import com.googlecode.flickr2twitter.impl.ebay.SourceServiceProviderEbayKeywordsSandbox;
-import com.googlecode.flickr2twitter.impl.ebay.SourceServiceProviderEbaySandbox;
 import com.googlecode.flickr2twitter.impl.facebook.TargetServiceProviderFacebook;
 import com.googlecode.flickr2twitter.impl.flickr.SourceServiceProviderFlickr;
+import com.googlecode.flickr2twitter.impl.picasa.SourceServiceProviderPicasa;
 import com.googlecode.flickr2twitter.impl.sina.TargetServiceProviderSina;
+import com.googlecode.flickr2twitter.impl.twitter.SourceServiceProviderTwitter;
 import com.googlecode.flickr2twitter.impl.twitter.TargetServiceProviderTwitter;
+import com.googlecode.flickr2twitter.impl.youtube.SourceServiceProviderYoutube;
 import com.googlecode.flickr2twitter.intf.IServiceProvider;
 import com.googlecode.flickr2twitter.intf.ISourceServiceProvider;
 import com.googlecode.flickr2twitter.intf.ITargetServiceProvider;
@@ -41,8 +42,8 @@ public class ServiceFactory {
 
 	private static final Class<?>[] PROVIDER_CLASSES = {
 		SourceServiceProviderEbay.class, SourceServiceProviderEbayKeywords.class, 
-		SourceServiceProviderEbaySandbox.class, SourceServiceProviderEbayKeywordsSandbox.class,
-		SourceServiceProviderFlickr.class, 
+		SourceServiceProviderFlickr.class, SourceServiceProviderPicasa.class,
+		SourceServiceProviderYoutube.class, SourceServiceProviderTwitter.class,
 		TargetServiceProviderFacebook.class,
 			TargetServiceProviderTwitter.class, TargetServiceProviderSina.class};
 

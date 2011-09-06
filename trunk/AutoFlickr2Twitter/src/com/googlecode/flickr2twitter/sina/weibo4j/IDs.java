@@ -26,9 +26,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package com.googlecode.flickr2twitter.sina.weibo4j;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
