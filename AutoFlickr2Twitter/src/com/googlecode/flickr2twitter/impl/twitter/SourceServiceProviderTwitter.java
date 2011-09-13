@@ -9,7 +9,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.TimeZone;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import twitter4j.ResponseList;
 import twitter4j.Status;
@@ -39,8 +41,7 @@ import com.googlecode.flickr2twitter.model.IItem;
 public class SourceServiceProviderTwitter extends AbstractServiceProviderTwitter
 <GlobalSourceApplicationService, UserSourceServiceConfig> 
 implements ISourceServiceProvider<IItem>, IAdminServiceProvider, IServiceAuthorizer {
-	private static final Logger log = Logger.getLogger(SourceServiceProviderTwitter.class
-			.getName());
+	private static final Logger log = LoggerFactory.getLogger(SourceServiceProviderTwitter.class);
 	/**
 	 * 
 	 */
@@ -76,7 +77,7 @@ implements ISourceServiceProvider<IItem>, IAdminServiceProvider, IServiceAuthori
 		if (pastTime == null) {
 		Calendar cstTime = Calendar.getInstance(TimeZone.getTimeZone(ServiceRunner.TIMEZONE_UTC));
 		cstTime.setTimeInMillis(currentTime);
-		log.info("Converted current time: " + cstTime.getTime());
+		log.info("Converted current time: {}", cstTime.getTime());
 		Calendar past = Calendar.getInstance(TimeZone.getTimeZone(ServiceRunner.TIMEZONE_UTC));
 		long newTime = cstTime.getTime().getTime() - globalConfig.getMinUploadTime();
 		past.setTimeInMillis(newTime);
@@ -84,18 +85,18 @@ implements ISourceServiceProvider<IItem>, IAdminServiceProvider, IServiceAuthori
 		}
 		
 		ResponseList<Status> statuses = twitter.getUserTimeline();
-		log.info("Trying to find latest tweets from user " + sourceService.getServiceUserName()
-				+ " after " + pastTime.toString() + " from "
-				+ statuses.size() + " tweets");
+		log.info("Trying to find latest tweets from user {} after {} from {} tweets", 
+				new Object[]{sourceService.getServiceUserName(), pastTime.toString(), statuses.size()});
 		
 		for (Status status : statuses) {
 			TwitterItem item = new TwitterItem(status);
-			log.fine("processing tweet: " + item.getTitle()
-					+ ", date uploaded: " + status.getCreatedAt());
+			if (log.isDebugEnabled()) {
+				log.debug("processing tweet: {}, date uploaded: {}", 
+						item.getTitle(), status.getCreatedAt());
+			}
 			if (status.getCreatedAt().after(pastTime)) {
-				log.info(item.getTitle() 
-						+ ", date uploaded: " + status.getCreatedAt()
-						+ ", GEO: " + item.getGeoData());
+				log.info("Title={}, date uploaded={}, GEO={}", 
+						new Object[]{item.getTitle(), status.getCreatedAt(), item.getGeoData()});
 				items.add(item);
 			}
 		}

@@ -6,13 +6,14 @@ package com.googlecode.flickr2twitter.services.rest;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 import org.restlet.resource.Post;
 import org.restlet.resource.Put;
 import org.restlet.resource.ServerResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.googlecode.flickr2twitter.core.ServiceFactory;
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
@@ -39,7 +40,7 @@ import com.googlecode.flickr2twitter.services.rest.models.UserTargetServiceConfi
  *
  */
 public class SocialHubServerResource extends ServerResource implements ISociaHubResource {
-	private static final Logger log = Logger.getLogger(SocialHubServerResource.class.getName());
+	private static final Logger log = LoggerFactory.getLogger(SocialHubServerResource.class);
 	
 	/**
 	 * 
@@ -57,13 +58,13 @@ public class SocialHubServerResource extends ServerResource implements ISociaHub
 		data.addAll(getSupportedSourceServiceProviders());
 		data.addAll(getSupportedTargetServiceProviders());
 		GlobalApplicationConfigModelList list = new GlobalApplicationConfigModelList(data);
-		log.info("Retrieving supported service providers -> " + list);
+		log.info("Retrieving supported service providers -> {}", list);
 		return list;
 	}
 
 	@Post
 	public UserModel retrieve(String userEmail) {
-		log.info("Retrieving user information for -> " + userEmail);
+		log.info("Retrieving user information for -> {}", userEmail);
 		User user = MyPersistenceManagerFactory.getUser(userEmail);
 		if (user != null) {
 			UserModel model = new UserModel(user.getUserId().getEmail(), 
@@ -92,7 +93,7 @@ public class SocialHubServerResource extends ServerResource implements ISociaHub
 	@Post
 	public UserModel login(String userEmail, String password) {
 		User user = null;
-		log.info("user logging in for -> " + userEmail);
+		log.info("user logging in for -> {}", userEmail);
 		user = MyPersistenceManagerFactory.getLoginUser(userEmail, password);
 		if (user != null) {
 			UserModel model = new UserModel(user.getUserId().getEmail(), 
@@ -111,7 +112,7 @@ public class SocialHubServerResource extends ServerResource implements ISociaHub
 	 */
 	@Post
 	public UserModel openidLogin(String userEmail) {
-		log.info("Retrieving opendid user information for -> " + userEmail);
+		log.info("Retrieving opendid user information for -> {}", userEmail);
 		User user = MyPersistenceManagerFactory.getOpenIdLoginUser(userEmail);
 		if (user != null) {
 			return new UserModel(user.getUserId().getEmail(), 
@@ -181,7 +182,7 @@ public class SocialHubServerResource extends ServerResource implements ISociaHub
 						userConfig.getServiceUserName(), userConfig.getUserSiteUrl(), userConfig.getServiceProviderId(), 
 						userConfig.getAdditionalParameters(), userConfig.isEnabled(), userConfig.getServiceAccessToken()));
 			} catch (UnsupportedEncodingException e) {
-				log.throwing(this.getClass().getName(), "convertSourceData", e);
+				log.error("convertSourceData failed", e);
 			}
 		}
 		return data;
@@ -213,7 +214,7 @@ public class SocialHubServerResource extends ServerResource implements ISociaHub
 			try {
 				srcService.setAdditionalParameters(sourceServiceConfig.getAdditionalParameters());
 			} catch (UnsupportedEncodingException e) {
-				log.throwing(this.getClass().getName(), "addUserSourceServiceConfig", e);
+				log.error("addUserSourceServiceConfig failed", e);
 			}
 			MyPersistenceManagerFactory.addSourceServiceApp(userEmail, srcService);
 		}
@@ -229,7 +230,7 @@ public class SocialHubServerResource extends ServerResource implements ISociaHub
 						userConfig.getAdditionalParameters(), userConfig.isEnabled(), userConfig.getServiceAccessToken(), 
 						userConfig.getServiceTokenSecret()));
 			} catch (UnsupportedEncodingException e) {
-				log.throwing(this.getClass().getName(), "convertTargetData", e);
+				log.error("convertTargetData failed", e);
 			}
 		}
 		return data;
@@ -245,7 +246,7 @@ public class SocialHubServerResource extends ServerResource implements ISociaHub
 	}
 	@Put
 	public void addUserTargetServiceConfig(UserTargetServiceConfigModel targetModel) {
-		log.info("Saving user target service config->" + targetModel);
+		log.info("Saving user target service config->{}", targetModel);
 		if (targetModel != null) {
 			UserTargetServiceConfig targetService = new UserTargetServiceConfig();
 			targetService.setServiceUserId(targetModel.getServiceUserId());
@@ -255,7 +256,7 @@ public class SocialHubServerResource extends ServerResource implements ISociaHub
 			try {
 				targetService.setAdditionalParameters(targetModel.getAdditionalParameters());
 			} catch (UnsupportedEncodingException e) {
-				log.throwing(this.getClass().getName(), "addUserTargetServiceConfig", e);
+				log.error("addUserTargetServiceConfig failed", e);
 			}
 			targetService.setUserSiteUrl(targetModel.getUserSiteUrl());
 			targetService.setServiceAccessToken(targetModel.getServiceAccessToken());

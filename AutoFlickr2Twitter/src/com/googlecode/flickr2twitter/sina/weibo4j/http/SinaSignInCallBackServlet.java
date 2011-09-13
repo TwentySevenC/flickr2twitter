@@ -3,13 +3,14 @@ package com.googlecode.flickr2twitter.sina.weibo4j.http;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.googlecode.flickr2twitter.datastore.model.User;
 import com.googlecode.flickr2twitter.impl.sina.TargetServiceProviderSina;
@@ -19,8 +20,8 @@ import com.googlecode.flickr2twitter.sina.weibo4j.WeiboException;
 
 public class SinaSignInCallBackServlet extends HttpServlet {
 
-	private static final Logger log = Logger
-			.getLogger(SinaSignInCallBackServlet.class.getName());
+	private static final Logger log = LoggerFactory
+			.getLogger(SinaSignInCallBackServlet.class);
 	private static final long serialVersionUID = -1016731113426658126L;
 
 	@Override
@@ -39,7 +40,7 @@ public class SinaSignInCallBackServlet extends HttpServlet {
 		// Get the verifier;
 		String verifier = req.getParameter("oauth_verifier");
 		String oauthToken = req.getParameter("oauth_token");
-		log.info("SINA oauth_token = " + oauthToken + ", oauth_verifier = " + verifier);
+		log.info("SINA oauth_token = {}, oauth_verifier = {}", oauthToken, verifier);
 
 		// Request token and secret
 		Map<String, Object> currentData = (Map<String, Object>) req.getSession()
@@ -77,7 +78,7 @@ public class SinaSignInCallBackServlet extends HttpServlet {
 					tps.readyAuthorization(email, data);
 					resp.sendRedirect("/authorize.jsp");
 				} catch (Exception e) {
-					log.log(Level.WARNING, e.getMessage());
+					log.warn(e.getLocalizedMessage(), e);
 					throw new ServletException("You've already authorize sina.");
 				}
 				

@@ -5,10 +5,11 @@
 package com.googlecode.flickr2twitter.services.rest;
 
 import java.util.Arrays;
-import java.util.logging.Logger;
 
 import org.restlet.data.Form;
 import org.restlet.resource.ServerResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.googlecode.flickr2twitter.datastore.model.User;
@@ -24,7 +25,7 @@ public class SocialHubEbaySellerResource extends ServerResource
         implements ISocialHubEbaySellerResource
 {
 
-    private static final Logger log = Logger.getLogger(SocialHubEbaySellerResource.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(SocialHubEbaySellerResource.class);
 
     /**
      * 
@@ -41,14 +42,14 @@ public class SocialHubEbaySellerResource extends ServerResource
     @Override
     public void register(String data)
     {
-        log.info("registering new eBay seller source->" + data);
+        log.info("registering new eBay seller source->{}", data);
 
         if ( data != null )
         {
             try
             {
                 String[] values = StringUtils.split(data, "/");
-                log.info("Received data->" + Arrays.asList(values));
+                log.info("Received data->{}", Arrays.asList(values));
                 if ( values.length == 3 )
                 {
                     String userEmail = values[0];
@@ -64,16 +65,16 @@ public class SocialHubEbaySellerResource extends ServerResource
 
                     new EbayConfigServlet().registerNewSellerSourceServiceConfig(userEmail, sellerId, false);
 
-                    log.info("new eBay seller source registered->" + data);
+                    log.info("new eBay seller source registered->{}", data);
                 }
                 else
                 {
-                    log.info("Unsupported source config->" + data);
+                    log.info("Unsupported source config->{}", data);
                 }
             }
             catch (Exception e)
             {
-                log.throwing(SocialHubEbaySellerResource.class.getName(), "register", e);
+                log.error("Seller registration failed", e);
             }
         }
     }
@@ -85,14 +86,14 @@ public class SocialHubEbaySellerResource extends ServerResource
     @Override
     public void unregister(String data)
     {
-        log.info("unregistering existing eBay seller source->" + data);
+        log.info("unregistering existing eBay seller source->{}", data);
 
         if ( data != null )
         {
             try
             {
                 String[] values = StringUtils.split(data, "/");
-                log.info("Received data->" + Arrays.asList(values));
+                log.info("Received data->{}", Arrays.asList(values));
                 if ( values.length == 3 )
                 {
                     String userEmail = values[0];
@@ -110,7 +111,7 @@ public class SocialHubEbaySellerResource extends ServerResource
             }
             catch (Exception e)
             {
-                log.throwing(SocialHubEbaySellerResource.class.getName(), "unregister", e);
+                log.error("Seller un-registration failed", e);
             }
         }
     }
@@ -123,13 +124,13 @@ public class SocialHubEbaySellerResource extends ServerResource
     public boolean find()
     {
         Form query = getQuery();
-        log.info("finding eBay seller source->" + query);
+        log.info("finding eBay seller source->{}", query);
 
         if ( query != null )
         {
             try
             {
-                log.info("Received data->" + query);
+                log.info("Received data->{}", query);
                 if ( query.size() == 2 )
                 {
                     String userEmail = query.getFirstValue("useremail");
@@ -145,18 +146,18 @@ public class SocialHubEbaySellerResource extends ServerResource
                         }
                     }
 
-                    log.info("eBay seller source found->" + query);
+                    log.info("eBay seller source found->{}", query);
 
                     return found;
                 }
                 else
                 {
-                    log.info("Unsupported source config->" + query);
+                    log.info("Unsupported source config->{}", query);
                 }
             }
             catch (Exception e)
             {
-                log.throwing(SocialHubEbaySellerResource.class.getName(), "find", e);
+                log.error("Find seller failed", e);
             }
         }
 

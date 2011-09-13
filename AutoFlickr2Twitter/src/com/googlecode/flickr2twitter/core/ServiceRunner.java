@@ -8,7 +8,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.appengine.api.taskqueue.Queue;
 import com.google.appengine.api.taskqueue.QueueFactory;
@@ -26,7 +28,7 @@ import com.googlecode.flickr2twitter.servlet.ServiceWorkerServlet;
  *
  */
 public class ServiceRunner {
-	private static final Logger log = Logger.getLogger(ServiceRunner.class.getName());
+	private static final Logger log = LoggerFactory.getLogger(ServiceRunner.class);
 	public static final String TIMEZONE_UTC = "UTC";
 	public static final String KEY_USER = "user";
 	public static final String KEY_TIMESTAMP = "timestamp";
@@ -51,10 +53,10 @@ public class ServiceRunner {
 		log.info("Current time: " + now);
 		for (User user : users) {
 			if (user.getSourceServices() == null || user.getSourceServices().isEmpty()) {
-				log.warning("No source services configured for the user: " + user);
+				log.warn("No source services configured for the user: {}", user);
 				continue;
 			} else if (user.getTargetServices() == null || user.getTargetServices().isEmpty()) {
-				log.warning("No target services configured for the user: " + user);
+				log.warn("No target services configured for the user: {}", user);
 				continue;
 			}
 			
@@ -65,7 +67,7 @@ public class ServiceRunner {
 				}
 			}
 			if (srcConfigs.isEmpty()) {
-				log.warning("All configured source services have been disabled for the user: " + user);
+				log.warn("All configured source services have been disabled for the user: {}", user);
 				continue;
 			}
 			
@@ -76,7 +78,7 @@ public class ServiceRunner {
 				}
 			}
 			if (targetConfigs.isEmpty()) {
-				log.warning("All configured target services have been disabled for the user: " + user);
+				log.warn("All configured target services have been disabled for the user: {}", user);
 				continue;
 			}
 			

@@ -10,7 +10,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.api.client.googleapis.auth.authsub.AuthSubSingleUseTokenRequestUrl;
 import com.google.gdata.client.youtube.YouTubeService;
@@ -37,7 +39,7 @@ public class SourceServiceProviderYoutube extends BaseSourceProvider<IVideo> imp
 	public static final String ID = "youtube";
 	public static final String DISPLAY_NAME = "Youtube";
 	
-	private static final Logger log = Logger.getLogger(SourceServiceProviderYoutube.class.getName());
+	private static final Logger log = LoggerFactory.getLogger(SourceServiceProviderYoutube.class);
 	
 	public static final String HOSTED_DOMAIN = "flickr2twitter.googlecode.com";
 	public static final String CONSUMER_KEY = "anonymous";
@@ -80,21 +82,22 @@ public class SourceServiceProviderYoutube extends BaseSourceProvider<IVideo> imp
 		URL feedUrl = new URL(URL_ACTIVITIES);
 		VideoFeed videoFeed = youtubeService.getFeed(feedUrl, VideoFeed.class);
 
-		log.info("Retrieve recent activities for youtube user " + sourceService.getServiceUserId());
+		log.info("Retrieve recent activities for youtube user {}", sourceService.getServiceUserId());
 		List<IVideo> videos = new ArrayList<IVideo>();
-		log.info("Trying to find videos uploaded for user " + sourceService.getServiceUserId()
-				+ " after " + pastTime.toString() + " from "
-				+ videoFeed.getEntries().size() + " new posts");
+		log.info("Trying to find videos uploaded for user {} after {} from {} new posts", 
+				new Object[]{sourceService.getServiceUserId(), pastTime.toString(), videoFeed.getEntries().size()});
 		for (VideoEntry entry : videoFeed.getEntries()) {
 			YoutubeVideo video = new YoutubeVideo(entry);
-			log.fine("processing photo: " + video.getTitle()
-					+ ", date uploaded: " + video.getDatePosted());
+			if (log.isDebugEnabled()) {
+				log.debug("processing photo: {}, date uploaded: {}", 
+						video.getTitle(), video.getDatePosted());
+			}
 			//TODO check whether the photo is private
 			if (
 					//entry.isDraft() == false && 
 					video.getDatePosted().after(pastTime)) {
-				log.info(video.getTitle() + ", URL: " + video.getUrl()
-						+ ", date uploaded: " + video.getDatePosted());
+				log.info("Title={}, URL={}, date uploaded={}", 
+						new Object[]{video.getTitle(), video.getUrl(), video.getDatePosted()});
 				videos.add(video);
 			}
 		}
@@ -162,7 +165,6 @@ public class SourceServiceProviderYoutube extends BaseSourceProvider<IVideo> imp
 		serviceConfig.setUserSiteUrl(userSite);
 		
 		MyPersistenceManagerFactory.addSourceServiceApp(userEmail, serviceConfig);
-
 		return buf.toString();
 	}
 
@@ -182,7 +184,7 @@ public class SourceServiceProviderYoutube extends BaseSourceProvider<IVideo> imp
 		if (baseUrl.endsWith("/oauth")) {
 			baseUrl = StringUtils.left(baseUrl, baseUrl.length() - "/oauth".length());
 		}
-		String nextUrl = baseUrl + "/" + CALLBACK_URL;
+		String nextUrl = new StringBuilder(baseUrl).append("/").append(CALLBACK_URL).toString();
 		String scope = SCOPE;
 		AuthSubSingleUseTokenRequestUrl authorizeUrl = new AuthSubSingleUseTokenRequestUrl();
 		authorizeUrl.hostedDomain = HOSTED_DOMAIN;
@@ -192,7 +194,7 @@ public class SourceServiceProviderYoutube extends BaseSourceProvider<IVideo> imp
 		//authorizeUrl.secure = 1;
 		String authorizationUrl = authorizeUrl.build();
 		
-		log.info("Youtube Authorization URL: " + authorizationUrl);
+		log.info("Youtube Authorization URL: {}", authorizationUrl);
 		result.put("url", authorizationUrl);
 		return result;
 	}

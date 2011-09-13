@@ -2,12 +2,14 @@ package com.googlecode.flickr2twitter.servlet;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.googlecode.flickr2twitter.core.ServiceFactory;
 import com.googlecode.flickr2twitter.datastore.model.User;
@@ -24,8 +26,7 @@ public class OAuthServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger log = Logger.getLogger(OAuthServlet.class
-			.getName());
+	private static final Logger log = LoggerFactory.getLogger(OAuthServlet.class);
 
 	public static final String OPT_AUTH_SOURCE = "Auth_Source";
 	public static final String OPT_AUTH_TARGET = "Auth_Target";
@@ -52,7 +53,7 @@ public class OAuthServlet extends HttpServlet {
 		String retMsg = null;
 		Map<String, Object> data = (Map<String, Object>) req.getSession()
 				.getAttribute(providerId);
-		log.info("Current Data: " + data);
+		log.info("Current Data: {}", data);
 		try {
 			if (sourceProvider == true) {
 				ISourceServiceProvider<?> srcProvider = ServiceFactory.getSourceServiceProvider(providerId);
@@ -72,7 +73,7 @@ public class OAuthServlet extends HttpServlet {
 					+ "\" is already authorized. Token for this account is:"
 					+ ex.getToken());
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e.getLocalizedMessage(), e);
 			msg.append("Auth confirm faild. Provider ID is: " + providerId
 					+ ". Error message is:" + e.getMessage());
 		}
@@ -122,8 +123,8 @@ public class OAuthServlet extends HttpServlet {
 				resp.sendRedirect("/authorize.jsp");
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
-			msg.append("Auth faild. Provider ID is: " + providerId
+			log.error("Auth failed", e);
+			msg.append("Auth failed. Provider ID is: " + providerId
 					+ ". Error message is:" + e.getMessage());
 		}
 	}

@@ -6,7 +6,9 @@ package com.googlecode.flickr2twitter.impl.email;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.appengine.api.mail.MailService.Message;
 import com.google.appengine.api.mail.MailServiceFactory;
@@ -31,7 +33,7 @@ IServiceProvider<GlobalTargetApplicationService> {
 	public static final String ID = "email";
 	public static final String DISPLAY_NAME = "Email";
 	public static final String TIMEZONE_CST = "CST";
-	private static final Logger log = Logger.getLogger(TargetServiceProviderEmail.class.getName());
+	private static final Logger log = LoggerFactory.getLogger(TargetServiceProviderEmail.class);
 	
 	/**
 	 * 
@@ -51,9 +53,9 @@ IServiceProvider<GlobalTargetApplicationService> {
 		if (userService == null || userService.getCurrentUser() == null) {
 			throw new IllegalArgumentException("Can not get the current Google account user");
 		}
-		log.info("Current User: " + userService.getCurrentUser());
+		log.info("Current User: {}", userService.getCurrentUser());
 		String email = userService.getCurrentUser().getEmail();
-		log.info("Admin user email:" + email);
+		log.info("Admin user email:{}", email);
 	    
 		Message msg = new Message();
 		msg.setReplyTo(globalAppConfig.getTargetAppConsumerId());
@@ -64,7 +66,7 @@ IServiceProvider<GlobalTargetApplicationService> {
 		msg.setTo(StringUtils.split(targetConfig.getServiceUserId(), ","));
 		StringBuffer buf = new StringBuffer();
 		for (IItemList<IItem> itemList : items) {
-			log.info("Processing items from: " + itemList.getListTitle());
+			log.info("Processing items from: {}", itemList.getListTitle());
 			if (itemList.getItems().isEmpty() == false) {
 				buf.append("<p>");
 				buf.append("<b>");
@@ -72,8 +74,8 @@ IServiceProvider<GlobalTargetApplicationService> {
 				buf.append("</b><br><br>");
 
 				for (IItem item : itemList.getItems()) {
-					log.info("Posting message -> " + item + " for "
-							+ targetConfig.getServiceUserName());
+					log.info("Posting message -> {} for {}", item,
+							targetConfig.getServiceUserName());
 					buf.append(item.getTitle());
 					if (StringUtils.isNotBlank(item.getDescription())) {
 						buf.append(": ");
@@ -106,9 +108,9 @@ IServiceProvider<GlobalTargetApplicationService> {
 		if (userService == null || userService.getCurrentUser() == null) {
 			throw new IllegalArgumentException("Can not get the current Google account user");
 		}
-		log.info("Current User: " + userService.getCurrentUser());
+		log.info("Current User: {}", userService.getCurrentUser());
 		String email = userService.getCurrentUser().getEmail();
-		log.info("Admin user email:" + email);
+		log.info("Admin user email: {}", email);
 		
 		UserTargetServiceConfig service = new UserTargetServiceConfig();
 		service.setServiceProviderId(ID);

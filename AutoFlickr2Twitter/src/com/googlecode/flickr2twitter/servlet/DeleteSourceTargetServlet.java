@@ -1,7 +1,6 @@
 package com.googlecode.flickr2twitter.servlet;
 
 import java.io.IOException;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -14,9 +13,6 @@ import com.googlecode.flickr2twitter.datastore.model.User;
 public class DeleteSourceTargetServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-
-	private static final Logger log = Logger
-			.getLogger(DeleteSourceTargetServlet.class.getName());
 
 	protected void service(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {

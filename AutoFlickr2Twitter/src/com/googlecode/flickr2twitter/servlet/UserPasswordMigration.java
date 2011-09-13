@@ -2,12 +2,14 @@ package com.googlecode.flickr2twitter.servlet;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory.Permission;
@@ -17,12 +19,12 @@ public class UserPasswordMigration extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger log = Logger
-			.getLogger(UserPasswordMigration.class.getName());
+	private static final Logger log = LoggerFactory
+			.getLogger(UserPasswordMigration.class);
 
 	protected void service(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		log.warning("Starting to user migration...");
+		log.warn("Starting to user migration...");
 
 		User userSession = (User) req.getSession().getAttribute(
 				UserAccountServlet.PARA_SESSION_USER);
@@ -49,7 +51,7 @@ public class UserPasswordMigration extends HttpServlet {
 						+ " According to the length of user's password, "
 						+ "it seems already been migreated.\r\n";
 				msg.append(ignoreMsg);
-				log.warning(ignoreMsg);
+				log.warn(ignoreMsg);
 				continue;
 			}
 			// String passwordSHA = null;
@@ -70,11 +72,11 @@ public class UserPasswordMigration extends HttpServlet {
 			String sucessMsg = "Password migration for user "
 					+ user.getScreenName() + "(" + user.getUserId().getEmail()
 					+ ") is done successfully!\r\n";
-			log.warning(sucessMsg);
+			log.warn(sucessMsg);
 			msg.append(sucessMsg);
 		}
 
-		log.warning("Migration finished...");
+		log.warn("Migration finished...");
 		if (msg.length() > 0) {
 			req.getSession().setAttribute("message", msg.toString());
 		}

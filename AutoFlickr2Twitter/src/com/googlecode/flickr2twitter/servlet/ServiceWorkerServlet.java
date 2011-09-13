@@ -9,12 +9,14 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.googlecode.flickr2twitter.core.ServiceFactory;
 import com.googlecode.flickr2twitter.core.ServiceRunner;
@@ -40,8 +42,8 @@ public final class ServiceWorkerServlet extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger log = Logger.getLogger(ServiceWorkerServlet.class.getName());
-	
+	private static final Logger log = LoggerFactory.getLogger(ServiceWorkerServlet.class);
+
 	public static final String QUEUE_NAME_WORKER = "service-worker";
 
 	/**
@@ -50,13 +52,13 @@ public final class ServiceWorkerServlet extends HttpServlet {
 	public ServiceWorkerServlet() {
 		super();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	throws ServletException, IOException {
 		String userEmail = request.getParameter(ServiceRunner.KEY_USER);
 		String time = request.getParameter(ServiceRunner.KEY_TIMESTAMP);
 		String inter = request.getParameter(ServiceRunner.KEY_INTERNVAL);
@@ -65,14 +67,14 @@ public final class ServiceWorkerServlet extends HttpServlet {
 		try {
 			currentTime = Long.parseLong(time);
 		} catch (NumberFormatException e) {
-			log.warning("Invalid timestamp - " + e.toString());
+			log.warn("Invalid timestamp", e);
 			return;
 		}
-		
+
 		try {
 			interval = Long.parseLong(inter);
 		} catch (NumberFormatException e) {
-			log.warning("Invalid time interval - " + e.toString());
+			log.warn("Invalid time interval", e);
 			interval = MyPersistenceManagerFactory.getGlobalConfiguration().getMinUploadTime();
 		}
 		checkUser(userEmail, interval, currentTime);
@@ -86,7 +88,7 @@ public final class ServiceWorkerServlet extends HttpServlet {
 		}*/
 		GlobalServiceConfiguration globalConfig = new GlobalServiceConfiguration();
 		globalConfig.setMinUploadTime(interval);
-		log.info("Retrieving latest updates for user: " + userEmail);
+		log.info("Retrieving latest updates for user: {}", userEmail);
 		final List<IItemList<IItem>> itemLists = new ArrayList<IItemList<IItem>>();
 		boolean isEmpty = true;
 		for (UserSourceServiceConfig source : MyPersistenceManagerFactory.getUserSourceServices(userEmail)) {
@@ -95,15 +97,15 @@ public final class ServiceWorkerServlet extends HttpServlet {
 			GlobalSourceApplicationService globalSvcConfig = 
 				MyPersistenceManagerFactory.getGlobalSourceAppService(sourceProvider.getId());
 			if (sourceProvider == null) {
-				log.warning("Invalid source service provider configured: " + source.getServiceProviderId());
+				log.warn("Invalid source service provider configured: {}", source.getServiceProviderId());
 			} else if (source.isEnabled() == false){ 
-				log.info("skip the disabled source service provider: " + source.getServiceProviderId());
+				log.info("skip the disabled source service provider: {}", source.getServiceProviderId());
 			} else {
 				try {
 					IItemList<IItem> items = new ItemList(globalSvcConfig.getAppName());
 					List<IItem> unsortedItems = sourceProvider.getLatestItems(globalConfig, globalSvcConfig, source, currentTime);
-					
-					
+
+
 					if (unsortedItems.isEmpty() == false) {
 						isEmpty = false;
 						Collections.sort(unsortedItems, new Comparator<IItem>() {
@@ -120,20 +122,20 @@ public final class ServiceWorkerServlet extends HttpServlet {
 						Date lastItemTime = mostRecentItem.getDatePosted() != null ? mostRecentItem.getDatePosted() : new Date(currentTime);
 						try {
 							MyPersistenceManagerFactory.updateLastSourceTime(source, lastItemTime);
-				} catch (Exception e) {
-							log.warning("Failed to update last item time->" + e);
+						} catch (Exception e) {
+							log.warn("Failed to update last item time", e);
 						}
 					}
-					
+
 					items.setItems(unsortedItems);
 					itemLists.add(items);
 				} catch (Exception e) {
-					log.throwing(ServiceRunner.class.getName(), "", e);
+					log.error(e.getLocalizedMessage(), e);
 				}
 			}
 		}
 		if (isEmpty) {
-			log.info("No recent updates found for user: " + userEmail);
+			log.info("No recent updates found for user: {}", userEmail);
 		} else {
 			for (UserTargetServiceConfig target : MyPersistenceManagerFactory.getUserTargetServices(userEmail)) {
 				ITargetServiceProvider targetProvider = 
@@ -141,14 +143,14 @@ public final class ServiceWorkerServlet extends HttpServlet {
 				GlobalTargetApplicationService globalAppConfig = 
 					MyPersistenceManagerFactory.getGlobalTargetAppService(target.getServiceProviderId());
 				if (targetProvider == null || globalAppConfig == null) {
-					log.warning("Invalid target service provider configured: " + target.getServiceProviderId());
+					log.warn("Invalid target service provider configured: {}", target.getServiceProviderId());
 				}  else if (target.isEnabled() == false){ 
-					log.info("skip the disabled target service provider: " + target.getServiceProviderId());
+					log.info("skip the disabled target service provider: {}", target.getServiceProviderId());
 				} else {
 					try {
 						targetProvider.postUpdate(globalAppConfig, target, itemLists);
 					} catch (Exception e) {
-						log.throwing(ServiceRunner.class.getName(), "", e);
+						log.error(e.getLocalizedMessage(), e);
 					}
 				}
 			}
