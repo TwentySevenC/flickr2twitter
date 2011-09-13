@@ -7,10 +7,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.googlecode.flickr2twitter.impl.ebay.SourceServiceProviderEbay;
@@ -32,8 +34,7 @@ import com.googlecode.flickr2twitter.model.IItem;
  * 
  */
 public class ServiceFactory {
-	private static final Logger log = Logger.getLogger(ServiceFactory.class
-			.getName());
+	private static final Logger log = LoggerFactory.getLogger(ServiceFactory.class);
 	private static final Map<String, ISourceServiceProvider<IItem>> SOURCE_PROVIDERS;
 	private static final Map<String, ITargetServiceProvider> TARGET_PROVIDERS;
 
@@ -78,11 +79,11 @@ public class ServiceFactory {
 								.createDefaultGlobalApplicationConfig());
 					}
 				} else {
-					log.warning("Unsupported provider ->" + _class);
+					log.warn("Unsupported provider ->{}", _class);
 				}
 
 			} catch (Exception e) {
-				log.throwing(ServiceFactory.class.getName(), "<init>", e);
+				log.error("init failed", e);
 			} finally {
 				pm.close();
 			}

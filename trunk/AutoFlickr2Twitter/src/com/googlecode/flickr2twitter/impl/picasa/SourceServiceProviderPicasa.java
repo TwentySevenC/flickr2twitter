@@ -11,7 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.api.client.googleapis.auth.authsub.AuthSubSingleUseTokenRequestUrl;
 import com.google.gdata.client.photos.PicasawebService;
@@ -41,7 +43,7 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 	public static final String DISPLAY_NAME = "Picasa Web Album";
 	
 	public static final String KEY_TOKEN = "token";
-	private static final Logger log = Logger.getLogger(SourceServiceProviderPicasa.class.getName());
+	private static final Logger log = LoggerFactory.getLogger(SourceServiceProviderPicasa.class);
 	
 	public static final String HOSTED_DOMAIN = "flickr2twitter.googlecode.com";
 	public static final String CONSUMER_KEY = "anonymous";
@@ -83,21 +85,20 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 		}
 
 		AlbumFeed feed = webService.getFeed(feedUrl, AlbumFeed.class);
-		log.info("Trying to find photos uploaded for user " + sourceService.getServiceUserId()
-				+ " after " + pastTime.toString() + " from "
-				+ feed.getPhotoEntries().size() + " new photos");
+		log.info("Trying to find photos uploaded for user {} after {} from {} new photos", 
+				new Object[]{sourceService.getServiceUserId(), pastTime.toString(), feed.getPhotoEntries().size()});
 		List<IPhoto> photos = new ArrayList<IPhoto>();
 		
 		for(PhotoEntry photo : feed.getPhotoEntries()) {
 			PicasaPhoto pPhoto = new PicasaPhoto(photo);
-			log.fine("processing photo: " + photo.getTitle().getPlainText()
-					+ ", date uploaded: " + pPhoto.getDatePosted());
+			if (log.isDebugEnabled()) {
+				log.debug("processing photo [{}], date uploaded: {}", 
+						photo.getTitle().getPlainText(), pPhoto.getDatePosted());
+			}
 			//TODO check whether the photo is private
 			if (pPhoto.getDatePosted().after(pastTime)) {
-				
-					log.info(photo.getTitle() + ", URL: " + pPhoto.getUrl()
-							+ ", date uploaded: " + pPhoto.getDatePosted()
-							+ ", GEO: " + pPhoto.getGeoData());
+					log.info("Photo={}, URL={}, date uploaded={}, GEO={}", 
+							new Object[]{photo.getTitle(), pPhoto.getUrl(), pPhoto.getDatePosted(), pPhoto.getGeoData()});
 					photos.add(pPhoto);
 			}
 		}
@@ -153,7 +154,6 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 			}
 		}
 		
-		
 		UserSourceServiceConfig serviceConfig = new UserSourceServiceConfig();
 		serviceConfig.setServiceUserId(userId);
 		serviceConfig.setServiceUserName(person != null ? person.getName() : USER_ID_DEFAULT);
@@ -166,7 +166,6 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 		}
 		
 		MyPersistenceManagerFactory.addSourceServiceApp(userEmail, serviceConfig);
-
 		return buf.toString();
 	}
 
@@ -195,7 +194,7 @@ public class SourceServiceProviderPicasa implements ISourceServiceProvider<IPhot
 		authorizeUrl.session = 1;
 		String authorizationUrl = authorizeUrl.build();
 		
-		log.info("Picasa Authorization URL: " + authorizationUrl);
+		log.info("Picasa Authorization URL: {}", authorizationUrl);
 		result.put("url", authorizationUrl);
 		return result;
 	}

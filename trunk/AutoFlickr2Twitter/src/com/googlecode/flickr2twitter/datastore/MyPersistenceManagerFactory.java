@@ -9,13 +9,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.jdo.JDOHelper;
 import javax.jdo.PersistenceManager;
 import javax.jdo.PersistenceManagerFactory;
 import javax.jdo.Query;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.appengine.api.datastore.Email;
 import com.google.appengine.api.datastore.Key;
@@ -36,8 +37,8 @@ import com.googlecode.flickr2twitter.datastore.model.UserTargetServiceConfig;
 public final class MyPersistenceManagerFactory {
 	private static final PersistenceManagerFactory pmfInstance = JDOHelper
 			.getPersistenceManagerFactory("transactions-optional");
-	private static final Logger log = Logger
-			.getLogger(MyPersistenceManagerFactory.class.getName());
+	private static final Logger log = LoggerFactory
+			.getLogger(MyPersistenceManagerFactory.class);
 
 	public static enum Permission {
 		ADMIN, NORMAL
@@ -67,7 +68,7 @@ public final class MyPersistenceManagerFactory {
 			if (data != null && data.isEmpty() == false)
 				return (GlobalSourceApplicationService) data.get(0);
 		} catch (Exception e) {
-			log.warning(e.toString());
+			log.warn(e.getLocalizedMessage(), e);
 		} finally {
 			pm.close();
 		}
@@ -87,7 +88,7 @@ public final class MyPersistenceManagerFactory {
 			if (data != null && data.isEmpty() == false)
 				return (GlobalTargetApplicationService) data.get(0);
 		} catch (Exception e) {
-			log.warning(e.toString());
+			log.warn(e.getLocalizedMessage(), e);
 		} finally {
 			pm.close();
 		}
@@ -330,7 +331,7 @@ public final class MyPersistenceManagerFactory {
 			String screenName, Permission permission) {
 		User user = getUser(userEmail);
 		if (user != null) {
-			log.warning("User already exist: " + userEmail);
+			log.warn("User already exist: {}", userEmail);
 			return user;
 		}
 		PersistenceManagerFactory pmf = MyPersistenceManagerFactory
@@ -345,8 +346,7 @@ public final class MyPersistenceManagerFactory {
 			pm.makePersistent(user);
 			return user;
 		} catch (NoSuchAlgorithmException e) {
-			log.warning("Got NoSuchAlgorithmException. Unable to create user!"
-					+ e.getCause());
+			log.warn("Unable to create user!", e);
 			return null;
 		} finally {
 			pm.close();
@@ -363,8 +363,7 @@ public final class MyPersistenceManagerFactory {
 			user.setPassword(passwordE);
 			return user;
 		} catch (NoSuchAlgorithmException e) {
-			log.warning("Got NoSuchAlgorithmException. Unable to change password!"
-					+ e.getCause());
+			log.warn("Unable to change password!", e);
 			return null;
 		} finally {
 			pm.close();
@@ -432,20 +431,19 @@ public final class MyPersistenceManagerFactory {
 
 			if (data != null && data.isEmpty() == false) {
 				User u = (User) data.get(0);
-				log.log(Level.INFO, u.toString());
+				log.info("Get user [{}] from the persistent store.", u);
 				try {
 					updateUserLoginTime(u.getUserId().getEmail(), 
 							Calendar.getInstance(TimeZone.getTimeZone(ServiceRunner.TIMEZONE_UTC)).getTime());
 				} catch (Exception e) {
-					log.warning("Failed to update the user(" 
+					log.warn("Failed to update the user(" 
 							+ u.getUserId().getEmail() + 
-							")'s last login time=>" + e);
+							")'s last login time=>", e);
 				}
 				return u;
 			}
 		} catch (NoSuchAlgorithmException e) {
-			log.warning("Unable to login because of NoSuchAlgorithmException. WTF???->"
-					+ e.getMessage());
+			log.warn("Unable to login because of NoSuchAlgorithmException. WTF???", e);
 		} finally {
 			pm.close();
 		}

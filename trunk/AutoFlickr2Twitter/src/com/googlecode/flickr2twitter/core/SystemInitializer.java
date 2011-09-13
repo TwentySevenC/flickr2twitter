@@ -4,10 +4,12 @@
 package com.googlecode.flickr2twitter.core;
 
 import java.util.Properties;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory.Permission;
@@ -20,12 +22,10 @@ import com.googlecode.flickr2twitter.servlet.OAuthServlet;
  */
 public class SystemInitializer implements ServletContextListener {
 
-	private static final Logger log = Logger.getLogger(OAuthServlet.class
-			.getName());
+	private static final Logger log = LoggerFactory.getLogger(OAuthServlet.class);
 
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {
-		// TODO Auto-generated method stub
 
 	}
 

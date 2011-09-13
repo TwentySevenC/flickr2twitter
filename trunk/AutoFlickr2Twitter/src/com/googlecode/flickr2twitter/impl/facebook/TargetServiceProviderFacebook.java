@@ -5,7 +5,9 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.googlecode.flickr2twitter.datastore.model.GlobalTargetApplicationService;
@@ -24,8 +26,8 @@ import com.googlecode.flickr2twitter.utils.FacebookUtil;
 
 public class TargetServiceProviderFacebook implements ITargetServiceProvider {
 
-	private static final Logger log = Logger
-			.getLogger(TargetServiceProviderFacebook.class.getName());
+	private static final Logger log = LoggerFactory
+			.getLogger(TargetServiceProviderFacebook.class);
 
 	public static final String ID = "facebook";
 	public static final String DISPLAY_NAME = "Facebook";
@@ -48,7 +50,7 @@ public class TargetServiceProviderFacebook implements ITargetServiceProvider {
 		String callbackURL = URLEncoder.encode(baseUrl + CALLBACK_URL, "UTF-8");
 		String facebookautURL = MessageFormat.format(FacebookUtil.AUTH_URL,
 				callbackURL);
-		log.info("Facebook auth URL: " + facebookautURL);
+		log.info("Facebook auth URL: {}", facebookautURL);
 		result.put("url", facebookautURL);
 		return result;
 	}
@@ -57,7 +59,7 @@ public class TargetServiceProviderFacebook implements ITargetServiceProvider {
 	public String readyAuthorization(String userEmail, Map<String, Object> data)
 			throws Exception {
 		log.info("Ready Authing facebook....");
-		log.info("User Email: " + userEmail);
+		log.info("User Email: {}", userEmail);
 
 		if (data == null || data.containsKey(PARA_CODE) == false) {
 			throw new IllegalArgumentException("Invalid data: " + data);
@@ -71,7 +73,7 @@ public class TargetServiceProviderFacebook implements ITargetServiceProvider {
 
 		String code = (String) data.get(PARA_CODE);
 
-		log.info("code: " + code);
+		log.info("code: {}", code);
 
 		StringBuffer buf = new StringBuffer();
 
@@ -79,11 +81,10 @@ public class TargetServiceProviderFacebook implements ITargetServiceProvider {
 		String token = FacebookUtil.gaeGetToken(code);
 		String[] userDetails = FacebookUtil.gaeGetUserDetails(token);
 
-		log.info("User details from facebook user id:\"" + userDetails[0]
-				+ "\", user name:\"" + userDetails[1] + "\"");
-
-		log.info("Trying to delete old facebook auth data for facebook user id:\""
-				+ userDetails[0] + "\", user name:\"" + userDetails[1] + "\"");
+		log.info("User details from facebook user id:'{}', user name:'{}'"
+				, userDetails[0], userDetails[1]);
+		log.info("Trying to delete old facebook auth data for facebook user id:'{}', user name:'{}'",
+				userDetails[0], userDetails[1]);
 
 		boolean deletedOldUser = MyPersistenceManagerFactory
 				.deleteOldUserTargetSource(userDetails[0], userEmail);
@@ -150,10 +151,10 @@ public class TargetServiceProviderFacebook implements ITargetServiceProvider {
 		}
 
 		for (IItemList<IItem> itemList : items) {
-			log.info("Processing items from: " + itemList.getListTitle());
+			log.info("Processing items from: {}", itemList.getListTitle());
 			for (IItem item : itemList.getItems()) {
-				log.info("Posting message -> " + item + " for "
-						+ targetConfig.getServiceUserName());
+				log.info("Posting message -> {} for {}"
+						, item, targetConfig.getServiceUserName());
 
 				String message = null;
 				if (item instanceof IPhoto) {
@@ -186,8 +187,7 @@ public class TargetServiceProviderFacebook implements ITargetServiceProvider {
 					try {
 						FacebookUtil.gaePostMessage(message, token);
 					} catch (Exception e) {
-						log.warning("Failed posting message ->" + message
-								+ ". Cause: " + e);
+						log.warn("Failed posting message ->" + message, e);
 					}
 				}
 			}

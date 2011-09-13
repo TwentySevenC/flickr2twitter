@@ -6,9 +6,9 @@ package com.googlecode.flickr2twitter.impl.flickr.model;
 import java.util.Collection;
 import java.util.Date;
 
-import com.aetrion.flickr.photos.GeoData;
-import com.aetrion.flickr.photos.Photo;
-import com.aetrion.flickr.tags.Tag;
+import com.gmail.yuyang226.flickr.photos.GeoData;
+import com.gmail.yuyang226.flickr.photos.Photo;
+import com.gmail.yuyang226.flickr.tags.Tag;
 import com.googlecode.flickr2twitter.impl.flickr.FlickrBaseEncoder;
 import com.googlecode.flickr2twitter.model.IGeoItem;
 import com.googlecode.flickr2twitter.model.IPhoto;

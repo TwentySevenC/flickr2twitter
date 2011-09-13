@@ -5,7 +5,9 @@ package com.googlecode.flickr2twitter.impl.twitter;
 
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import twitter4j.GeoLocation;
 import twitter4j.Status;
@@ -40,8 +42,7 @@ public class TargetServiceProviderTwitter extends AbstractServiceProviderTwitter
 <GlobalTargetApplicationService, UserTargetServiceConfig> 
 implements ITargetServiceProvider {
 
-	private static final Logger log = Logger.getLogger(TargetServiceProviderTwitter.class
-			.getName());
+	private static final Logger log = LoggerFactory.getLogger(TargetServiceProviderTwitter.class);
 
 	/**
 	 * 
@@ -73,10 +74,10 @@ implements ITargetServiceProvider {
 		Twitter twitter = new TwitterFactory().getInstance(auth);
 		
 		for (IItemList<IItem> itemList : items) {
-			log.info("Processing items from: " + itemList.getListTitle());
+			log.info("Processing items from: {}", itemList.getListTitle());
 			for (IItem item : itemList.getItems()) {
-					log.info("Posting message -> " + item + " for "
-							+ targetConfig.getServiceUserName());
+					log.info("Posting message '{}' for {}",
+							item, targetConfig.getServiceUserName());
 
 					GeoLocation geoLoc = null;
 					if (item instanceof IGeoItem) {
@@ -138,12 +139,10 @@ implements ITargetServiceProvider {
 							Status status = geoLoc == null ? 
 												twitter.updateStatus(message) : 
 												twitter.updateStatus(message, geoLoc);
-									log.info("Successfully updated the status ["
-											+ status.getText() + "] to user @"
-											+ targetConfig.getServiceUserName());
+									log.info("Successfully updated the status [{}] to user @{}",
+											status.getText(), targetConfig.getServiceUserName());
 						} catch (TwitterException e) {
-							log.warning("Failed posting message ->" + message
-									+ ". Cause: " + e);
+							log.warn("Failed posting message ->" + message, e);
 						}
 					}
 				}

@@ -4,10 +4,11 @@
 package com.googlecode.flickr2twitter.services.rest;
 
 import java.util.Arrays;
-import java.util.logging.Logger;
 
 import org.restlet.resource.Post;
 import org.restlet.resource.ServerResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.googlecode.flickr2twitter.datastore.model.UserSourceServiceConfig;
@@ -23,7 +24,7 @@ import com.googlecode.flickr2twitter.servlet.EbayConfigKeywordsServlet;
  *
  */
 public class SocialHubServicesServerResource extends ServerResource implements ISociaHubServicesResource {
-	private static final Logger log = Logger.getLogger(SocialHubServicesServerResource.class.getName());
+	private static final Logger log = LoggerFactory.getLogger(SocialHubServicesServerResource.class);
 	
 	/**
 	 * 
@@ -34,11 +35,11 @@ public class SocialHubServicesServerResource extends ServerResource implements I
 	
 	@Post
 	public void addUserServiceConfig(String data) {
-		log.info("user source/target service config data->" + data);
+		log.info("user source/target service config data->{}", data);
 		if (data != null) {
 			try {
 				String[] values = StringUtils.split(data, "/");
-				log.info("Received datas->" + Arrays.asList(values));
+				log.info("Received datas->{}" + Arrays.asList(values));
 				if (values.length >= 6 && values[0].equalsIgnoreCase(
 						AbstractServiceProviderTwitter.ID)) {
 					String providerId = values[0];
@@ -56,7 +57,7 @@ public class SocialHubServicesServerResource extends ServerResource implements I
 					targetConfig.setServiceUserName(screenName);
 					targetConfig.setServiceAccessToken(token);
 					targetConfig.setServiceTokenSecret(tokenSecret);
-					log.info("Adding new user target config to database->" + targetConfig);
+					log.info("Adding new user target config to database->{}", targetConfig);
 					MyPersistenceManagerFactory.addTargetServiceApp(userEmail, targetConfig);
 				} else if (values.length >= 3 && values[0].equalsIgnoreCase(
 						SourceServiceProviderEbayKeywords.ID)) {
@@ -72,14 +73,13 @@ public class SocialHubServicesServerResource extends ServerResource implements I
 					String userSiteUrl = new EbayConfigKeywordsServlet().buildEbayUserSearchUrl(false, keywords, null, null);
 					sourceConfig.setUserSiteUrl(userSiteUrl);
 					sourceConfig.setServiceUserName(keywords);
-					log.info("Adding new user target config to database->" + sourceConfig);
+					log.info("Adding new user target config to database->{}", sourceConfig);
 					MyPersistenceManagerFactory.addSourceServiceApp(userEmail, sourceConfig);
 				} else {
-					log.info("Unsupported service provider->" + data);
+					log.info("Unsupported service provider->{}", data);
 				}
 			} catch (Exception e) {
-				log.throwing(SocialHubServicesServerResource.class.getName(),
-						"addUserTargetServiceConfig", e);
+				log.error("addUserTargetServiceConfig failed", e);
 			}
 		}
 	}

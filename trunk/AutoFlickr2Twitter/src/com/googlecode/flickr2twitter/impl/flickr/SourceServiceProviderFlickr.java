@@ -18,18 +18,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
-import java.util.logging.Logger;
 
-import com.aetrion.flickr.Flickr;
-import com.aetrion.flickr.FlickrException;
-import com.aetrion.flickr.REST;
-import com.aetrion.flickr.RequestContext;
-import com.aetrion.flickr.auth.Permission;
-import com.aetrion.flickr.photos.Extras;
-import com.aetrion.flickr.photos.Photo;
-import com.aetrion.flickr.photos.PhotoList;
-import com.aetrion.flickr.photos.PhotosInterface;
-import com.aetrion.flickr.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.gmail.yuyang226.flickr.Flickr;
+import com.gmail.yuyang226.flickr.FlickrException;
+import com.gmail.yuyang226.flickr.REST;
+import com.gmail.yuyang226.flickr.RequestContext;
+import com.gmail.yuyang226.flickr.auth.Permission;
+import com.gmail.yuyang226.flickr.oauth.OAuth;
+import com.gmail.yuyang226.flickr.oauth.OAuthInterface;
+import com.gmail.yuyang226.flickr.oauth.OAuthToken;
+import com.gmail.yuyang226.flickr.org.json.JSONException;
+import com.gmail.yuyang226.flickr.photos.Extras;
+import com.gmail.yuyang226.flickr.photos.Photo;
+import com.gmail.yuyang226.flickr.photos.PhotoList;
+import com.gmail.yuyang226.flickr.photos.PhotosInterface;
+import com.gmail.yuyang226.flickr.tags.Tag;
 import com.googlecode.flickr2twitter.core.GlobalDefaultConfiguration;
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.googlecode.flickr2twitter.datastore.model.GlobalServiceConfiguration;
@@ -42,10 +48,6 @@ import com.googlecode.flickr2twitter.intf.IServiceAuthorizer;
 import com.googlecode.flickr2twitter.intf.ISourceServiceProvider;
 import com.googlecode.flickr2twitter.model.IPhoto;
 import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
-import com.yuyang226.flickr.oauth.OAuth;
-import com.yuyang226.flickr.oauth.OAuthInterface;
-import com.yuyang226.flickr.oauth.OAuthToken;
-import com.yuyang226.flickr.org.json.JSONException;
 
 /**
  * @author Toby Yu(yuyang226@gmail.com)
@@ -73,7 +75,7 @@ public class SourceServiceProviderFlickr implements
 	public static final String URL_AUTHORIZE = "http://" + HOST_OAUTH + PATH_OAUTH_AUTHORIZE;
 	
 	public static final String CALLBACK_URL = "flickrcallback.jsp";
-	private static final Logger log = Logger.getLogger(SourceServiceProviderFlickr.class.getName());
+	private static final Logger log = LoggerFactory.getLogger(SourceServiceProviderFlickr.class);
 
 	/**
 	 * 
@@ -117,7 +119,7 @@ public class SourceServiceProviderFlickr implements
 		if (pastTime == null) {
 		Calendar cstTime = Calendar.getInstance(TimeZone.getTimeZone(TIMEZONE_GMT));
 		cstTime.setTimeInMillis(currentTime);
-		log.info("Converted current time: " + cstTime.getTime());
+		log.info("Converted current time: {}", cstTime.getTime());
 
 			//		Calendar past = getFromTime(globalConfig, currentTime);
 
@@ -132,27 +134,25 @@ public class SourceServiceProviderFlickr implements
 		PhotoList list = photosFace.recentlyUpdated(pastTime, extras, 100,
 				1);
 		
-		log.info(new StringBuilder("Trying to find photos uploaded for user ").append(userId)
-				.append(" after ").append(pastTime.toString()).append(" from ")
-				.append(list.getTotal()).append(" new photos").toString());
+		log.info("Trying to find photos uploaded for user {} after {} from {} new photos",
+				new Object[]{userId, pastTime.toString(), list.getTotal()});
 		for (Object obj : list) {
 			if (obj instanceof Photo) {
 				Photo photo = (Photo) obj;
 				
-				log.info(new StringBuilder("processing photo: ").append(photo.getTitle())
-						.append(", date uploaded: ").append(photo.getDatePosted()).toString());
+				log.info("processing photo [{}], date uploaded: {}", 
+						photo.getTitle(), photo.getDatePosted());
 				if (photo.isPublicFlag() && photo.getDatePosted().after(pastTime)) {
 					if (!filterTags.isEmpty() && containsTags(filterTags, photo.getTags()) == false) {
-						log.warning("Photo does not contains the required tags, contained tags are: " 
-								+ photo.getTags());
+						log.warn("Photo does not contains the required tags, contained tags are: {}" 
+								, photo.getTags());
 					} else {
-						log.info(new StringBuilder(photo.getTitle()).append(", URL: ").append(photo.getUrl())
-								.append(", date uploaded: ").append(photo.getDatePosted())
-								.append(", GEO: ").append(photo.getGeoData()).toString());
+						log.info("Photo={}, URL={}, date uploaded={}, GEO={}", 
+								new Object[]{photo.getTitle(), photo.getUrl(), photo.getDatePosted(), photo.getGeoData()});
 						photos.add(new FlickrPhoto(photo));
 					}
 				} else {
-					log.warning("private photo will not be posted: " + photo.getTitle());
+					log.warn("private photo [{}]will not be posted.", photo.getTitle());
 				}
 			}
 		}
@@ -238,8 +238,8 @@ public class SourceServiceProviderFlickr implements
 		String tokenSecret = String.valueOf(data.get(KEY_TOKEN_SECRET));
 		String oauthVerifier = String.valueOf(data.get(KEY_TOKEN_VERIFIER));
 		OAuthInterface authInterface = f.getOAuthInterface();
-		OAuth oauth = authInterface.getAccessToken(new OAuthToken(token, tokenSecret), oauthVerifier);
-		com.aetrion.flickr.people.User flickrUser = oauth.getUser();
+		OAuth oauth = authInterface.getAccessToken(token, tokenSecret, oauthVerifier);
+		com.gmail.yuyang226.flickr.people.User flickrUser = oauth.getUser();
 		RequestContext.getRequestContext().setOAuth(oauth);
 		if (flickrUser == null) {
 			flickrUser = authInterface.testLogin();
@@ -313,7 +313,7 @@ public class SourceServiceProviderFlickr implements
 		String callbackUrl = baseUrl + "/" + CALLBACK_URL;
 		OAuthToken oauthToken = authInterface.getRequestToken(callbackUrl);
 		URL url = authInterface.buildAuthenticationUrl(Permission.READ, oauthToken);
-		log.info("OAuthToken: " + oauthToken + ", Token URL: " + url.toExternalForm());
+		log.info("OAuthToken: {}, Token URL: {}", oauthToken, url.toExternalForm());
 		result.put(KEY_OAUTH_TOKEN, oauthToken);
 		
 		result.put("url", url);
@@ -322,41 +322,6 @@ public class SourceServiceProviderFlickr implements
 		return result;
 	}
 	
-	/*
-	 * trying to use OAuth 1a
-	 * @Override
-	public Map<String, Object> requestAuthorization(String baseUrl) throws Exception {
-		GlobalSourceApplicationService globalAppConfig = MyPersistenceManagerFactory
-				.getGlobalSourceAppService(ID);
-		if (globalAppConfig == null
-				|| ID.equalsIgnoreCase(globalAppConfig.getProviderId()) == false) {
-			throw new IllegalArgumentException(
-					"Invalid source service provider: " + globalAppConfig);
-		}
-		Map<String, Object> result = new HashMap<String, Object>();
-
-		if (baseUrl.endsWith("/oauth")) {
-			baseUrl = StringUtils.left(baseUrl, baseUrl.length() - "/oauth".length());
-		}
-		String nextUrl = baseUrl + "/" + CALLBACK_URL;
-		OAuthConsumer consumer = new DefaultOAuthConsumer(globalAppConfig.getSourceAppApiKey(),
-				globalAppConfig.getSourceAppSecret());
-
-		OAuthProvider provider = new DefaultOAuthProvider(
-		"http://www.flickr.com/services/oauth/request_token", 
-		"http://www.flickr.com/services/oauth/access_token",
-		"http://www.flickr.com/services/oauth/authorize");
-		// fetches a request token from the service provider and builds
-		// a url based on AUTHORIZE_WEBSITE_URL and CALLBACK_URL to
-		// which your app must now send the user
-		provider.setOAuth10a(true);
-		
-		String tokenUrl = provider.retrieveRequestToken(consumer, nextUrl);
-		log.info(", Token URL: " + tokenUrl);
-		result.put("url", tokenUrl);
-		return result;
-	}*/
-
 	/*
 	 * (non-Javadoc)
 	 * 

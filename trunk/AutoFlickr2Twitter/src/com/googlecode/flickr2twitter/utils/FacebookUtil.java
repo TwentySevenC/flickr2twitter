@@ -7,10 +7,11 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.text.MessageFormat;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 import org.apache.commons.httpclient.HttpException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.googlecode.flickr2twitter.core.GlobalDefaultConfiguration;
 import com.googlecode.flickr2twitter.impl.facebook.TargetServiceProviderFacebook;
@@ -18,8 +19,7 @@ import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
 
 public class FacebookUtil {
 
-	private static final Logger log = Logger.getLogger(FacebookUtil.class
-			.getName());
+	private static final Logger log = LoggerFactory.getLogger(FacebookUtil.class);
 
 	public static final String APP_ID;
 
@@ -32,15 +32,10 @@ public class FacebookUtil {
 	static {
 		Properties appProperties = GlobalDefaultConfiguration.getInstance()
 				.getProperties();
-
 		APP_ID = appProperties.getProperty("APP_ID");
-
 		APP_SECRET_KEY = appProperties.getProperty("APP_SECRET_KEY");
-
 		APP_SECRET = appProperties.getProperty("APP_SECRET");
-
 		REDIRECT_URI_HOST = appProperties.getProperty("REDIRECT_URI_HOST");
-
 	}
 
 	public static final String TOKEN_PARAM = "access_token";
@@ -64,15 +59,14 @@ public class FacebookUtil {
 	public static String gaePostMessage(String message, String token)
 			throws HttpException, IOException {
 		// https://api.facebook.com/method/status.set?status=asdfasdfasdfasdfasdfasdfasdfasdf&access_token=199812620030608|2920b2600e1a0ac4f29428f4-100001872430428|tMMmzsAv_4noicwf6nQakNULrCQ&format=json
-		log.info("Trying to update user status using token: \"" + token
-				+ "\". Message is" + message);
+		log.info("Trying to update user status using token: '{}'. Message is {}", token, message);
 		StringBuffer sb = new StringBuffer();
 		message = URLEncoder.encode(message, "UTF-8");
 		try {
 			String fullURL = MessageFormat.format(POST_STATUS_URL, message,
 					token);
 
-			log.info("Post message url is: " + fullURL);
+			log.info("Post message url is: {}", fullURL);
 
 			URL url = new URL(fullURL);
 			log.info("URL Created");
@@ -86,13 +80,12 @@ public class FacebookUtil {
 				sb.append(line + "\r\n");
 			}
 			reader.close();
-			log.info("Facebook post message success: " + message);
+			log.info("Facebook post message success: {}", message);
 			String ret = sb.toString();
 			log.info(ret);
 			return ret;
 		} catch (Exception e) {
-			log.warning("Exception found during post facebook status: "
-					+ e.toString());
+			log.warn("Exception found during post facebook status", e);
 		}
 
 		return null;
@@ -103,12 +96,12 @@ public class FacebookUtil {
 		StringBuffer sb = new StringBuffer();
 
 		try {
-			log.info("Trying to generate user token using code " + code);
+			log.info("Trying to generate user token using code {}", code);
 
 			String fullURL = MessageFormat.format(TOKEN_URL, REDIRECT_URI_HOST
 					+ TargetServiceProviderFacebook.CALLBACK_URL, code);
 
-			log.info("Token Generation url: " + fullURL);
+			log.info("Token Generation url: {}", fullURL);
 
 			URL url = new URL(fullURL);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
@@ -121,17 +114,16 @@ public class FacebookUtil {
 			reader.close();
 
 		} catch (Exception e) {
-			log.warning("Got exception while retriving token from fb:"
-					+ e.toString());
+			log.warn("Got exception while retriving token from fb", e);
 		}
 
 		String tokenString = StringUtils.trim(sb.toString());
-		log.info("Token String from facebook: " + tokenString);
+		log.info("Token String from facebook: {}", tokenString);
 		String[] parameters = tokenString.split("&");
 		for (String paraPair : parameters) {
 			int index = paraPair.indexOf("=");
 			String key = paraPair.substring(0, index);
-			log.info("A key from token string: " + key);
+			log.info("A key from token string: {}", key);
 			if (TOKEN_PARAM.equals(key) == false) {
 				continue;
 			}
@@ -139,7 +131,7 @@ public class FacebookUtil {
 			if (paraPair.length() > index) {
 				value = paraPair.substring(index + 1);
 			}
-			log.info("Token Value is: " + value);
+			log.info("Token Value is: {}", value);
 			return StringUtils.trim(value.trim());
 		}
 
@@ -157,11 +149,10 @@ public class FacebookUtil {
 		StringBuffer sb = new StringBuffer();
 
 		try {
-			log.info("Trying to get user name using token " + token);
-
+			log.info("Trying to get user name using token {}", token);
 			String fullURL = MessageFormat.format(USER_DETAIL_URL, token);
 
-			log.info("User Detail url: " + fullURL);
+			log.info("User Detail url: {}", fullURL);
 
 			URL url = new URL(fullURL);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
@@ -174,7 +165,7 @@ public class FacebookUtil {
 			reader.close();
 
 			String userDetailStr = sb.toString();
-			log.info("User Details from facebook:\r\n " + userDetailStr);
+			log.info("User Details from facebook:\r\n {}", userDetailStr);
 
 			JSONObject jsonDetails = new JSONObject(userDetailStr);
 			String id = jsonDetails.getString("id");

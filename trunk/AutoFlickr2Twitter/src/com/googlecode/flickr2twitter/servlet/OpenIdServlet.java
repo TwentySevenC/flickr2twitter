@@ -3,7 +3,6 @@ package com.googlecode.flickr2twitter.servlet;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,6 +14,8 @@ import org.expressme.openid.Authentication;
 import org.expressme.openid.Endpoint;
 import org.expressme.openid.OpenIdException;
 import org.expressme.openid.OpenIdManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.googlecode.flickr2twitter.datastore.model.User;
@@ -26,8 +27,7 @@ import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
  * @author Michael Liao (askxuefeng@gmail.com)
  */
 public class OpenIdServlet extends HttpServlet {
-	private static final Logger log = Logger.getLogger(OpenIdServlet.class
-			.getName());
+	private static final Logger log = LoggerFactory.getLogger(OpenIdServlet.class);
     /**
 	 * 
 	 */
@@ -56,7 +56,9 @@ public class OpenIdServlet extends HttpServlet {
 	protected void service(HttpServletRequest request, HttpServletResponse response)
 	throws ServletException, IOException {
 		String baseurl = request.getRequestURL().toString();
-		log.fine("Base URL: " + baseurl);
+		if (log.isDebugEnabled()) {
+			log.debug("Base URL: {}", baseurl);
+		}
 		manager.setRealm(StringUtils.substringBeforeLast(baseurl, "/"));
         manager.setReturnTo(baseurl);
 		String op = request.getParameter(ATTR_OP);
@@ -72,7 +74,7 @@ public class OpenIdServlet extends HttpServlet {
 			User user = MyPersistenceManagerFactory.getOpenIdLoginUser(userEmail);
 			if (user == null) {
 				//not a registered user
-				log.info("New open ID user, try to automatically register->" + userEmail);
+				log.info("New open ID user, try to automatically register->{}", userEmail);
 				user = MyPersistenceManagerFactory.createNewUser(userEmail, "openid", authentication.getFullname());
 			}
 			request.getSession().setAttribute(UserAccountServlet.PARA_SESSION_USER, user);
@@ -80,7 +82,7 @@ public class OpenIdServlet extends HttpServlet {
 			return;
 		}
 		if (op.equals(ID_GOOGLE) || op.equals(ID_YAHOO)) {
-			log.info("redirect to " + op + " sign on page");
+			log.info("redirect to {} sign on page", op);
 			Endpoint endpoint = manager.lookupEndpoint(op);
 			Association association = manager.lookupAssociation(endpoint);
 			request.getSession().setAttribute(ATTR_MAC, association.getRawMacKey());

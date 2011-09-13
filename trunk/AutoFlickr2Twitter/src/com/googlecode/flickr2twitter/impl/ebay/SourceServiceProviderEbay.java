@@ -8,7 +8,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.googlecode.flickr2twitter.datastore.model.GlobalServiceConfiguration;
 import com.googlecode.flickr2twitter.datastore.model.GlobalSourceApplicationService;
@@ -28,7 +30,7 @@ public class SourceServiceProviderEbay extends BaseSourceProvider<IItem>implemen
 	public static final String DISPLAY_NAME = "eBay";
 	public static final String PAGE_NAME_CONFIG = "ebay_config.jsp";
 
-	private static final Logger log = Logger.getLogger(SourceServiceProviderEbay.class.getName());
+	private static final Logger log = LoggerFactory.getLogger(SourceServiceProviderEbay.class);
 	/**
 	 * 
 	 */
@@ -73,7 +75,7 @@ public class SourceServiceProviderEbay extends BaseSourceProvider<IItem>implemen
 		Calendar now = Calendar.getInstance(TimeZone.getTimeZone(
 				SourceServiceProviderFlickr.TIMEZONE_GMT));
 		now.setTimeInMillis(currentTime);
-		log.info("Converted current time: " + now.getTime());
+		log.info("Converted current time: {}", now.getTime());
 		
 		Date pastTime = sourceService.getLastUpdateTime();
 		if (pastTime == null) {
@@ -84,13 +86,12 @@ public class SourceServiceProviderEbay extends BaseSourceProvider<IItem>implemen
 		}
 		
 		String env = isSandbox() ? "sandbox " : "";
-		log.info("Fetching latest listing for eBay " + env + "user->" + sellerId 
-				+ " from " + pastTime + " to " + now.getTime());
+		log.info("Fetching latest listing for eBay {} user {} from {} to {}.",
+				new Object[]{env, sellerId, pastTime, now.getTime()});
 		List<EbayItem> ebayItems = isSandbox() ? dao.getSellerListFromSandBox(sellerId, pastTime, now.getTime())
 				: dao.getSellerListFromProduction(sellerId, pastTime, now.getTime());
 		
-		log.info("found " + ebayItems.size() + " items updated recently");
-		
+		log.info("found {} items updated recently", ebayItems.size());
 		return convert(ebayItems);
 	}
 

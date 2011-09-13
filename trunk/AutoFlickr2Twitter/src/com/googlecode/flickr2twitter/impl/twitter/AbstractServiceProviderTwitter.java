@@ -6,7 +6,9 @@ package com.googlecode.flickr2twitter.impl.twitter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -30,8 +32,7 @@ import com.googlecode.flickr2twitter.org.apache.commons.lang3.StringUtils;
  */
 public abstract class AbstractServiceProviderTwitter<M extends GlobalApplicationConfig, N extends UserServiceConfig> 
 implements IServiceAuthorizer {
-	private static final Logger log = Logger.getLogger(AbstractServiceProviderTwitter.class
-			.getName());
+	private static final Logger log = LoggerFactory.getLogger(AbstractServiceProviderTwitter.class);
 	public static final String ID = "twitter";
 	public static final String DISPLAY_NAME = "Twitter";
 	public static final String KEY_TOKEN = "oauth_token";
@@ -56,7 +57,7 @@ implements IServiceAuthorizer {
 	@Override
 	public String readyAuthorization(String userEmail, Map<String, Object> data)
 			throws Exception {
-		log.info("User ready for Twitter authorization->" + userEmail + ", data: " + data);
+		log.info("User ready for Twitter authorization->{}, data: {}", userEmail, data);
 		if (data == null || data.containsKey(KEY_TOKEN) == false 
 				|| data.containsKey(KEY_TOKEN_SECRET) == false 
 				|| data.containsKey(KEY_OAUTH_VERIFIER) == false) {
@@ -65,7 +66,7 @@ implements IServiceAuthorizer {
 		StringBuffer buf = new StringBuffer();
 		
 		GlobalApplicationConfig globalAppConfig = getGlobalApplicationConfig();
-		log.info("Twitter Global Application Config Data: " + globalAppConfig);
+		log.info("Twitter Global Application Config Data: {}", globalAppConfig);
 		String consumerId = null;
 		String consumerSecret = null;
 		if (globalAppConfig instanceof GlobalSourceApplicationService) {
@@ -83,7 +84,7 @@ implements IServiceAuthorizer {
 		Twitter twitter = new TwitterFactory().getOAuthAuthorizedInstance(
 				consumerId,
 				consumerSecret);
-		log.info("Initialized Twitter client: " + twitter);
+		log.info("Initialized Twitter client: {}", twitter);
 
 		String token = String.valueOf(data.get(KEY_TOKEN));
 		String secret = String.valueOf(data.get(KEY_TOKEN_SECRET));
@@ -95,7 +96,7 @@ implements IServiceAuthorizer {
 		buf.append(" User Screen Name: " + accessToken.getScreenName());
 		buf.append(" Access Token: " + accessToken.getToken());
 		buf.append(" Token Secret: " + accessToken.getTokenSecret());
-		log.info("Twitter User Data: " + buf);
+		log.info("Twitter User Data: {}", buf);
 		for (UserServiceConfig service : getUserServiceConfigs(userEmail)) {
 			String aToken = accessToken.getToken();
 			boolean duplicate = false;
@@ -123,7 +124,7 @@ implements IServiceAuthorizer {
 			MyPersistenceManagerFactory.addSourceServiceApp(userEmail, srcConfig);
 		} else {
 			UserTargetServiceConfig targetConfig = (UserTargetServiceConfig) serviceConfig;
-			log.info("Adding new user target config to database->" + targetConfig);
+			log.info("Adding new user target config to database->{}", targetConfig);
 			MyPersistenceManagerFactory.addTargetServiceApp(userEmail, targetConfig);
 		}
 		return buf.toString();
@@ -158,8 +159,8 @@ implements IServiceAuthorizer {
 			}
 			String callbackUrl = baseUrl + "/" + globalAppConfig.getAuthPagePath();
 			RequestToken requestToken = twitter.getOAuthRequestToken(callbackUrl);
-			log.info("Authentication URL: " + requestToken.getAuthenticationURL());
-			log.info("Authorization URL: " + requestToken.getAuthorizationURL());
+			log.info("Authentication URL: {}", requestToken.getAuthenticationURL());
+			log.info("Authorization URL: {}", requestToken.getAuthorizationURL());
 			result.put("url", requestToken.getAuthorizationURL());
 			result.put("token", requestToken.getToken());
 			result.put("secret", requestToken.getTokenSecret());
