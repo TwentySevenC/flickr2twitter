@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.mortbay.log.Log;
 
-import com.google.appengine.repackaged.com.google.common.base.StringUtil;
+import com.google.gdata.util.common.base.StringUtil;
 import com.googlecode.flickr2twitter.datastore.MessageDigestUtil;
 import com.googlecode.flickr2twitter.datastore.MyPersistenceManagerFactory;
 import com.googlecode.flickr2twitter.datastore.model.User;
