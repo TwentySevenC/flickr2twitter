@@ -36,6 +36,6 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/signpost-core-1.2.1.1.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/slf4j-api-1.6.2.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/slf4j-jcl-1.6.2.jar"/>
-	<classpathentry kind="lib" path="war/WEB-INF/lib/original-flickr-api-1.0.0.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/original-flickr-api-1.0.0.jar" sourcepath="war/WEB-INF/lib/flickr-api-1.0.0-sources.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
