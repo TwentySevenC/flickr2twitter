@@ -146,7 +146,7 @@ public class UserAccountServlet extends HttpServlet {
 		String password = req.getParameter(PARA_PASSWORD);
 		String screenName = req.getParameter(PARA_SCREEN_NAME);
 
-		if (StringUtil.isEmpty(userEmail) == true) {
+		if (StringUtils.isEmpty(userEmail) == true) {
 			msg.append("User Email could not be empty! Creation is not successful.");
 			return;
 		}
@@ -159,7 +159,7 @@ public class UserAccountServlet extends HttpServlet {
 			StringBuffer msg) {
 		String userEmail = req.getParameter(PARA_EMAIL);
 		String password = req.getParameter(PARA_PASSWORD);
-		if (StringUtil.isEmpty(userEmail) == true) {
+		if (StringUtils.isEmpty(userEmail) == true) {
 			msg.append("User Email could not be empty! Login failed.");
 			return;
 		}
